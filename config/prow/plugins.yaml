@@ -82,10 +82,12 @@ plugins:
     - welcome
     - wip
     - yuks
+
   ppc64le-cloud/test-infra:
     - approve
     - assign
     - cat
+    - config-updater
     - dog
     - golint
     - goose
