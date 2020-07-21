@@ -1,0 +1,31 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: prow
+  name: prow
+  annotations:
+    # Change this to your issuer when using cert-manager. Does
+    # nothing when not using cert-manager.
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+spec:
+  backend:
+    # specify the default backend for `ingress-gce` (https://cloud.google.com/kubernetes-engine/docs/concepts/ingress#prow_backend)
+    serviceName: deck
+    servicePort: 80
+  rules:
+    - host: prow.k8s-prow-c7f9fbfa2832409e2a3a6666e9dc52a3-0000.us-south.containers.appdomain.cloud
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: deck
+              servicePort: 80
+          - path: /hook
+            backend:
+              serviceName: hook
+              servicePort: 8888
+  tls:
+    - hosts:
+        - prow.k8s-prow-c7f9fbfa2832409e2a3a6666e9dc52a3-0000.us-south.containers.appdomain.cloud
+      secretName: k8s-prow-c7f9fbfa2832409e2a3a6666e9dc52a3-0000
