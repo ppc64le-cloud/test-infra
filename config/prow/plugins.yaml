@@ -27,11 +27,11 @@ config_updater:
   maps:
     config/prow/config.yaml:
       name: config
-      config/prow/plugins.yaml:
-        name: plugins
-      config/jobs/**/*.yaml:
-        name: job-config
-        gzip: true
+    config/prow/plugins.yaml:
+      name: plugins
+    config/jobs/**/*.yaml:
+      name: job-config
+      gzip: true
 
 welcome:
   - repos:
