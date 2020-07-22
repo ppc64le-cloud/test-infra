@@ -30,6 +30,7 @@ spec:
             - --github-endpoint=https://api.github.com
             - --github-token-path=/etc/github/token
             - --github-workers=10
+            - --job-config-path=/etc/job-config
             - --kubernetes-blob-storage-workers=10
           volumeMounts:
             - name: config
@@ -37,6 +38,9 @@ spec:
               readOnly: true
             - name: github-token
               mountPath: /etc/github
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
               readOnly: true
             - name: s3-credentials
               mountPath: /etc/s3-credentials
@@ -48,6 +52,9 @@ spec:
         - name: github-token
           secret:
             secretName: github-token
+        - name: job-config
+          configMap:
+            name: job-config
         - name: s3-credentials
           secret:
             secretName: s3-credentials

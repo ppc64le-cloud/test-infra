@@ -30,6 +30,7 @@ spec:
             - --github-host=github.com
             - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
+            - --job-config-path=/etc/job-config
             - --s3-credentials-file=/etc/s3-credentials/service-account.json
             - --status-path=s3://status-reconciler/status-reconciler-status
           volumeMounts:
@@ -38,6 +39,9 @@ spec:
               readOnly: true
             - name: config
               mountPath: /etc/config
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
               readOnly: true
             - name: plugins
               mountPath: /etc/plugins
@@ -52,6 +56,9 @@ spec:
         - name: config
           configMap:
             name: config
+        - name: job-config
+          configMap:
+            name: job-config
         - name: plugins
           configMap:
             name: plugins
