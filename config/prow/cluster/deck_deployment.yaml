@@ -36,6 +36,7 @@ spec:
             - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
             - --github-graphql-endpoint=http://ghproxy/graphql
+            - --job-config-path=/etc/job-config
             - --plugin-config=/etc/plugins/plugins.yaml
             - --spyglass=true
           ports:
@@ -47,6 +48,9 @@ spec:
               readOnly: true
             - name: github-token
               mountPath: /etc/github
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
               readOnly: true
             - name: plugins
               mountPath: /etc/plugins
@@ -74,6 +78,9 @@ spec:
         - name: github-token
           secret:
             secretName: github-token
+        - name: job-config
+          configMap:
+            name: job-config
         - name: plugins
           configMap:
             name: plugins
