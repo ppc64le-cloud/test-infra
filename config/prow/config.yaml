@@ -56,7 +56,7 @@ plank:
       utility_images:
         clonerefs: quay.io/powercloud/clonerefs:v20200723-4e866c62eb
         entrypoint: quay.io/powercloud/entrypoint:v20200723-4e866c62eb
-        initupload: quay.io/powercloud/initupload:v20200723-4e866c62eb1
+        initupload: quay.io/powercloud/initupload:v20200723-4e866c62eb
         sidecar: quay.io/powercloud/sidecar:v20200723-4e866c62eb
       ssh_key_secrets:
         - bot-ssh-secret
