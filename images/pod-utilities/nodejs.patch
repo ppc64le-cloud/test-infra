@@ -1,0 +1,40 @@
+diff --git a/WORKSPACE b/WORKSPACE
+index ab21ede3a..88beca3a2 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -51,7 +51,13 @@ load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
+
+ k8s_repositories()
+
+-load("@build_bazel_rules_nodejs//:defs.bzl", "yarn_install")
++load("@build_bazel_rules_nodejs//:defs.bzl", "node_repositories","yarn_install")
++
++
++node_repositories(
++    node_version = "14.6.0",
++    vendored_node = "@ppc64le_node_14.6.0//:node-v14.6.0-linux-ppc64le",
++)
+
+ yarn_install(
+     name = "npm",
+diff --git a/load.bzl b/load.bzl
+index 2e6a75572..c7acbce40 100644
+--- a/load.bzl
++++ b/load.bzl
+@@ -38,6 +38,14 @@ def repositories():
+         urls = ["https://github.com/bazelbuild/rules_k8s/releases/download/v0.3.1/rules_k8s-v0.3.1.tar.gz"],
+     )
+
++    http_archive(
++       name = "ppc64le_node_14.6.0",
++       build_file_content = """exports_files(["node-v14.6.0-linux-ppc64le/bin/node"])""",
++       sha256 = "2299703301b3b69d386cd4c3c2721c102798ae2e9ea1debc2218452883c08955",
++       urls = ["https://nodejs.org/dist/v14.6.0/node-v14.6.0-linux-ppc64le.tar.xz"],
++    )
++
++
+     # https://github.com/bazelbuild/rules_nodejs
+     http_archive(
+         name = "build_bazel_rules_nodejs",
+
+
