@@ -86,5 +86,15 @@ tide:
         - do-not-merge/invalid-owners-file
       repos:
         - ppc64le-cloud/test-infra
+    - labels:
+        - lgtm
+        - approved
+      missingLabels:
+        - needs-rebase
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+      repos:
+        - ocp-power-automation/ocp4-upi-powervs
 
 decorate_all_jobs: true

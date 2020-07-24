@@ -6,6 +6,9 @@ triggers:
   - repos:
       - ppc64le-cloud/test-infra
     join_org_url: https://github.com/ppc64le-cloud/test-infra/blob/master/README.md
+  - repos:
+      - ocp-power-automation/ocp4-upi-powervs
+    join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervs#contributing
 
 approve:
   - repos:
@@ -13,6 +16,9 @@ approve:
     require_self_approval: false
   - repos:
       - ppc64le-cloud/test-infra
+    require_self_approval: false
+  - repos:
+      - ocp-power-automation/ocp4-upi-powervs
     require_self_approval: false
 
 # Lower bounds in number of lines changed; XS is assumed to be zero.
@@ -51,6 +57,12 @@ require_matching_label:
     issues: true
     prs: true
     regexp: ^kind/
+  - missing_label: needs-kind
+    org: ocp-power-automation
+    repo: ocp4-upi-powervs
+    issues: true
+    prs: true
+    regexp: ^kind/
 
 retitle:
   allow_closed_issues: true
@@ -84,6 +96,34 @@ plugins:
     - yuks
 
   ppc64le-cloud/test-infra:
+    - approve
+    - assign
+    - cat
+    - config-updater
+    - dog
+    - golint
+    - goose
+    - heart
+    - help
+    - hold
+    - invalidcommitmsg
+    - label
+    - lgtm
+    - lifecycle
+    - mergecommitblocker
+    - owners-label
+    - pony
+    - retitle
+    - shrug
+    - size
+    - skip
+    - trigger
+    - verify-owners
+    - welcome
+    - wip
+    - yuks
+
+  ocp-power-automation/ocp4-upi-powervs:
     - approve
     - assign
     - cat
