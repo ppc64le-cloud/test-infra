@@ -1,0 +1,9 @@
+periodics:
+  - interval: 15m
+    cluster: k8s-ppc64le-cluster
+    name: k8s-ppc64le-cluster-health-check
+    decorate: true
+    spec:
+      containers:
+        - image: alpine
+          command: ["/bin/date"]
