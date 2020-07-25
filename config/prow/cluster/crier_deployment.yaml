@@ -31,6 +31,7 @@ spec:
             - --github-token-path=/etc/github/token
             - --github-workers=10
             - --job-config-path=/etc/job-config
+            - --kubeconfig=/etc/kubeconfig/config
             - --kubernetes-blob-storage-workers=10
           volumeMounts:
             - name: config
@@ -41,6 +42,9 @@ spec:
               readOnly: true
             - name: job-config
               mountPath: /etc/job-config
+              readOnly: true
+            - name: kubeconfig
+              mountPath: /etc/kubeconfig
               readOnly: true
             - name: s3-credentials
               mountPath: /etc/s3-credentials
@@ -55,6 +59,10 @@ spec:
         - name: job-config
           configMap:
             name: job-config
+        - name: kubeconfig
+          secret:
+            defaultMode: 0644
+            secretName: kubeconfig
         - name: s3-credentials
           secret:
             secretName: s3-credentials

@@ -28,6 +28,7 @@ spec:
             - --github-endpoint=https://api.github.com
             - --enable-controller=plank
             - --job-config-path=/etc/job-config
+            - --kubeconfig=/etc/kubeconfig/config
           image: gcr.io/k8s-prow/prow-controller-manager:v20200717-cf288082e1
           volumeMounts:
             - name: github-token
@@ -39,6 +40,9 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
+            - name: kubeconfig
+              mountPath: /etc/kubeconfig
+              readOnly: true
       volumes:
         - name: github-token
           secret:
@@ -49,3 +53,7 @@ spec:
         - name: config
           configMap:
             name: config
+        - name: kubeconfig
+          secret:
+            defaultMode: 0644
+            secretName: kubeconfig
