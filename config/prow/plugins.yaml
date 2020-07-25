@@ -35,6 +35,8 @@ config_updater:
       name: config
     config/prow/plugins.yaml:
       name: plugins
+    config/prow/labels.yaml:
+      name: label-config
     config/jobs/**/*.yaml:
       name: job-config
       gzip: true
