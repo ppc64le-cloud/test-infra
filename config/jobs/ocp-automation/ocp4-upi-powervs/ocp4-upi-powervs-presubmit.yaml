@@ -3,6 +3,7 @@ presubmits:
     - name: pull-ocp4-upi-powervs-terraform-validate
       always_run: true
       decorate: true
+      clone_uri: "git@github.com:ocp-power-automation/ocp4-upi-powervs.git"
       spec:
         containers:
           - image: hashicorp/terraform:latest
