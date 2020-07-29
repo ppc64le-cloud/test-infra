@@ -1,0 +1,22 @@
+presubmits:
+  ocp-power-automation/ocp4-upi-powervs:
+    - name: pull-ocp4-upi-powervs-terraform-validate
+      always_run: true
+      decorate: true
+      spec:
+        containers:
+          - image: hashicorp/terraform:latest
+            command:
+              - sh
+            args:
+              - -c
+              - |
+                set -o errexit
+                wget https://github.com/IBM-Cloud/terraform-provider-ibm/releases/download/v1.9.0/linux_amd64.zip
+                mkdir -p $HOME/.terraform.d/plugins
+                unzip linux_amd64.zip -d $HOME/.terraform.d/plugins
+                terraform init
+                terraform validate
+      annotations:
+        testgrid-dashboards: presubmits-ocp4-upi-powervs
+        testgrid-tab-name: terraform-validate
