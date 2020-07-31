@@ -39,6 +39,7 @@ spec:
             - --job-config-path=/etc/job-config
             - --kubeconfig=/etc/kubeconfig/config
             - --plugin-config=/etc/plugins/plugins.yaml
+            - --s3-credentials-file=/etc/s3-credentials/service-account.json
             - --spyglass=true
           ports:
             - name: http
