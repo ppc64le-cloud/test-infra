@@ -1,5 +1,5 @@
 periodics:
-  - interval: 15m
+  - interval: 6h
     cluster: k8s-ppc64le-cluster
     name: k8s-ppc64le-cluster-health-check
     decorate: true
