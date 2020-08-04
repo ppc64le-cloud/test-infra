@@ -5,8 +5,6 @@ This is an image which is used for accessing the IBM cloud, includes following c
 - ibmcloud command
 - ibmcloud plugins
     - powervs
-- python
-- python modules for ibm cloud
 
 ## How to build
 
@@ -17,6 +15,6 @@ $ docker push quay.io/powercloud/ibm-cloud:latest
 ```
 
 <!--
-TODO: Build logic not to install the missing libraries on ppc64le platform
+TODO: Build logic not to install the missing libraries on ppc64le platform and make this image multi-arch
 -->
 > Note: This is supported only on x86 platform because few of the required python libraries are available only in x86 platform 
