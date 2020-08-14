@@ -1,0 +1,19 @@
+presubmits:
+  ocp-power-automation/ocp4-upi-powervm:
+    - name: pull-ocp4-upi-powervm-terraform-validate
+      always_run: true
+      decorate: true
+      spec:
+        containers:
+          - image: hashicorp/terraform:0.12.29
+            command:
+              - sh
+            args:
+              - -c
+              - |
+                set -o errexit
+                terraform init
+                terraform validate
+      annotations:
+        testgrid-dashboards: presubmits-ocp4-upi-powervm
+        testgrid-tab-name: terraform-validate
