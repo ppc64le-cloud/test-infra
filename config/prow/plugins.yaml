@@ -9,6 +9,9 @@ triggers:
   - repos:
       - ocp-power-automation/ocp4-upi-powervs
     join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervs#contributing
+  - repos:
+      - ocp-power-automation/ocp4-upi-powervm
+    join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervm#contributing
 
 approve:
   - repos:
@@ -19,6 +22,9 @@ approve:
     require_self_approval: false
   - repos:
       - ocp-power-automation/ocp4-upi-powervs
+    require_self_approval: false
+  - repos:
+      - ocp-power-automation/ocp4-upi-powervm
     require_self_approval: false
 
 # Lower bounds in number of lines changed; XS is assumed to be zero.
@@ -126,6 +132,33 @@ plugins:
     - yuks
 
   ocp-power-automation/ocp4-upi-powervs:
+    - approve
+    - assign
+    - cat
+    - config-updater
+    - dog
+    - golint
+    - goose
+    - heart
+    - help
+    - hold
+    - invalidcommitmsg
+    - label
+    - lgtm
+    - lifecycle
+    - mergecommitblocker
+    - owners-label
+    - pony
+    - retitle
+    - shrug
+    - size
+    - skip
+    - trigger
+    - verify-owners
+    - welcome
+    - wip
+    - yuks
+  ocp-power-automation/ocp4-upi-powervm:
     - approve
     - assign
     - cat
