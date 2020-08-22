@@ -20,7 +20,7 @@ spec:
               args:
                 - --config=/etc/config/labels.yaml
                 - --confirm=true
-                - --only=ppc64le-cloud/test-infra,ocp-power-automation/ocp4-upi-powervs,ocp-power-automation/infra
+                - --only=ppc64le-cloud/test-infra,ocp-power-automation/ocp4-upi-powervs,ocp-power-automation/infra,ppc64le-cloud/kubetest2-plugins
                 - --token=/etc/github/token
               volumeMounts:
                 - name: oauth
