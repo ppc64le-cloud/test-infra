@@ -1,0 +1,22 @@
+presubmits:
+  ppc64le-cloud/kubetest2-plugins:
+    - name: pull-kubetest2-plugins-terraform-validate
+      decorate: true
+      run_if_changed: 'data/data'
+      spec:
+        containers:
+          - image: hashicorp/terraform:0.12.29
+            command:
+              - sh
+            args:
+              - -c
+              - |
+                set -o errexit
+                wget https://github.com/IBM-Cloud/terraform-provider-ibm/releases/download/v1.9.0/linux_amd64.zip
+                mkdir -p $HOME/.terraform.d/plugins
+                unzip linux_amd64.zip -d $HOME/.terraform.d/plugins
+                terraform init data/data/powervs
+                terraform validate data/data/powervs
+      annotations:
+        testgrid-dashboards: presubmits-kubetest2-plugins
+        testgrid-tab-name: terraform-validate
