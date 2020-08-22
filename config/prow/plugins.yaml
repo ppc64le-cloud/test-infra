@@ -4,8 +4,9 @@ triggers:
       - IBM/raksh
     join_org_url: https://github.com/IBM/raksh/blob/master/CONTRIBUTING.md
   - repos:
-      - ppc64le-cloud/test-infra
+      - ppc64le-cloud
     join_org_url: https://github.com/ppc64le-cloud/test-infra/blob/master/README.md
+    only_org_members: true
   - repos:
       - ocp-power-automation/ocp4-upi-powervs
     join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervs#contributing
@@ -19,6 +20,7 @@ approve:
     require_self_approval: false
   - repos:
       - ppc64le-cloud/test-infra
+      - ppc64le-cloud/kubetest2-plugins
     require_self_approval: false
   - repos:
       - ocp-power-automation/ocp4-upi-powervs
@@ -103,7 +105,7 @@ plugins:
     - wip
     - yuks
 
-  ppc64le-cloud/test-infra:
+  ppc64le-cloud:
     - approve
     - assign
     - cat
