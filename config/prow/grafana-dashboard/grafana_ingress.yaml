@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: grafana-dashboard
+  name: grafana
+spec:
+  backend:
+    serviceName: grafana
+    servicePort: 80
+  rules:
+    - host: grafana.k8s-prow-c7f9fbfa2832409e2a3a6666e9dc52a3-0000.us-south.containers.appdomain.cloud
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: grafana
+              servicePort: 80
