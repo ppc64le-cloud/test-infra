@@ -98,3 +98,13 @@ tide:
         - ocp-power-automation/ocp4-upi-powervs
 
 decorate_all_jobs: true
+
+presets:
+  - labels:
+      preset-ibm-cloud-cred: "true"
+    env:
+      - name: TF_VAR_powervs_api_key
+        valueFrom:
+          secretKeyRef:
+            name: ibm-cloud-credentials
+            key: TF_VAR_powervs_api_key
