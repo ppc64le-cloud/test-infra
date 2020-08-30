@@ -12,9 +12,6 @@ presubmits:
               - -c
               - |
                 set -o errexit
-                wget https://github.com/IBM-Cloud/terraform-provider-ibm/releases/download/v1.9.0/linux_amd64.zip
-                mkdir -p $HOME/.terraform.d/plugins
-                unzip linux_amd64.zip -d $HOME/.terraform.d/plugins
                 terraform init data/data/powervs
                 terraform validate data/data/powervs
       annotations:
