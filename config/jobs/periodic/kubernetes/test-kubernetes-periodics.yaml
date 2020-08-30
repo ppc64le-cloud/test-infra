@@ -61,6 +61,7 @@ periodics:
               go get sigs.k8s.io/kubetest2@latest;
               go get sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest;
               GOPROXY=direct go get github.com/ppc64le-cloud/kubetest2-plugins/kubetest2-tf@latest;
+              TIMESTAMP=$(date +%s);
               kubetest2 tf --powervs-dns k8s-tests \;
                 --powervs-dns-zone k8s.test \;
                 --powervs-image-name centos-8-latest \;
@@ -69,7 +70,7 @@ periodics:
                 --powervs-ssh-key powercloud-bot-key \;
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \;
                 --build-version v1.20.0-alpha.0.635+fd74333a971e20 \;
-                --cluster-name k8s-cluster-dhqkjj \;
+                --cluster-name k8s-cluster-$TIMESTAMP \;
                 --up --down --auto-approve \;
                 --workers-count 3 \;
-                --test=ginkgo -- --parallel 30 --test-args -host=https://k8s-cluster-dhqkjj-master.k8s.test:992 --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]';
+                --test=ginkgo -- --parallel 30 --test-args -host=https://k8s-cluster-$TIMESTAMP-master.k8s.test:992 --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]';
