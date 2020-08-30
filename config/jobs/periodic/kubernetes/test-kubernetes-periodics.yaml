@@ -64,7 +64,6 @@ periodics:
               kubetest2 tf --powervs-dns k8s-tests \;
                 --powervs-dns-zone k8s.test \;
                 --powervs-image-name centos-8-latest \;
-                --powervs-network-name k8s-test-network \;
                 --powervs-region lon --powervs-zone lon06 \;
                 --powervs-service-id de6f50e0-7c85-4964-835c-6d767520d656 \;
                 --powervs-ssh-key powercloud-bot-key \;
