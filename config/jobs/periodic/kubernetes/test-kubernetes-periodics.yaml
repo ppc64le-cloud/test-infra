@@ -27,7 +27,7 @@ periodics:
             - -//vendor/...
   - name: periodic-kubernetes-conformance-test-ppc64le
     decorate: true
-    interval: 3h
+    interval: 1h
     spec:
       volumes:
         - name: powercloud-bot-key
