@@ -72,5 +72,5 @@ periodics:
                 --build-version v1.20.0-alpha.0.635+fd74333a971e20 \;
                 --cluster-name k8s-cluster-$TIMESTAMP \;
                 --up --down --auto-approve \;
-                --workers-count 3 \;
-                --test=ginkgo -- --parallel 30 --test-args -host=https://k8s-cluster-$TIMESTAMP-master.k8s.test:992 --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]';
+                --powervs-memory 32 \;
+                --test=ginkgo -- --parallel 10 --test-args -host=https://k8s-cluster-$TIMESTAMP-master.k8s.test:992 --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]';
