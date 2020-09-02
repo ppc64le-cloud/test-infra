@@ -2,7 +2,7 @@ periodics:
   - name: periodics-kubernetes-bazel-test-ppc64le
     cluster: k8s-ppc64le-cluster
     decorate: true
-    interval: 6h
+    interval: 3h
     extra_refs:
       - base_ref: master
         org: kubernetes
