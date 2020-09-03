@@ -8,11 +8,9 @@ triggers:
     join_org_url: https://github.com/ppc64le-cloud/test-infra/blob/master/README.md
     only_org_members: true
   - repos:
-      - ocp-power-automation/ocp4-upi-powervs
+      - ocp-power-automation
     join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervs#contributing
-  - repos:
-      - ocp-power-automation/ocp4-upi-powervm
-    join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervm#contributing
+    only_org_members: true
 
 approve:
   - repos:
@@ -133,7 +131,7 @@ plugins:
     - wip
     - yuks
 
-  ocp-power-automation/ocp4-upi-powervs:
+  ocp-power-automation:
     - approve
     - assign
     - cat
@@ -144,34 +142,6 @@ plugins:
     - heart
     - help
     - hold
-    - invalidcommitmsg
-    - label
-    - lgtm
-    - lifecycle
-    - mergecommitblocker
-    - owners-label
-    - pony
-    - retitle
-    - shrug
-    - size
-    - skip
-    - trigger
-    - verify-owners
-    - welcome
-    - wip
-    - yuks
-  ocp-power-automation/ocp4-upi-powervm:
-    - approve
-    - assign
-    - cat
-    - config-updater
-    - dog
-    - golint
-    - goose
-    - heart
-    - help
-    - hold
-    - invalidcommitmsg
     - label
     - lgtm
     - lifecycle
