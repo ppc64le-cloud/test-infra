@@ -5,13 +5,15 @@ presubmits:
       decorate: true
       spec:
         containers:
-          - image: hashicorp/terraform:0.12.29
+          - image: hashicorp/terraform:latest
             command:
               - sh
             args:
               - -c
               - |
                 set -o errexit
+                mkdir -p $HOME/.local/share/terraform/plugins/registry.terraform.io/terraform-providers/ignition/
+                wget https://github.com/community-terraform-providers/terraform-provider-ignition/releases/download/v2.1.0/terraform-provider-ignition_2.1.0_linux_amd64.zip -P $_
                 terraform init
                 terraform validate
       annotations:
