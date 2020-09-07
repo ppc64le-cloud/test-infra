@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: build-bot
+  labels:
+    app: build-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: build-bot
+  template:
+    metadata:
+      labels:
+        app: build-bot
+    spec:
+      terminationGracePeriodSeconds: 180
+      containers:
+        - name: build-bot
+          image: quay.io/powercloud/build-bot:latest
+          imagePullPolicy: Always
+          args:
+            - --s3-credentials-file=/etc/s3-credentials/service-account.json
+            - --github-token-path=/etc/github/token
+          ports:
+            - name: http
+              containerPort: 8090
+          volumeMounts:
+            - name: s3-credentials
+              mountPath: /etc/s3-credentials
+              readOnly: true
+            - name: github-token
+              mountPath: /etc/github
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8090
+            initialDelaySeconds: 3
+            periodSeconds: 3
+      volumes:
+        - name: github-token
+          secret:
+            secretName: github-token
+        - name: s3-credentials
+          secret:
+            secretName: s3-credentials
