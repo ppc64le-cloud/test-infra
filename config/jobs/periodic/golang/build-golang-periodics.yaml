@@ -1,0 +1,23 @@
+periodics:
+  - name: periodics-golang-master-build-ppc64le
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    interval: 3h
+    spec:
+      containers:
+        - image: golang:1.15
+          command:
+            - /bin/bash
+            - -c
+            - |
+              #!/bin/bash
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+              cd $HOME
+              git clone https://github.com/golang/go.git
+              cd go/src;GITCOMMIT=$(git rev-parse --short HEAD);./make.bash
+              cd ../..;rm -rf go/.git
+              tar -czvf go.tar.gz go
+              curl -v -X POST http://build-bot.prow:8090/build -H 'Content-Type: multipart/form-data' -F file=@go.tar.gz -F source=github.com/golang/go.git -F commit=$GITCOMMIT -F project=golang/master
