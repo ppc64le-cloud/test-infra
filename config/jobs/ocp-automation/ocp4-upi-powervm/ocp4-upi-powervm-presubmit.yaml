@@ -13,7 +13,7 @@ presubmits:
               - |
                 set -o errexit
                 mkdir -p $HOME/.local/share/terraform/plugins/registry.terraform.io/terraform-providers/ignition/
-                wget https://github.com/community-terraform-providers/terraform-provider-ignition/releases/download/v2.1.0/terraform-provider-ignition_2.1.0_linux_amd64.zip -P $_
+                wget https://github.com/community-terraform-providers/terraform-provider-ignition/releases/download/v2.1.0/terraform-provider-ignition_2.1.0_linux_amd64.zip -P $HOME/.local/share/terraform/plugins/registry.terraform.io/terraform-providers/ignition/
                 terraform init
                 terraform validate
       annotations:
