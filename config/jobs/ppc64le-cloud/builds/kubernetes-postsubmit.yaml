@@ -1,0 +1,30 @@
+postsubmits:
+  ppc64le-cloud/builds:
+    - name: postsubmit-kubernetes-build-golang-master-ppc64le
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      run_if_changed: '^golang/master/'
+      extra_refs:
+        - base_ref: master
+          org: kubernetes
+          repo: kubernetes
+          workdir: true
+      spec:
+        containers:
+          - image: debian:latest
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                set -o xtrace
+                apt update; apt install -y git make rsync curl wget gcc jq
+                build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
+                tar -C /usr/local -xzf /tmp/golang.tar.gz
+                export PATH=/usr/local/go/bin:$PATH
+                KUBE_BUILD_PLATFORMS=linux/ppc64le make cross
