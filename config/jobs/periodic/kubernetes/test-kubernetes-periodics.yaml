@@ -62,6 +62,7 @@ periodics:
               go get sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest;
               GOPROXY=direct go get github.com/ppc64le-cloud/kubetest2-plugins/kubetest2-tf@latest;
               TIMESTAMP=$(date +%s);
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release-dev/ci/latest.txt);
               kubetest2 tf --powervs-dns k8s-tests \;
                 --powervs-dns-zone k8s.test \;
                 --powervs-image-name centos-8-latest \;
@@ -69,7 +70,7 @@ periodics:
                 --powervs-service-id de6f50e0-7c85-4964-835c-6d767520d656 \;
                 --powervs-ssh-key powercloud-bot-key \;
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \;
-                --build-version v1.20.0-alpha.0.635+fd74333a971e20 \;
+                --build-version $K8S_BUILD_VERSION \;
                 --cluster-name k8s-cluster-$TIMESTAMP \;
                 --up --down --auto-approve \;
                 --powervs-memory 32 \;
