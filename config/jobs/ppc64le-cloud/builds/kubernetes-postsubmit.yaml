@@ -13,7 +13,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: debian:latest
+          - image: quay.io/powercloud/all-in-one:0.1
             command:
               - /bin/bash
             args:
@@ -23,10 +23,24 @@ postsubmits:
                 set -o nounset
                 set -o pipefail
                 set -o xtrace
-                apt update; apt install -y git make rsync curl wget gcc jq
+
                 build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
                 build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
                 curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
+                rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
                 KUBE_BUILD_PLATFORMS=linux/ppc64le make cross
+
+                GITCOMMIT=$(git rev-parse --short HEAD)
+                mkdir -p _output/release-stage/kubernetes/{client,test,server}/bin
+
+                cp _output/bin/kubectl _output/release-stage/kubernetes/client/bin/
+                mv _output/bin/{apiextensions-apiserver,kube-aggregator,kube-apiserver,kube-controller-manager,kube-proxy,kube-scheduler,kubeadm,kubectl,kubelet} _output/release-stage/kubernetes/server/bin
+                mv _output/bin/{genyaml,go-runner,e2e_node.test,genman,kubemark,ginkgo,genswaggertypedocs,gendocs,genkubedocs,e2e.test,linkcheck} _output/release-stage/kubernetes/test/bin/
+
+                tar -zcvf kubernetes-test-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/test/bin
+                tar -zcvf kubernetes-client-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/client/bin
+                tar -zcvf kubernetes-server-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/server/bin
+
+                curl -v -X POST http://build-bot.prow:8090/build -H 'Content-Type: multipart/form-data' -F file1=@kubernetes-test-linux-`go env GOARCH`.tar.gz -F file2=@kubernetes-client-linux-`go env GOARCH`.tar.gz -F file3=@kubernetes-server-linux-`go env GOARCH`.tar.gz -F source=github.com/kubernetes/kubernetes.git -F commit=$GITCOMMIT -F project=kubernetes/master/golang/master
