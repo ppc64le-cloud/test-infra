@@ -28,6 +28,11 @@ periodics:
   - name: periodic-kubernetes-conformance-test-ppc64le
     decorate: true
     interval: 1h
+    extra_refs:
+      - base_ref: master
+        org: ppc64le-cloud
+        repo: kubetest2-plugins
+        workdir: true
     spec:
       volumes:
         - name: powercloud-bot-key
@@ -35,9 +40,9 @@ periodics:
             defaultMode: 256
             secretName: bot-ssh-secret
       containers:
-        - image: gcr.io/k8s-testimages/kubekins-e2e:v20200819-491a5ae-master
+        - image: quay.io/powercloud/all-in-one:0.1
           command:
-            - runner.sh
+            - /bin/bash
           volumeMounts:
             - mountPath: /etc/secret-volume
               name: powercloud-bot-key
@@ -46,32 +51,41 @@ periodics:
             - secretRef:
                 name: ibm-cloud-credentials
           args:
-            - "/bin/bash"
-            - "-c"
-            - set -o errexit;
-              set -o nounset;
-              set -o pipefail;
-              set -o xtrace;
-              wget -q -nc -O - https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip | gunzip -S .zip - > /usr/local/bin/terraform;
-              chmod +x /usr/local/bin/terraform;/usr/local/bin/terraform version;
-              mkdir -p $HOME/.terraform.d/plugins/linux_amd64;
-              wget -q https://github.com/IBM-Cloud/terraform-provider-ibm/releases/download/v1.10.0/linux_amd64.zip;
-              unzip linux_amd64.zip -d $HOME/.terraform.d/plugins/linux_amd64;
-              export GO111MODULE=on;
-              go get sigs.k8s.io/kubetest2@latest;
-              go get sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest;
-              GOPROXY=direct go get github.com/ppc64le-cloud/kubetest2-plugins/kubetest2-tf@latest;
-              TIMESTAMP=$(date +%s);
-              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release-dev/ci/latest.txt);
-              kubetest2 tf --powervs-dns k8s-tests \;
-                --powervs-dns-zone k8s.test \;
-                --powervs-image-name centos-8-latest \;
-                --powervs-region lon --powervs-zone lon06 \;
-                --powervs-service-id de6f50e0-7c85-4964-835c-6d767520d656 \;
-                --powervs-ssh-key powercloud-bot-key \;
-                --ssh-private-key /etc/secret-volume/ssh-privatekey \;
-                --build-version $K8S_BUILD_VERSION \;
-                --cluster-name k8s-cluster-$TIMESTAMP \;
-                --up --down --auto-approve \;
-                --powervs-memory 32 \;
-                --test=ginkgo -- --parallel 10 --test-package-bucket kubernetes-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --test-args -host=https://k8s-cluster-$TIMESTAMP-master.k8s.test:992 --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]';
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              export PATH=$GOPATH/bin:$PATH
+              export GO111MODULE=on
+
+              go install ./...
+
+              mkdir -p $HOME/.terraform.d/plugins/linux_`go env GOARCH`
+              git clone https://github.com/IBM-Cloud/terraform-provider-ibm -b v1.10.0
+              cd terraform-provider-ibm; go build .
+              cp terraform-provider-ibm $HOME/.terraform.d/plugins/linux_`go env GOARCH`/terraform-provider-ibm_v1.10.0
+
+              go get github.com/hashicorp/terraform-provider-null
+              cp $GOPATH/bin/terraform-provider-null $HOME/.terraform.d/plugins/linux_`go env GOARCH`/
+
+              go get sigs.k8s.io/kubetest2@latest
+              go get sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest
+
+              TIMESTAMP=$(date +%s)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release-dev/ci/latest.txt)
+
+              kubetest2 tf --powervs-dns k8s-tests \
+                --powervs-dns-zone k8s.test \
+                --powervs-image-name centos-8-latest \
+                --powervs-region lon --powervs-zone lon06 \
+                --powervs-service-id de6f50e0-7c85-4964-835c-6d767520d656 \
+                --powervs-ssh-key powercloud-bot-key \
+                --ssh-private-key /etc/secret-volume/ssh-privatekey \
+                --build-version $K8S_BUILD_VERSION \
+                --cluster-name k8s-cluster-$TIMESTAMP \
+                --up --down --auto-approve \
+                --powervs-memory 32 \
+                --test=ginkgo -- --parallel 10 --test-package-bucket kubernetes-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --test-args -host=https://k8s-cluster-$TIMESTAMP-master.k8s.test:992 --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
