@@ -26,6 +26,7 @@ periodics:
             - -//build/...
             - -//vendor/...
   - name: periodic-kubernetes-conformance-test-ppc64le
+    cluster: k8s-ppc64le-cluster
     decorate: true
     interval: 1h
     extra_refs:
