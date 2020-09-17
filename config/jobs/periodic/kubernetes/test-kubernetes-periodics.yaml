@@ -34,6 +34,9 @@ periodics:
         org: ppc64le-cloud
         repo: kubetest2-plugins
         workdir: true
+      - base_ref: v1.10.0
+        org: IBM-Cloud
+        repo: terraform-provider-ibm
     spec:
       volumes:
         - name: powercloud-bot-key
@@ -65,9 +68,11 @@ periodics:
               go install ./...
 
               mkdir -p $HOME/.terraform.d/plugins/linux_`go env GOARCH`
-              git clone https://github.com/IBM-Cloud/terraform-provider-ibm -b v1.10.0
-              cd terraform-provider-ibm; go build .
+
+              pushd $GOPATH/src/github.com/IBM-Cloud/terraform-provider-ibm
+              go build .
               cp terraform-provider-ibm $HOME/.terraform.d/plugins/linux_`go env GOARCH`/terraform-provider-ibm_v1.10.0
+              popd
 
               go get github.com/hashicorp/terraform-provider-null
               cp $GOPATH/bin/terraform-provider-null $HOME/.terraform.d/plugins/linux_`go env GOARCH`/
@@ -77,6 +82,9 @@ periodics:
 
               TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release-dev/ci/latest.txt)
+
+              # kubectl needed for the e2e tests
+              curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
 
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-dns-zone k8s.test \
