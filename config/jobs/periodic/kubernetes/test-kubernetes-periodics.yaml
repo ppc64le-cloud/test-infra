@@ -85,6 +85,7 @@ periodics:
 
               # kubectl needed for the e2e tests
               curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
+              chmod +x /usr/local/bin/kubectl
 
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-dns-zone k8s.test \
