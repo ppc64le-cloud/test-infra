@@ -22,8 +22,6 @@ approve:
     require_self_approval: false
   - repos:
       - ocp-power-automation/ocp4-upi-powervs
-    require_self_approval: false
-  - repos:
       - ocp-power-automation/ocp4-upi-powervm
     require_self_approval: false
 
