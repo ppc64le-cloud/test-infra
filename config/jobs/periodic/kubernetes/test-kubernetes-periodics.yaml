@@ -88,10 +88,9 @@ periodics:
               chmod +x /usr/local/bin/kubectl
 
               kubetest2 tf --powervs-dns k8s-tests \
-                --powervs-dns-zone k8s.test \
-                --powervs-image-name centos-8-latest \
-                --powervs-region lon --powervs-zone lon06 \
-                --powervs-service-id de6f50e0-7c85-4964-835c-6d767520d656 \
+                --powervs-image-name centos-82-09232020 \
+                --powervs-region syd --powervs-zone syd04 \
+                --powervs-service-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a \
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
