@@ -1,0 +1,32 @@
+periodics:
+  - name: periodic-powervs-cleanup
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    interval: 4h
+    spec:
+      containers:
+        - image: alpine:latest
+          command:
+            - /bin/sh
+          envFrom:
+            - secretRef:
+                name: ibm-cloud-credentials
+          args:
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1-alpha.5/pvsadm-linux-ppc64le
+              chmod +x /usr/local/bin/pvsadm
+
+              # delete all the vms created before 4hrs
+              pvsadm purge vms --instance-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a --before 4h --ignore-errors --no-prompt
+
+              # sleep for 5mins to cleanup the vms
+              sleep 300
+
+              # delete all the networks which are in the available state
+              pvsadm purge networks --instance-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a --ignore-errors --no-prompt
