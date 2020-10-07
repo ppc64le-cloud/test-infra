@@ -24,9 +24,3 @@ periodics:
 
               # delete all the vms created before 4hrs
               pvsadm purge vms --instance-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a --before 4h --ignore-errors --no-prompt
-
-              # sleep for 5mins to cleanup the vms
-              sleep 300
-
-              # delete all the networks which are in the available state
-              pvsadm purge networks --instance-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a --ignore-errors --no-prompt
