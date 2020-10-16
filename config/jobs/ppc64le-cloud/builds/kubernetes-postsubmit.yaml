@@ -44,3 +44,88 @@ postsubmits:
                 tar -zcvf kubernetes-server-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/server/bin
 
                 curl -v -X POST http://build-bot.prow:8090/build -H 'Content-Type: multipart/form-data' -F file1=@kubernetes-test-linux-`go env GOARCH`.tar.gz -F file2=@kubernetes-client-linux-`go env GOARCH`.tar.gz -F file3=@kubernetes-server-linux-`go env GOARCH`.tar.gz -F source=github.com/kubernetes/kubernetes.git -F commit=$GITCOMMIT -F project=kubernetes/master/golang/master
+    - name: postsubmit-master-golang-kubernetes-conformance-test-ppc64le
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      run_if_changed: '^kubernetes/master/golang/master/'
+      extra_refs:
+        - base_ref: master
+          org: ppc64le-cloud
+          repo: kubetest2-plugins
+          workdir: true
+        - base_ref: v1.10.0
+          org: IBM-Cloud
+          repo: terraform-provider-ibm
+      spec:
+        volumes:
+          - name: powercloud-bot-key
+            secret:
+              defaultMode: 256
+              secretName: bot-ssh-secret
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.1
+            command:
+              - /bin/bash
+            volumeMounts:
+              - mountPath: /etc/secret-volume
+                name: powercloud-bot-key
+                readOnly: true
+            envFrom:
+              - secretRef:
+                  name: ibm-cloud-credentials
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                set -o xtrace
+                export PATH=$GOPATH/bin:$PATH
+                export GO111MODULE=on
+
+                go install ./...
+
+                mkdir -p $HOME/.terraform.d/plugins/linux_`go env GOARCH`
+
+                pushd $GOPATH/src/github.com/IBM-Cloud/terraform-provider-ibm
+                go build .
+                cp terraform-provider-ibm $HOME/.terraform.d/plugins/linux_`go env GOARCH`/terraform-provider-ibm_v1.10.0
+                popd
+
+                go get github.com/hashicorp/terraform-provider-null
+                cp $GOPATH/bin/terraform-provider-null $HOME/.terraform.d/plugins/linux_`go env GOARCH`/
+
+                go get sigs.k8s.io/kubetest2@latest
+                go get sigs.k8s.io/kubetest2/kubetest2-tester-exec@latest
+
+                TIMESTAMP=$(date +%s)
+
+                # Details of IBM S3 storage
+                S3_SERVER=s3.us-south.cloud-object-storage.appdomain.cloud
+                BUCKET=ci-builds
+                DIRECTORY=kubernetes/master/golang/master
+                build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/kubernetes/master/golang/master/build.yaml)
+
+                K8S_BUILD_VERSION=$build_commit
+                # e2e.test binary needed for running tests using k8s tests bits from IBM s3 storage
+                URL=https://$S3_SERVER/$BUCKET/$DIRECTORY/$K8S_BUILD_VERSION
+                wget -qO- $URL/kubernetes-test-linux-ppc64le.tar.gz | tar xz -C /usr/local/bin --strip-components=3
+                # kubectl needed for the e2e tests
+                wget -qO- $URL/kubernetes-client-linux-ppc64le.tar.gz | tar xz -C /usr/local/bin --strip-components=3
+
+                kubetest2 tf --powervs-dns k8s-tests \
+                    --powervs-image-name centos-82-09232020 \
+                    --powervs-region syd --powervs-zone syd04 \
+                    --powervs-service-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a \
+                    --powervs-ssh-key powercloud-bot-key \
+                    --ssh-private-key /etc/secret-volume/ssh-privatekey \
+                    --build-version $K8S_BUILD_VERSION \
+                    --s3-server $S3_SERVER --bucket $BUCKET  --directory $DIRECTORY \
+                    --cluster-name k8s-cluster-$TIMESTAMP \
+                    --up --down --auto-approve \
+                    --ignore-destroy-errors \
+                    --powervs-memory 32 \
+                    --test=exec -- /usr/local/bin/ginkgo --nodes=10 /usr/local/bin/e2e.test \
+                    -- --ginkgo.focus='\[Conformance\]' \
+                    --ginkgo.skip='\[Disruptive\]|\[Serial\]' --report-dir=$ARTIFACTS \
+                    --kubeconfig="$(pwd)/k8s-cluster-$TIMESTAMP/kubeconfig"
