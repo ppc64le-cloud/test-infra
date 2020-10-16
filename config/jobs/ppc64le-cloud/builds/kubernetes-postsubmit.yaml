@@ -47,6 +47,8 @@ postsubmits:
     - name: postsubmit-master-golang-kubernetes-conformance-test-ppc64le
       cluster: k8s-ppc64le-cluster
       decorate: true
+      branches:
+        - master
       run_if_changed: '^kubernetes/master/golang/master/'
       extra_refs:
         - base_ref: master
