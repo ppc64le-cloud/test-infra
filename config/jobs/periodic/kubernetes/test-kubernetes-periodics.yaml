@@ -2,6 +2,11 @@ periodics:
   - name: periodics-kubernetes-bazel-test-ppc64le
     cluster: k8s-ppc64le-cluster
     decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-sa
     interval: 3h
     extra_refs:
       - base_ref: master
@@ -29,6 +34,11 @@ periodics:
   - name: periodic-kubernetes-conformance-test-ppc64le
     cluster: k8s-ppc64le-cluster
     decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-sa
     interval: 3h
     extra_refs:
       - base_ref: master
