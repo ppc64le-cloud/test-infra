@@ -33,6 +33,8 @@ spec:
             - --job-config-path=/etc/job-config
             - --kubeconfig=/etc/kubeconfig/config
             - --kubernetes-blob-storage-workers=10
+            - --slack-workers=1
+            - --slack-token-file=/etc/slack/token
           volumeMounts:
             - name: config
               mountPath: /etc/config
@@ -48,6 +50,9 @@ spec:
               readOnly: true
             - name: s3-credentials
               mountPath: /etc/s3-credentials
+              readOnly: true
+            - name: slack
+              mountPath: /etc/slack
               readOnly: true
       volumes:
         - name: config
@@ -66,3 +71,6 @@ spec:
         - name: s3-credentials
           secret:
             secretName: s3-credentials
+        - name: slack
+          secret:
+            secretName: slack-token

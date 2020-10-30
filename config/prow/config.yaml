@@ -2,6 +2,18 @@ prowjob_namespace: prow
 pod_namespace: test-pods
 log_level: debug
 
+slack_reporter_configs:
+  '*':
+    job_types_to_report:
+      - postsubmit
+      - periodic
+      - batch
+    job_states_to_report:
+      - failure
+      - error
+    channel: prow-job-notifications
+    report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S01E9J0G3EU> <{{.Status.URL}}|View logs>'
+
 in_repo_config:
   enabled:
     "*": true
