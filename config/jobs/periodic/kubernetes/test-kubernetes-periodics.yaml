@@ -21,6 +21,7 @@ periodics:
             - --config=unit
             - --features=-race     # TO-DO: This need to be fixed!
             - --host_javabase=@local_jdk//:jdk
+            - --test_verbose_timeout_warnings
             - //...
             - --
             - -//build/...
