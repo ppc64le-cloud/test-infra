@@ -29,7 +29,7 @@ periodics:
   - name: periodic-kubernetes-conformance-test-ppc64le
     cluster: k8s-ppc64le-cluster
     decorate: true
-    interval: 1h
+    interval: 3h
     extra_refs:
       - base_ref: master
         org: ppc64le-cloud
