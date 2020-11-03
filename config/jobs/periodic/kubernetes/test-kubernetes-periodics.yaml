@@ -1,5 +1,5 @@
 periodics:
-  - name: periodics-kubernetes-bazel-test-ppc64le
+  - name: periodic-kubernetes-bazel-test-ppc64le
     cluster: k8s-ppc64le-cluster
     decorate: true
     decoration_config:
