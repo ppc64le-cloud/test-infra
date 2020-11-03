@@ -1,5 +1,5 @@
 periodics:
-  - name: periodics-golang-master-build-ppc64le
+  - name: periodic-golang-master-build-ppc64le
     cluster: k8s-ppc64le-cluster
     decorate: true
     interval: 1h
