@@ -23,6 +23,7 @@ periodics:
             - ../test-infra/hack/bazel.sh
           args:
             - test
+            - --test_timeout=600
             - --config=unit
             - --features=-race     # TO-DO: This need to be fixed!
             - --host_javabase=@local_jdk//:jdk
