@@ -107,7 +107,7 @@ periodics:
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
                 --cluster-name k8s-cluster-$TIMESTAMP \
-                --up --down --auto-approve \
+                --up --down --auto-approve --retry-on-tf-failure 3 \
                 --ignore-destroy-errors \
                 --powervs-memory 32 \
                 --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket kubernetes-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
