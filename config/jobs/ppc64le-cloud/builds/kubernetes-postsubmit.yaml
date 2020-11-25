@@ -44,6 +44,47 @@ postsubmits:
                 tar -zcvf kubernetes-server-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/server/bin
 
                 curl -v -X POST http://build-bot.prow:8090/build -H 'Content-Type: multipart/form-data' -F file1=@kubernetes-test-linux-`go env GOARCH`.tar.gz -F file2=@kubernetes-client-linux-`go env GOARCH`.tar.gz -F file3=@kubernetes-server-linux-`go env GOARCH`.tar.gz -F source=github.com/kubernetes/kubernetes.git -F commit=$GITCOMMIT -F project=kubernetes/master/golang/master
+    - name: postsubmit-master-golang-kubernetes-unit-test-ppc64le
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      branches:
+        - master
+      run_if_changed: '^golang/master/'
+      extra_refs:
+        - base_ref: master
+          org: kubernetes
+          repo: kubernetes
+          workdir: true
+      spec:
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.1
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                set -o xtrace
+
+                export KUBE_TIMEOUT='--timeout=300s'
+                export KUBE_COVER="n"
+                export KUBE_KEEP_VERBOSE_TEST_OUTPUT=y
+                export LOG_LEVEL=4
+
+                build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
+                rm -rf /usr/local/go
+                tar -C /usr/local -xzf /tmp/golang.tar.gz
+                export PATH=/usr/local/go/bin:$PATH
+                export PATH=$GOPATH/bin:$PATH
+                pushd ./hack/tools
+                GO111MODULE=on go install gotest.tools/gotestsum
+                popd
+
+                make test
     - name: postsubmit-master-golang-kubernetes-conformance-test-ppc64le
       cluster: k8s-ppc64le-cluster
       decorate: true
