@@ -7,7 +7,7 @@ presubmits:
       decorate: true
       spec:
         containers:
-          - image: hashicorp/terraform:latest
+          - image: hashicorp/terraform:0.13.5
             command:
               - sh
             args:
