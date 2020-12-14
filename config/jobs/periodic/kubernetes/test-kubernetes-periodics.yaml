@@ -108,6 +108,7 @@ periodics:
                 --build-version $K8S_BUILD_VERSION \
                 --cluster-name k8s-cluster-$TIMESTAMP \
                 --up --down --auto-approve --retry-on-tf-failure 3 \
+                --break-kubetest-on-upfail true \
                 --ignore-destroy-errors \
                 --powervs-memory 32 \
                 --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket kubernetes-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
@@ -188,6 +189,7 @@ periodics:
                 --runtime containerd \
                 --cluster-name k8s-cluster-$TIMESTAMP \
                 --up --down --auto-approve --retry-on-tf-failure 3 \
+                --break-kubetest-on-upfail true \
                 --ignore-destroy-errors \
                 --powervs-memory 32 \
                 --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket kubernetes-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
