@@ -68,7 +68,7 @@ postsubmits:
                 set -o pipefail
                 set -o xtrace
 
-                export KUBE_TIMEOUT='--timeout=300s'
+                export KUBE_TIMEOUT='--timeout=600s'
                 export KUBE_COVER="n"
                 export KUBE_KEEP_VERBOSE_TEST_OUTPUT=y
                 export LOG_LEVEL=4
