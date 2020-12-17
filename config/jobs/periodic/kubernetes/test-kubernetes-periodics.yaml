@@ -94,6 +94,7 @@ periodics:
 
               TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release-dev/ci/latest.txt)
+              jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
 
               # kubectl needed for the e2e tests
               curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
@@ -174,6 +175,7 @@ periodics:
 
               TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release-dev/ci/latest.txt)
+              jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
 
               # kubectl needed for the e2e tests
               curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
