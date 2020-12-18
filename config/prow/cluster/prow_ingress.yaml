@@ -14,7 +14,7 @@ spec:
     serviceName: deck
     servicePort: 80
   rules:
-    - host: prow.k8s-prow-c7f9fbfa2832409e2a3a6666e9dc52a3-0000.us-south.containers.appdomain.cloud
+    - host: prow.ppc64le-cloud.org
       http:
         paths:
           - path: /
@@ -27,5 +27,5 @@ spec:
               servicePort: 8888
   tls:
     - hosts:
-        - prow.k8s-prow-c7f9fbfa2832409e2a3a6666e9dc52a3-0000.us-south.containers.appdomain.cloud
-      secretName: k8s-prow-c7f9fbfa2832409e2a3a6666e9dc52a3-0000
+        - prow.ppc64le-cloud.org
+      secretName: ppc64le-cloud
