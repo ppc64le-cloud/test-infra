@@ -18,7 +18,7 @@ periodics:
         repo: test-infra
     spec:
       containers:
-        - image: quay.io/powercloud/bazel:2.2.0
+        - image: quay.io/powercloud/bazel:3.4.1
           command:
             - ../test-infra/hack/bazel.sh
           args:
