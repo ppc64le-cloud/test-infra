@@ -25,6 +25,7 @@ spec:
             - --blob-storage-workers=10
             - --config-path=/etc/config/config.yaml
             - --s3-credentials-file=/etc/s3-credentials/service-account.json
+            - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
             - --github-host=github.com
             - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
@@ -51,6 +52,9 @@ spec:
             - name: s3-credentials
               mountPath: /etc/s3-credentials
               readOnly: true
+            - name: gcs-credentials
+              mountPath: /etc/gcs-credentials
+              readOnly: true
             - name: slack
               mountPath: /etc/slack
               readOnly: true
@@ -71,6 +75,9 @@ spec:
         - name: s3-credentials
           secret:
             secretName: s3-credentials
+        - name: gcs-credentials
+          secret:
+            secretName: gcs-credentials
         - name: slack
           secret:
             secretName: slack-token
