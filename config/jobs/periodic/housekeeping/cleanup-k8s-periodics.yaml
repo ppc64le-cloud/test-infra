@@ -22,5 +22,5 @@ periodics:
               wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1-alpha.12/pvsadm-linux-ppc64le
               chmod +x /usr/local/bin/pvsadm
 
-              # delete all the vms created before 48hrs
-              pvsadm purge vms --instance-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a --before 48h --ignore-errors --no-prompt
+              # delete all the vms created before 4hrs
+              pvsadm purge vms --instance-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a --before 4h --ignore-errors --no-prompt
