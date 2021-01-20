@@ -1,0 +1,56 @@
+periodics:
+  - name: periodic-gcs-logs-cleanup
+    decorate: true
+    interval: 12h
+    spec:
+      volumes:
+        - name: s3-cred
+          secret:
+            secretName: s3-credentials
+        - name: gcs-sa
+          secret:
+            secretName: gcs-sa
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.1
+          command:
+            - /bin/bash
+          volumeMounts:
+            - name: s3-cred
+              mountPath: /etc/s3-cred
+              readOnly: true
+            - name: gcs-sa
+              mountPath: /etc/gcs-sa
+              readOnly: true
+          args:
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              jobs="periodic-kubernetes-bazel-test-ppc64le periodic-kubernetes-conformance-test-ppc64le periodic-kubernetes-containerd-conformance-test-ppc64le"
+              #No. of entries to be left in GCS(log folders of 7 days and latest-build.txt file)
+              n=57
+              pip install awscli
+              gcloud auth activate-service-account --key-file /etc/gcs-sa/service-account.json
+              access_key=$(jq -r .access_key /etc/s3-cred/service-account.json)
+              secret_key=$(jq -r .secret_key /etc/s3-cred/service-account.json)
+              export AWS_ACCESS_KEY_ID=$access_key
+              export AWS_SECRET_ACCESS_KEY=$secret_key
+              s3_url="https://s3.us-south.cloud-object-storage.appdomain.cloud"
+              for job in $jobs; do
+                rows=$(gsutil ls gs://ppc64le-kubernetes/logs/$job | wc -l)
+                while [ $rows -gt $n ]
+                do
+                        LOG_PATH=$(gsutil ls gs://ppc64le-kubernetes/logs/$job | sort | head -1)
+                        gsutil -m mv -r $LOG_PATH .
+                        LOG_FOLDER=`basename $LOG_PATH`
+                        FILENAMES=`find $LOG_FOLDER -type f`
+                        for eachfile in $FILENAMES;do
+                                aws s3 --endpoint $s3_url cp ./$eachfile s3://prow-logs/logs/$job/$eachfile
+                        done
+                        rm -r ./$LOG_FOLDER
+                        rows=$(gsutil ls gs://ppc64le-kubernetes/logs/$job/ | wc -l)
+                done
+              done
