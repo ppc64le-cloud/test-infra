@@ -6,7 +6,7 @@ periodics:
       gcs_configuration:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
-      gcs_credentials_secret: gcs-sa
+      gcs_credentials_secret: gcs-credentials
     interval: 3h
     extra_refs:
       - base_ref: master
@@ -39,7 +39,7 @@ periodics:
       gcs_configuration:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
-      gcs_credentials_secret: gcs-sa
+      gcs_credentials_secret: gcs-credentials
     interval: 3h
     extra_refs:
       - base_ref: master
@@ -120,7 +120,7 @@ periodics:
       gcs_configuration:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
-      gcs_credentials_secret: gcs-sa
+      gcs_credentials_secret: gcs-credentials
     interval: 3h
     extra_refs:
       - base_ref: master
