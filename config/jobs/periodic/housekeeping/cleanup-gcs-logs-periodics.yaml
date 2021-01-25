@@ -43,7 +43,7 @@ periodics:
                 rows=$(gsutil ls gs://ppc64le-kubernetes/logs/$job | wc -l)
                 while [ $rows -gt $n ]
                 do
-                        LOG_PATH=$(gsutil ls gs://ppc64le-kubernetes/logs/$job | sort | head -1)
+                        LOG_PATH=$(head -1 <(gsutil ls gs://ppc64le-kubernetes/logs/$job | sort))
                         gsutil -m mv -r $LOG_PATH .
                         LOG_FOLDER=`basename $LOG_PATH`
                         FILENAMES=`find $LOG_FOLDER -type f`
