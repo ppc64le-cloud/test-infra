@@ -7,9 +7,9 @@ periodics:
         - name: s3-cred
           secret:
             secretName: s3-credentials
-        - name: gcs-sa
+        - name: gcs-cred
           secret:
-            secretName: gcs-sa
+            secretName: gcs-credentials
       containers:
         - image: quay.io/powercloud/all-in-one:0.1
           command:
@@ -18,8 +18,8 @@ periodics:
             - name: s3-cred
               mountPath: /etc/s3-cred
               readOnly: true
-            - name: gcs-sa
-              mountPath: /etc/gcs-sa
+            - name: gcs-cred
+              mountPath: /etc/gcs-cred
               readOnly: true
           args:
             - -c
@@ -33,7 +33,7 @@ periodics:
               #No. of entries to be left in GCS(log folders of 7 days and latest-build.txt file)
               n=57
               pip install awscli
-              gcloud auth activate-service-account --key-file /etc/gcs-sa/service-account.json
+              gcloud auth activate-service-account --key-file /etc/gcs-cred/service-account.json
               access_key=$(jq -r .access_key /etc/s3-cred/service-account.json)
               secret_key=$(jq -r .secret_key /etc/s3-cred/service-account.json)
               export AWS_ACCESS_KEY_ID=$access_key
