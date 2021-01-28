@@ -29,9 +29,20 @@ periodics:
               set -o pipefail
               set -o xtrace
 
-              jobs="periodic-kubernetes-bazel-test-ppc64le periodic-kubernetes-conformance-test-ppc64le periodic-kubernetes-containerd-conformance-test-ppc64le"
-              #No. of entries to be left in GCS(log folders of 7 days and latest-build.txt file)
-              n=57
+              Jobs=("periodic-kubernetes-bazel-test-ppc64le" "periodic-kubernetes-conformance-test-ppc64le" "periodic-kubernetes-containerd-conformance-test-ppc64le")
+              #No. of Days for which result to be displayed in test-grid
+              Days=("15" "7" "7")
+              interval=3
+              NooJobs=${#Jobs[@]}
+              declare -A n
+              for ((i=0; i<$NooJobs; i++))
+              do
+                runs_per_day[i]=$((24/$interval))
+                total_runs=$((${runs_per_day[i]}*${Days[i]}))
+                #No. of entries to be left in GCS.
+                #Additional 20 folders are left due to dummy builds stuck in Pending state.
+                n[${Jobs[i]}]=$(($total_runs+20))
+              done
               pip install awscli
               gcloud auth activate-service-account --key-file /etc/gcs-cred/service-account.json
               access_key=$(jq -r .access_key /etc/s3-cred/service-account.json)
@@ -39,9 +50,9 @@ periodics:
               export AWS_ACCESS_KEY_ID=$access_key
               export AWS_SECRET_ACCESS_KEY=$secret_key
               s3_url="https://s3.us-south.cloud-object-storage.appdomain.cloud"
-              for job in $jobs; do
+              for job in ${Jobs[@]}; do
                 rows=$(gsutil ls gs://ppc64le-kubernetes/logs/$job | wc -l)
-                while [ $rows -gt $n ]
+                while [ $rows -gt ${n[$job]} ]
                 do
                         LOG_PATH=$(head -1 <(gsutil ls gs://ppc64le-kubernetes/logs/$job | sort))
                         gsutil -m mv -r $LOG_PATH .
