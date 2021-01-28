@@ -1,0 +1,81 @@
+postsubmits:
+  ppc64le-cloud/build-bot:
+    - name: postsubmit-buildbot-job
+      decorate: true
+      branches:
+        - master
+      extra_refs:
+        - base_ref: v0.1.2
+          org: vmware-tanzu
+          repo: buildkit-cli-for-kubectl
+      spec:
+        serviceAccountName: build-img
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.1
+            env:
+              - name: DOCKER_CONFIG
+                valueFrom:
+                  secretKeyRef:
+                    name: quay-powercloud-regcred
+                    key: .dockerconfigjson
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                export PATH=$GOPATH/bin:$PATH
+                export GO111MODULE=on
+                curl -L "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/`go env GOARCH`/kubectl" -o /usr/local/bin/kubectl
+                chmod +x /usr/local/bin/kubectl
+                pushd $GOPATH/src/github.com/vmware-tanzu/buildkit-cli-for-kubectl
+                make build install
+                popd
+                ca=$(base64 -w 0 /run/secrets/kubernetes.io/serviceaccount/ca.crt)
+                token=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+                namespace=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+                cat >kubeconfig <<EOL
+                apiVersion: v1
+                kind: Config
+                clusters:
+                - name: default-cluster
+                  cluster:
+                    certificate-authority-data: ${ca}
+                    server: https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}
+                contexts:
+                - name: default-context
+                  context:
+                    cluster: default-cluster
+                    namespace: ${namespace}
+                    user: default-user
+                current-context: default-context
+                users:
+                - name: default-user
+                  user:
+                    token: ${token}
+                EOL
+                export KUBECONFIG=$(pwd)/kubeconfig
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg ARCH=amd64 -t quay.io/powercloud/build-bot:amd64-latest -f Dockerfile ./
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg ARCH=ppc64le -t quay.io/powercloud/build-bot:ppc64le-latest -f Dockerfile ./
+                curl -L https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-`go env GOARCH` -o /usr/local/bin/manifest-tool
+                chmod +x /usr/local/bin/manifest-tool
+                cat > registry.yaml <<EOL
+                image: quay.io/powercloud/build-bot:latest
+                manifests:
+                  -
+                    image: quay.io/powercloud/build-bot:ppc64le-latest
+                    platform:
+                      architecture: ppc64le
+                      os: linux
+                  -
+                    image: quay.io/powercloud/build-bot:amd64-latest
+                    platform:
+                      architecture: amd64
+                      os: linux
+                EOL
+                cat > config.json << EOL
+                   $DOCKER_CONFIG
+                EOL
+                manifest-tool --debug --docker-cfg `pwd` push from-spec registry.yaml
