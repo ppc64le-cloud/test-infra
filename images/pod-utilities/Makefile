@@ -1,4 +1,4 @@
-VERSION?=v20201020-a5b49bc903
+VERSION?=v20210126-f0baa5f3d9
 UPSTREAM_REPO=gcr.io/k8s-prow
 PRIVATE_REPO=quay.io/powercloud
 ARCH?=amd64
