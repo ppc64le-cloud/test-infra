@@ -29,7 +29,7 @@ spec:
             - --enable-controller=plank
             - --job-config-path=/etc/job-config
             - --kubeconfig=/etc/kubeconfig/config
-          image: gcr.io/k8s-prow/prow-controller-manager:v20201020-a5b49bc903
+          image: gcr.io/k8s-prow/prow-controller-manager:v20210126-f0baa5f3d9
           volumeMounts:
             - name: github-token
               mountPath: /etc/github
