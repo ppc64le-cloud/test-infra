@@ -1,10 +1,10 @@
 ARG POD_UTILITY=clonerefs
-FROM golang:1.15 as builder
+FROM golang:1.15-alpine as builder
 
 ARG POD_UTILITY
 ARG CO_COMMIT=master
 
-RUN apt-get update && apt-get install -y git
+RUN apk update && apk add git cmake make gcc libtool musl-dev g++
 
 RUN git clone https://github.com/kubernetes/test-infra.git \
     && cd test-infra \
