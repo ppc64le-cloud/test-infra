@@ -102,8 +102,8 @@ periodics:
 
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-image-name centos-83-12082020 \
-                --powervs-region syd --powervs-zone syd04 \
-                --powervs-service-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a \
+                --powervs-region tok --powervs-zone tok04 \
+                --powervs-service-id e13a10d2-9c2b-4d7b-b2fc-7a2b9edf1abf \
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
@@ -183,8 +183,8 @@ periodics:
 
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-image-name centos-83-12082020 \
-                --powervs-region syd --powervs-zone syd04 \
-                --powervs-service-id 013b8948-6cf4-4fae-9b70-71ddadd4f91a \
+                --powervs-region tok --powervs-zone tok04 \
+                --powervs-service-id e13a10d2-9c2b-4d7b-b2fc-7a2b9edf1abf \
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
