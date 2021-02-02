@@ -1,15 +1,15 @@
 ARG POD_UTILITY=clonerefs
-FROM golang:1.15-alpine as builder
+FROM golang:1.15 as builder
 
 ARG POD_UTILITY
 ARG CO_COMMIT=master
 
-RUN apk update && apk add git cmake make gcc libtool musl-dev g++
+RUN apt-get update && apt-get install -y git
 
 RUN git clone https://github.com/kubernetes/test-infra.git \
     && cd test-infra \
     && git checkout ${CO_COMMIT} \
-    && go build -o /usr/local/bin/${POD_UTILITY} ./prow/cmd/${POD_UTILITY}
+    && CGO_ENABLED=0 go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /usr/local/bin/${POD_UTILITY} ./prow/cmd/${POD_UTILITY}
 
 FROM alpine:latest
 ARG POD_UTILITY
