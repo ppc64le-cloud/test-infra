@@ -157,7 +157,7 @@ postsubmits:
                 wget -qO- $URL/kubernetes-client-linux-ppc64le.tar.gz | tar xz -C /usr/local/bin --strip-components=3
 
                 kubetest2 tf --powervs-dns k8s-tests \
-                    --powervs-image-name centos-83-12082020 \
+                    --powervs-image-name centos-83-12142020 \
                     --powervs-region tok --powervs-zone tok04 \
                     --powervs-service-id e13a10d2-9c2b-4d7b-b2fc-7a2b9edf1abf \
                     --powervs-ssh-key powercloud-bot-key \
