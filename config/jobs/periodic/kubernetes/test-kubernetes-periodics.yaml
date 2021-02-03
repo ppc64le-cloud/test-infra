@@ -107,7 +107,7 @@ periodics:
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
-                --cluster-name k8s-cluster-$TIMESTAMP \
+                --cluster-name config1-$TIMESTAMP \
                 --up --down --auto-approve --retry-on-tf-failure 3 \
                 --break-kubetest-on-upfail true \
                 --ignore-destroy-errors \
@@ -189,7 +189,7 @@ periodics:
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
                 --runtime containerd \
-                --cluster-name k8s-cluster-$TIMESTAMP \
+                --cluster-name config2-$TIMESTAMP \
                 --up --down --auto-approve --retry-on-tf-failure 3 \
                 --break-kubetest-on-upfail true \
                 --ignore-destroy-errors \
