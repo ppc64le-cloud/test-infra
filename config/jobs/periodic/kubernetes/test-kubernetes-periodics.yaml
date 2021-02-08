@@ -93,7 +93,7 @@ periodics:
               go get sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest
 
               TIMESTAMP=$(date +%s)
-              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release-dev/ci/latest.txt)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
               jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
 
               # kubectl needed for the e2e tests
@@ -112,7 +112,7 @@ periodics:
                 --break-kubetest-on-upfail true \
                 --ignore-destroy-errors \
                 --powervs-memory 32 \
-                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket kubernetes-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
+                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket k8s-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
   - name: periodic-kubernetes-containerd-conformance-test-ppc64le
     cluster: k8s-ppc64le-cluster
     decorate: true
@@ -174,7 +174,7 @@ periodics:
               go get sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest
 
               TIMESTAMP=$(date +%s)
-              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release-dev/ci/latest.txt)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
               jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
 
               # kubectl needed for the e2e tests
@@ -194,4 +194,4 @@ periodics:
                 --break-kubetest-on-upfail true \
                 --ignore-destroy-errors \
                 --powervs-memory 32 \
-                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket kubernetes-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
+                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket k8s-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
