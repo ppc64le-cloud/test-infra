@@ -1,0 +1,39 @@
+postsubmits:
+  ppc64le-cloud/test-infra:
+    - name: postsubmit-bazel-job
+      decorate: true
+      run_if_changed: 'images/bazel'
+      branches:
+        - master
+      extra_refs:
+        - base_ref: v0.1.2
+          org: vmware-tanzu
+          repo: buildkit-cli-for-kubectl
+      spec:
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.2
+            volumeMounts:
+              - name: kubeconfig
+                mountPath: /etc/kubeconfig
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                export PATH=$PATH:/usr/local/bin
+                export KUBECONFIG=/etc/kubeconfig/config
+                pushd $GOPATH/src/github.com/vmware-tanzu/buildkit-cli-for-kubectl
+                make build install
+                popd
+                pushd images/bazel
+                export VERSION=( `cat version.txt` )
+                declare -a VERSION
+                echo ${VERSION[@]}
+                for i in ${VERSION[@]}
+                do
+                       kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg BAZEL_VERSION=$i -t quay.io/powercloud/bazel:$i -f Dockerfile ./
+                done
+        volumes:
+          - name: kubeconfig
+            secret:
+              secretName: image-builder-ppc-kubeconfig
