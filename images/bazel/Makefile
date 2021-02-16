@@ -1,4 +1,5 @@
-BAZEL_VERSIONS = 2.2.0 3.1.0 3.4.1
+file := version.txt
+BAZEL_VERSIONS := $(shell cat ${file})
 UBUNTU_VERSION = 16.04
 
 REGISTRY=quay.io/powercloud
