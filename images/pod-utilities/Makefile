@@ -1,4 +1,5 @@
-VERSION?=v20210126-f0baa5f3d9
+FILE=version.txt
+VERSION?=`cat $(FILE)`
 UPSTREAM_REPO=gcr.io/k8s-prow
 PRIVATE_REPO=quay.io/powercloud
 ARCH?=amd64
