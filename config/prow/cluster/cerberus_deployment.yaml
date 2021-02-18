@@ -1,0 +1,90 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cerberus-deployment
+  namespace: prow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tool: Cerberus
+  template:
+    metadata:
+      labels:
+        tool: Cerberus
+    spec:
+      serviceAccountName: cerberus
+      containers:
+        - name: cerberus
+          securityContext:
+            privileged: true
+          image: quay.io/openshift-scale/cerberus
+          command:
+            - /bin/sh
+          env:
+          - name: SLACK_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: slack-token
+                key: token
+          - name: SLACK_CHANNEL
+            value: C01DPA12NHJ
+          args:
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+              ca=$(base64 -w 0 /run/secrets/kubernetes.io/serviceaccount/ca.crt)
+              token=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+              namespace=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+              cat > /root/.kube/config <<EOL
+              apiVersion: v1
+              kind: Config
+              clusters:
+              - name: default-cluster
+                cluster:
+                  certificate-authority-data: ${ca}
+                  server: https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}
+              contexts:
+              - name: default-context
+                context:
+                  cluster: default-cluster
+                  namespace: ${namespace}
+                  user: default-user
+              current-context: default-context
+              users:
+              - name: default-user
+                user:
+                  token: ${token}
+              EOL
+              export KUBECONFIG=/root/.kube/config
+              cp /etc/cerberus-start/start_cerberus.py /root/cerberus/.
+              cp /etc/cerberus-slack-client/slack_client.py /root/cerberus/cerberus/slack/.
+              python3 start_cerberus.py -c config/kubernetes_config.yaml
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: "/root/cerberus/config"
+              name: cerberus-config
+            - mountPath: "/etc/cerberus-start"
+              name: cerberus-start
+            - mountPath: "/root/cerberus/custom_checks"
+              name: custom-check
+            - mountPath: "/etc/cerberus-slack-client"
+              name: slack-client
+      volumes:
+        - name: cerberus-config
+          configMap:
+            name: cerberus-config
+        - name: cerberus-start
+          configMap:
+            name: cerberus-start
+        - name: custom-check
+          configMap:
+            name: cerberus-custom-check
+        - name: slack-client
+          configMap:
+            name: cerberus-slack-client

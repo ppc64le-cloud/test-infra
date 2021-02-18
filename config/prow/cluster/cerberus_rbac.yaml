@@ -1,0 +1,67 @@
+# This file contains all the required spec for service account, roles and role bindings for the cerberus deployment to get prow controller logs
+# Run via https://github.com/cloud-bulldozer/cerberus project.
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  namespace: prow
+  name: "cerberus"
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: prow
+  name: "cerberus"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - list
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - pods/log
+    verbs:
+      - get
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "cerberus"
+rules:
+  - apiGroups:
+      - ""
+    resources: ["namespaces", "nodes", "services"]
+    verbs:
+      - list
+      - get
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: prow
+  name: "cerberus"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: "cerberus"
+subjects:
+  - kind: ServiceAccount
+    name: "cerberus"
+    namespace: prow
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "cerberus"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "cerberus"
+subjects:
+  - kind: ServiceAccount
+    name: "cerberus"
+    namespace: prow
