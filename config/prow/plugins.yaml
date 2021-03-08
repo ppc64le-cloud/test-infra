@@ -155,3 +155,9 @@ plugins:
     - welcome
     - wip
     - yuks
+
+external_plugins:
+  ocp-power-automation:
+  - name: cherrypick
+    events:
+      - pull_request
