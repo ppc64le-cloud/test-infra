@@ -7,7 +7,7 @@ $ make all-pull
 $ make all-tag
 $ make all-push
 
-# Build and push images for ppc64le platform
+# Build and Push images for ppc64le platform
 $ make all-build
 $ ARCH=ppc64le make all-push
 
