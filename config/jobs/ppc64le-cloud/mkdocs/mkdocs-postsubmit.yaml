@@ -1,0 +1,56 @@
+postsubmits:
+  ppc64le-cloud/test-infra:
+    - name: postsubmit-mkdocs-job
+      decorate: true
+      run_if_changed: 'images/mkdocs'
+      branches:
+        - master
+      extra_refs:
+        - base_ref: v0.1.2
+          org: vmware-tanzu
+          repo: buildkit-cli-for-kubectl
+      spec:
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.2
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                export PATH=$PATH:/usr/local/bin
+                export KUBECONFIG=/etc/kubeconfig/config
+                pushd $GOPATH/src/github.com/vmware-tanzu/buildkit-cli-for-kubectl
+                make build install
+                popd
+                ca=$(base64 -w 0 /run/secrets/kubernetes.io/serviceaccount/ca.crt)
+                token=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+                namespace=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+                cat >kubeconfig <<EOL
+                apiVersion: v1
+                kind: Config
+                clusters:
+                - name: default-cluster
+                  cluster:
+                    certificate-authority-data: ${ca}
+                    server: https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}
+                contexts:
+                - name: default-context
+                  context:
+                    cluster: default-cluster
+                    namespace: ${namespace}
+                    user: default-user
+                current-context: default-context
+                users:
+                - name: default-user
+                  user:
+                    token: ${token}
+                EOL
+                export KUBECONFIG=$(pwd)/kubeconfig
+                pushd images/mkdocs
+                export VERSION=( `cat version.txt` )
+                declare -a VERSION
+                echo ${VERSION[@]}
+                for i in ${VERSION[@]}
+                do
+                       kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg MKDOCS_VERSION=$i -t quay.io/powercloud/mkdocs:$i -f Dockerfile ./
+                done

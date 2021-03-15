@@ -23,6 +23,7 @@ approve:
   - repos:
       - ocp-power-automation/ocp4-upi-powervs
       - ocp-power-automation/ocp4-upi-powervm
+      - ocp-power-automation/ocp-power-automation.github.io
     require_self_approval: false
 
 # Lower bounds in number of lines changed; XS is assumed to be zero.
