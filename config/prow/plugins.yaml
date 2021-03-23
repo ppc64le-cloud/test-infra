@@ -161,4 +161,5 @@ external_plugins:
   ocp-power-automation:
   - name: cherrypick
     events:
+      - issue_comment
       - pull_request
