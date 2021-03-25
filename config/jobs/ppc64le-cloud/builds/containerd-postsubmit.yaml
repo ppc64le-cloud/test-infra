@@ -1,0 +1,22 @@
+postsubmits:
+  containerd/containerd:
+  - name: pull-containerd-build
+    cluster: k8s-ppc64le-cluster
+    always_run: true
+    decorate: true
+    labels:
+      preset-service-account: "true"
+    spec:
+      containers:
+      - image: quay.io/powercloud/all-in-one:0.1
+        command:
+        - sh
+        - -c
+        - >
+          TAG=$(git ls-remote  --refs  --tags https://github.com/containerd/containerd.git | cut --delimiter='/' --fields=3 | tr '-' '~' | sort --version-sort| tail --lines=1)
+          export DEBS="ubuntu:xenial ubuntu:bionic ubuntu:focal"
+          export RPMS="centos:7 centos:8 fedora:31 fedora:32"
+          export DISTROS="$DEBS $RPMS"
+          for DISTRO in $DISTROS; do
+           make REF=${TAG} docker.io/library/$DISTRO
+          done
