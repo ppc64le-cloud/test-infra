@@ -1,0 +1,38 @@
+postsubmits:
+  ocp-power-automation/openshift-install-power:
+    - name: update-github-pages-submodule
+      decorate: true
+      run_if_changed: 'docs'
+      always_run: true
+      branches:
+        - ^master$
+      spec:
+        volumes:
+          - name: github-key
+            secret:
+              secretName: ocp-gh-deploykey
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.2
+            command:
+              - sh
+            volumeMounts:
+              - name: github-key
+                mountPath: /etc/ssh-key
+            args:
+              - -c
+              - |
+                set -o errexit
+                mkdir -p ~/.ssh
+                cp /etc/ssh-key/id_rsa* ~/.ssh/
+                chmod 600 ~/.ssh/id_rsa*
+                eval "$(ssh-agent -s)"
+                ssh-add ~/.ssh/id_rsa
+                ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+                git clone git@github.com:ocp-power-automation/ocp-power-automation.github.io.git
+                cd ocp-power-automation.github.io
+                git config --global user.email "ltccci@in.ibm.com"
+                git config --global user.name "ltccci"
+                git submodule update --init --recursive --remote docs/openshift-install-power
+                git add .
+                git commit -m "update openshift-install-power submodule"
+                git push origin main
