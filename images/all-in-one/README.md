@@ -13,7 +13,7 @@ This is an image which contains following content:
 ## How to build
 
 ```shell script
-# On both x86 and ppc64le platforms
+# On both x86 and ppc64le platforms.
 $ docker build -t quay.io/powercloud/all-in-one:`cat version.txt`-`uname -p | sed 's/x86_64/amd64/'` .
 
 $ docker push quay.io/powercloud/all-in-one:`cat version.txt`-`uname -p | sed 's/x86_64/amd64/'`
