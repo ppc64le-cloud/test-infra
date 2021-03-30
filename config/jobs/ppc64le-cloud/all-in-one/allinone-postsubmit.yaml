@@ -61,8 +61,8 @@ postsubmits:
                 export KUBECONFIG=$(pwd)/kubeconfig
                 pushd images/all-in-one
                 export version=`cat version.txt`
-                kubectl build --push --registry-secret quay-powercloud-regcred -t quay.io/powercloud/all-in-one:$version-amd64 -f Dockerfile ./
-                kubectl build --push --registry-secret quay-powercloud-regcred --kubeconfig /etc/kubeconfig/config -t quay.io/powercloud/all-in-one:$version-ppc64le -f Dockerfile ./
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder -t quay.io/powercloud/all-in-one:$version-amd64 -f Dockerfile ./
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --kubeconfig /etc/kubeconfig/config -t quay.io/powercloud/all-in-one:$version-ppc64le -f Dockerfile ./
                 popd
                 cat > config.json << EOL
                 $DOCKER_CONFIG
