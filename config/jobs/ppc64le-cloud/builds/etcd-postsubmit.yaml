@@ -1,0 +1,35 @@
+postsubmits:
+  ppc64le-cloud/builds:
+    - name: postsubmit-master-golang-etcd-build-test-ppc64le
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      branches:
+        - master
+      run_if_changed: '^golang/master/'
+      extra_refs:
+        - base_ref: master
+          org: etcd-io
+          repo: etcd
+          workdir: true
+      spec:
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.2
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                set -o xtrace
+
+                build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
+                rm -rf /usr/local/go
+                tar -C /usr/local -xzf /tmp/golang.tar.gz
+                export PATH=/usr/local/go/bin:$PATH
+                go version
+                ./build.sh
+                GOARCH=`go env GOARCH` TEST_OPTS="PASSES='unit integration_e2e'" make test
