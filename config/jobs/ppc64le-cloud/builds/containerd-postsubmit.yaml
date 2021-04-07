@@ -1,9 +1,9 @@
-postsubmits:
-  containerd/containerd:
+periodics:
   - name: pull-containerd-build
     cluster: k8s-ppc64le-cluster
     always_run: true
     decorate: true
+    interval: 2m
     labels:
       preset-service-account: "true"
     spec:
