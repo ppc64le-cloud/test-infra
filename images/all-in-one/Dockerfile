@@ -4,12 +4,21 @@ ARG IBM_CLOUD_VERSION=1.2.1
 FROM golang:$GOLANG_VERSION AS builder
 
 ARG TF_VERSION
-ENV TF_VERSION ${TF_VERSION:-v0.12.29}
+ENV TF_VERSION ${TF_VERSION:-v0.13.6}
 
 RUN go get rsc.io/goversion \
-    && GO111MODULE=on go get github.com/hashicorp/terraform@$TF_VERSION
+    && GO111MODULE=on
 
 FROM debian:buster
+
+ARG TERRAFORM_PROVIDER_IBM_VERSION
+ENV TERRAFORM_PROVIDER_IBM_VERSION ${TERRAFORM_PROVIDER_IBM_VERSION:-1.21.2}
+
+ARG TERRAFORM_PROVIDER_NULL_VERSION
+ENV TERRAFORM_PROVIDER_NULL_VERSION ${TERRAFORM_PROVIDER_NULL_VERSION:-2.1.2}
+
+ARG TF_PLUGIN_PATH
+ENV TF_PLUGIN_PATH ${TF_PLUGIN_PATH:-/root/.terraform/plugins/registry.terraform.io/hashicorp}
 
 ARG GOLANG_VERSION
 ENV GOLANG_VERSION ${GOLANG_VERSION:-1.15.2}
@@ -125,3 +134,20 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.ta
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/`go env GOARCH`/kubectl && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl
+
+RUN git clone -b 'v0.13.6' --single-branch https://github.com/hashicorp/terraform.git && \
+    cd terraform && \
+    go install .
+
+RUN git clone -b 'v1.21.2' --single-branch https://github.com/IBM-Cloud/terraform-provider-ibm && \
+         cd terraform-provider-ibm && \
+         go build .
+
+RUN git clone -b 'v2.1.2' --single-branch https://github.com/hashicorp/terraform-provider-null && \
+	cd terraform-provider-null && \
+	go build . 
+
+RUN mkdir -p ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH`
+RUN mkdir -p ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
+RUN mv /workspace/terraform-provider-ibm/terraform-provider-ibm ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH`
+RUN mv /workspace/terraform-provider-null/terraform-provider-null ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
