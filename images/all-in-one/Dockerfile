@@ -141,6 +141,6 @@ RUN git clone -b 'v2.1.2' --single-branch https://github.com/hashicorp/terraform
 	go build . 
 
 RUN  mkdir -p ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH`
-RUN  mkdir -p ${TF_PLUGIN_PATH}null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
+RUN  mkdir -p ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
 RUN mv /workspace/terraform-provider-ibm/terraform-provider-ibm ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH`
 RUN mv /workspace/terraform-provider-null/terraform-provider-null ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
