@@ -45,7 +45,10 @@ presubmits:
               - -c
               - |
                 set -o errexit
-                tflint --module
+                tflint
+                tflint ./modules/1_prepare
+                tflint ./modules/4_nodes
+                tflint ./modules/5_install
       annotations:
         testgrid-dashboards: presubmits-ocp4-upi-powervs
         testgrid-tab-name: terraform-lint
