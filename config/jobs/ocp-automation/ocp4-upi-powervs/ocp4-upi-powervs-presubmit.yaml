@@ -45,6 +45,7 @@ presubmits:
               - -c
               - |
                 set -o errexit
+                terraform init
                 tflint --module
       annotations:
         testgrid-dashboards: presubmits-ocp4-upi-powervs
