@@ -17,3 +17,35 @@ presubmits:
       annotations:
         testgrid-dashboards: presubmits-ocp4-upi-powervs
         testgrid-tab-name: terraform-validate
+    - name: pull-ocp4-upi-powervs-terraform-fmt
+      always_run: true
+      decorate: true
+      spec:
+        containers:
+          - image: hashicorp/terraform:0.13.5
+            command:
+              - sh
+            args:
+              - -c
+              - |
+                set -o errexit
+                terraform fmt -list -check -diff -write=false -recursive
+      annotations:
+        testgrid-dashboards: presubmits-ocp4-upi-powervs
+        testgrid-tab-name: terraform-fmt
+    - name: pull-ocp4-upi-powervs-terraform-lint
+      always_run: true
+      decorate: true
+      spec:
+        containers:
+          - image: wata727/tflint
+            command:
+              - sh
+            args:
+              - -c
+              - |
+                set -o errexit
+                tflint --module
+      annotations:
+        testgrid-dashboards: presubmits-ocp4-upi-powervs
+        testgrid-tab-name: terraform-lint
