@@ -53,9 +53,6 @@ periodics:
         org: ppc64le-cloud
         repo: kubetest2-plugins
         workdir: true
-      - base_ref: v1.10.0
-        org: IBM-Cloud
-        repo: terraform-provider-ibm
     spec:
       volumes:
         - name: powercloud-bot-key
@@ -63,7 +60,7 @@ periodics:
             defaultMode: 256
             secretName: bot-ssh-secret
       containers:
-        - image: quay.io/powercloud/all-in-one:0.1
+        - image: quay.io/powercloud/all-in-one:0.3
           command:
             - /bin/bash
           volumeMounts:
@@ -85,16 +82,6 @@ periodics:
               export GO111MODULE=on
 
               go install ./...
-
-              mkdir -p $HOME/.terraform.d/plugins/linux_`go env GOARCH`
-
-              pushd $GOPATH/src/github.com/IBM-Cloud/terraform-provider-ibm
-              go build .
-              cp terraform-provider-ibm $HOME/.terraform.d/plugins/linux_`go env GOARCH`/terraform-provider-ibm_v1.10.0
-              popd
-
-              go get github.com/hashicorp/terraform-provider-null
-              cp $GOPATH/bin/terraform-provider-null $HOME/.terraform.d/plugins/linux_`go env GOARCH`/
 
               go get sigs.k8s.io/kubetest2@latest
               go get sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest
@@ -134,9 +121,6 @@ periodics:
         org: ppc64le-cloud
         repo: kubetest2-plugins
         workdir: true
-      - base_ref: v1.10.0
-        org: IBM-Cloud
-        repo: terraform-provider-ibm
     spec:
       volumes:
         - name: powercloud-bot-key
@@ -144,7 +128,7 @@ periodics:
             defaultMode: 256
             secretName: bot-ssh-secret
       containers:
-        - image: quay.io/powercloud/all-in-one:0.1
+        - image: quay.io/powercloud/all-in-one:0.3
           command:
             - /bin/bash
           volumeMounts:
@@ -166,16 +150,6 @@ periodics:
               export GO111MODULE=on
 
               go install ./...
-
-              mkdir -p $HOME/.terraform.d/plugins/linux_`go env GOARCH`
-
-              pushd $GOPATH/src/github.com/IBM-Cloud/terraform-provider-ibm
-              go build .
-              cp terraform-provider-ibm $HOME/.terraform.d/plugins/linux_`go env GOARCH`/terraform-provider-ibm_v1.10.0
-              popd
-
-              go get github.com/hashicorp/terraform-provider-null
-              cp $GOPATH/bin/terraform-provider-null $HOME/.terraform.d/plugins/linux_`go env GOARCH`/
 
               go get sigs.k8s.io/kubetest2@latest
               go get sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest
