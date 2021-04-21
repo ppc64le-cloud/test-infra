@@ -22,13 +22,20 @@ spec:
           ports:
             - containerPort: 8086
               name: http
-          image: docker.io/influxdb:1.8
+          image: docker.io/influxdb:1.8.4
+          imagePullPolicy: IfNotPresent
           name: influxdb
           volumeMounts:
             - mountPath: /var/lib/influxdb
               name: var-lib-influxdb
+            - mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+              name: init-scripts
       restartPolicy: Always
       volumes:
         - name: var-lib-influxdb
           persistentVolumeClaim:
             claimName: influxdb
+        - configMap:
+            name: init-scripts
+          name: init-scripts

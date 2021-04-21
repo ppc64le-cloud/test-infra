@@ -1,17 +1,26 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: grafana-dashboard
   name: grafana
+  annotations:
+    # Change this to your issuer when using cert-manager. Does
+    # nothing when not using cert-manager.
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: public-iks-k8s-nginx
 spec:
   backend:
     serviceName: grafana
     servicePort: 80
   rules:
-    - host: grafana.k8s-prow-c7f9fbfa2832409e2a3a6666e9dc52a3-0000.us-south.containers.appdomain.cloud
+    - host: grafana.ppc64le-cloud.org
       http:
         paths:
           - path: /
             backend:
               serviceName: grafana
               servicePort: 80
+  tls:
+    - hosts:
+        - grafana.ppc64le-cloud.org
+      secretName: ppc64le-cloud

@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  influx_init.iql: |-
+    CREATE DATABASE "influxdb-e2e-powervs"
+    CREATE DATABASE "influxdb-scale-powervs"
+    CREATE DATABASE "influxdb-e2e-powervm"
+    CREATE DATABASE "influxdb-scale-powervm"
+kind: ConfigMap
+metadata:
+  name: init-scripts
+  namespace: grafana-dashboard
