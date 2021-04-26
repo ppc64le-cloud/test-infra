@@ -96,8 +96,8 @@ periodics:
 
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-image-name centos-83-12142020 \
-                --powervs-region tok --powervs-zone tok04 \
-                --powervs-service-id e13a10d2-9c2b-4d7b-b2fc-7a2b9edf1abf \
+                --powervs-region osa --powervs-zone osa21 \
+                --powervs-service-id 083d5bf8-c41a-4f3c-8713-f5fdfb4d4b5b \
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
@@ -164,8 +164,8 @@ periodics:
 
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-image-name centos-83-12142020 \
-                --powervs-region tok --powervs-zone tok04 \
-                --powervs-service-id e13a10d2-9c2b-4d7b-b2fc-7a2b9edf1abf \
+                --powervs-region osa --powervs-zone osa21 \
+                --powervs-service-id 083d5bf8-c41a-4f3c-8713-f5fdfb4d4b5b \
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
