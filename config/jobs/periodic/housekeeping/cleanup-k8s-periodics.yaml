@@ -19,7 +19,7 @@ periodics:
               set -o pipefail
               set -o xtrace
 
-              wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1-alpha.12/pvsadm-linux-ppc64le
+              wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1.1-alpha.7/pvsadm-linux-ppc64le
               chmod +x /usr/local/bin/pvsadm
 
               # delete all the vms created before 4hrs
