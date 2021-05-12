@@ -1,4 +1,4 @@
-## How to build and push
+## How to Build and Push
 
 ```
 # build
