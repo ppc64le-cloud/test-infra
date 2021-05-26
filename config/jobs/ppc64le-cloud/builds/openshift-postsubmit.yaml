@@ -1,0 +1,74 @@
+postsubmits:
+  ppc64le-cloud/builds:
+    - name: postsubmit-os-kubernetes-build-golang-master-ppc64le
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      branches:
+        - master
+      run_if_changed: '^golang/master/'
+      extra_refs:
+        - base_ref: master
+          org: openshift
+          repo: kubernetes
+          workdir: true
+      spec:
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.1
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                set -o xtrace
+
+                build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
+                rm -rf /usr/local/go
+                tar -C /usr/local -xzf /tmp/golang.tar.gz
+                export PATH=/usr/local/go/bin:$PATH
+                KUBE_BUILD_PLATFORMS=linux/ppc64le make cross
+                for server in kubectl kube-apiserver kube-controller-manager kube-scheduler kubelet kube-proxy kubeadm
+                do
+                    echo $server
+                    _output/bin/$server --help
+                done
+    - name: postsubmit-os-origin-build-golang-master-ppc64le
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      branches:
+        - master
+      run_if_changed: '^golang/master/'
+      extra_refs:
+        - base_ref: master
+          org: openshift
+          repo: origin
+          workdir: true
+      spec:
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.3
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                set -o xtrace
+
+                build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
+                curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
+                rm -rf /usr/local/go
+                tar -C /usr/local -xzf /tmp/golang.tar.gz
+                export PATH=/usr/local/go/bin:$PATH
+                make GO_REQUIRED_MIN_VERSION:= WHAT=cmd/openshift-tests
+                cp ./openshift-tests /usr/local/bin
+                openshift-tests help
+                openshift-tests images --to-repository=quay.io/powercloud/community-e2e-images
+                openshift-tests run kubernetes/conformance --dry-run
+                openshift-tests run-upgrade --dry-run --to-image quay.io/openshift/community-e2e-images:e2e-3-k8s-gcr-io-e2e-test-images-sample-apiserver-1-17-4-AC3A0x1ePf4fLoiv all
