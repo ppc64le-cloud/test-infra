@@ -1,0 +1,50 @@
+postsubmits:
+  openshift-powervs/cluster-api-provider-powervs:
+    - name: postsubmit-cluster-api-provider-powervs-imagebuild-job
+      decorate: true
+      branches:
+        - master
+      extra_refs:
+        - base_ref: v0.1.2
+          org: vmware-tanzu
+          repo: buildkit-cli-for-kubectl
+      spec:
+        serviceAccountName: build-img
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.3
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                export PATH=$PATH:/usr/local/bin
+                pushd $GOPATH/src/github.com/vmware-tanzu/buildkit-cli-for-kubectl
+                make build install
+                popd
+                commit=$(git describe --always --abbrev=7)
+                ls -l /run/secrets/kubernetes.io/serviceaccount
+                ca=$(base64 -w 0 /run/secrets/kubernetes.io/serviceaccount/ca.crt)
+                token=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+                namespace=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+                cat >kubeconfig <<EOL
+                apiVersion: v1
+                kind: Config
+                clusters:
+                - name: default-cluster
+                  cluster:
+                    certificate-authority-data: ${ca}
+                    server: https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}
+                contexts:
+                - name: default-context
+                  context:
+                    cluster: default-cluster
+                    namespace: ${namespace}
+                    user: default-user
+                current-context: default-context
+                users:
+                - name: default-user
+                  user:
+                    token: ${token}
+                EOL
+                export KUBECONFIG=$(pwd)/kubeconfig
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg VERSION=v0.0.0-master-${commit} -t quay.io/powercloud/origin-powervs-machine-controllers:v0.0.0-master-${commit} -t quay.io/powercloud/origin-powervs-machine-controllers:latest -f Dockerfile .
