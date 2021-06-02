@@ -6,8 +6,9 @@ metadata:
   name: influxdb
   namespace: grafana-dashboard
 spec:
+  storageClassName: ibmc-vpc-block-retain-10iops-tier
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 2Gi
+      storage: 20Gi

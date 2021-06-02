@@ -17,6 +17,7 @@ spec:
     spec:
       containers:
         - image: grafana/grafana:7.1.0
+          imagePullPolicy: IfNotPresent
           name: grafana
           envFrom:
             - secretRef:
@@ -42,8 +43,13 @@ spec:
             - mountPath: /etc/grafana/provisioning/datasources
               name: grafana-datasources
               readOnly: true
-            - mountPath: /var/lib/grafana/dashboards
-              name: grafana-dashboards
+            - mountPath: /var/lib/grafana/dashboards/ocp4-powervs-e2e.json
+              name: ocp4-powervs-e2e
+              subPath: ocp4-powervs-e2e.json
+              readOnly: false
+            - mountPath: /var/lib/grafana/dashboards/ocp4-powervs-scale.json
+              name: ocp4-powervs-scale
+              subPath: ocp4-powervs-scale.json
               readOnly: false
             - mountPath: /etc/grafana/provisioning/dashboards/grafana-dashboard-provider.yaml
               name: grafana-dashboard-provider
@@ -56,8 +62,11 @@ spec:
           secret:
             secretName: grafana-datasources
         - configMap:
-            name: grafana-dashboards
-          name: grafana-dashboards
-        - configMap:
             name: grafana-dashboard-provider
           name: grafana-dashboard-provider
+        - configMap:
+            name: ocp4-powervs-e2e
+          name: ocp4-powervs-e2e
+        - configMap:
+            name: ocp4-powervs-scale
+          name: ocp4-powervs-scale
