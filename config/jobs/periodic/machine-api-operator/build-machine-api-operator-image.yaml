@@ -1,0 +1,67 @@
+periodics:
+  - name: build-machine-api-operator-image
+    decorate: true
+    interval: 24h
+    extra_refs:
+      - base_ref: v0.1.2
+        org: vmware-tanzu
+        repo: buildkit-cli-for-kubectl
+      - base_ref: release-4.8
+        org: openshift
+        repo: machine-api-operator
+        workdir: true
+    spec:
+      serviceAccountName: build-img
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.3
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - |
+              export PATH=$PATH:/usr/local/bin
+              pushd $GOPATH/src/github.com/vmware-tanzu/buildkit-cli-for-kubectl
+              make build install
+              popd
+
+              cat >Dockerfile.ppc64le <<EOL
+              FROM registry.ci.openshift.org/openshift/release:golang-1.16 AS builder
+
+              WORKDIR /go/src/github.com/openshift/machine-api-operator
+              COPY . .
+              RUN GOPROXY=off NO_DOCKER=1 GOARCH=ppc64le GOOS=linux make build
+
+              FROM --platform=ppc64le registry.access.redhat.com/ubi8/ubi:8.4
+              COPY --from=builder /go/src/github.com/openshift/machine-api-operator/bin/machine-api-operator /
+              COPY --from=builder /go/src/github.com/openshift/machine-api-operator/bin/nodelink-controller /
+              COPY --from=builder /go/src/github.com/openshift/machine-api-operator/bin/machine-healthcheck /
+              COPY --from=builder /go/src/github.com/openshift/machine-api-operator/bin/machineset /machineset-controller
+              COPY --from=builder /go/src/github.com/openshift/machine-api-operator/bin/vsphere /machine-controller-manager
+              EOL
+
+              ls -l /run/secrets/kubernetes.io/serviceaccount
+              ca=$(base64 -w 0 /run/secrets/kubernetes.io/serviceaccount/ca.crt)
+              token=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+              namespace=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+              cat >kubeconfig <<EOL
+              apiVersion: v1
+              kind: Config
+              clusters:
+              - name: default-cluster
+                cluster:
+                  certificate-authority-data: ${ca}
+                  server: https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}
+              contexts:
+              - name: default-context
+                context:
+                  cluster: default-cluster
+                  namespace: ${namespace}
+                  user: default-user
+              current-context: default-context
+              users:
+              - name: default-user
+                user:
+                  token: ${token}
+              EOL
+              export KUBECONFIG=$(pwd)/kubeconfig
+              kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder -t quay.io/powercloud/machine-api-operator:release-4.8 -t quay.io/powercloud/machine-api-operator:latest -f Dockerfile.ppc64le .
