@@ -1,0 +1,21 @@
+postsubmits:
+  ppc64le-cloud/jenkins-infra:
+    - name: load-jenkins-infra-job
+      branches:
+      - master
+      decorate: true
+      spec:
+        containers:
+          - image: quay.io/powercloud/jenkins-infra:0.1
+            envFrom:
+            - secretRef:
+                name: jenkins-secret
+            command:
+              - sh
+            args:
+              - -c
+              - |
+                set -o errexit
+                export JENKINS_URI="https://jenkins.ppc64le-cloud.org"
+                crudini --set /etc/jenkins_jobs/jenkins_jobs.ini jenkins url ${JENKINS_URI}
+                ./hack/load-jenkins-pipelines.sh
