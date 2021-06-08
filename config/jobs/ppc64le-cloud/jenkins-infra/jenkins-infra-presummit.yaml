@@ -1,0 +1,20 @@
+presubmits:
+  ppc64le-cloud/jenkins-infra:
+    - name: verify-jenkins-infra-job
+      branches:
+      - master
+      decorate: true
+      spec:
+        containers:
+          - image: quay.io/powercloud/jenkins-infra:0.1
+            envFrom:
+            - secretRef:
+                name: jenkins-secret
+            command:
+              - sh
+            args:
+              - -c
+              - |
+                set -o errexit
+                export JENKINS_URI="https://jenkins.ppc64le-cloud.org"
+                ./hack/verify-validate-pipelines.sh
