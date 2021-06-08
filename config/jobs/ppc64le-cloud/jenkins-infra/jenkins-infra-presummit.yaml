@@ -1,6 +1,7 @@
 presubmits:
   ppc64le-cloud/jenkins-infra:
     - name: verify-jenkins-infra-job
+      always_run: true
       branches:
       - master
       decorate: true
