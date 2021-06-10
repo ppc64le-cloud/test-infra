@@ -15,6 +15,9 @@ triggers:
       - openshift-powervs
     join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervs#contributing
     only_org_members: true
+  - repos:
+      - Rajalakshmi-Girish/test
+    join_org_url: https://github.com/Rajalakshmi-Girish/test/blob/main/README.md
 
 approve:
   - repos:
@@ -162,6 +165,33 @@ plugins:
     - yuks
 
   openshift-powervs:
+    - approve
+    - assign
+    - cat
+    - config-updater
+    - dog
+    - golint
+    - goose
+    - heart
+    - help
+    - hold
+    - label
+    - lgtm
+    - lifecycle
+    - mergecommitblocker
+    - owners-label
+    - pony
+    - retitle
+    - shrug
+    - size
+    - skip
+    - trigger
+    - verify-owners
+    - welcome
+    - wip
+    - yuks
+
+  Rajalakshmi-Girish/test:
     - approve
     - assign
     - cat
