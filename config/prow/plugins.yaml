@@ -16,8 +16,8 @@ triggers:
     join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervs#contributing
     only_org_members: true
   - repos:
-      - Rajalakshmi-Girish/test
-    join_org_url: https://github.com/Rajalakshmi-Girish/test/blob/main/README.md
+      - trigger-prow/test-trigger
+    join_org_url: https://github.com/trigger-prow/test-trigger/blob/main/README.md
 
 approve:
   - repos:
@@ -191,7 +191,7 @@ plugins:
     - wip
     - yuks
 
-  Rajalakshmi-Girish/test:
+  trigger-prow/test-trigger:
     - approve
     - assign
     - cat
