@@ -85,6 +85,7 @@ plugins:
   IBM/raksh:
     - approve
     - assign
+    - blunderbuss
     - cat
     - dog
     - golint
@@ -112,6 +113,7 @@ plugins:
   ppc64le-cloud:
     - approve
     - assign
+    - blunderbuss
     - cat
     - config-updater
     - dog
@@ -140,6 +142,7 @@ plugins:
   ocp-power-automation:
     - approve
     - assign
+    - blunderbuss
     - cat
     - config-updater
     - dog
