@@ -20,7 +20,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: crier
-          image: gcr.io/k8s-prow/crier:v20210305-64a6d4d83a
+          image: gcr.io/k8s-prow/crier:v20210623-0c619adcf3
           args:
             - --blob-storage-workers=10
             - --config-path=/etc/config/config.yaml
@@ -32,10 +32,13 @@ spec:
             - --github-token-path=/etc/github/token
             - --github-workers=10
             - --job-config-path=/etc/job-config
-            - --kubeconfig=/etc/kubeconfig/config
             - --kubernetes-blob-storage-workers=10
             - --slack-workers=1
             - --slack-token-file=/etc/slack/token
+          env:
+            # Use KUBECONFIG envvar rather than --kubeconfig flag in order to provide multiple configs to merge.
+            - name: KUBECONFIG
+              value: "/etc/kubeconfig/config"
           volumeMounts:
             - name: config
               mountPath: /etc/config
