@@ -25,7 +25,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: deck
-          image: gcr.io/k8s-prow/deck:v20210305-64a6d4d83a
+          image: gcr.io/k8s-prow/deck:v20210623-0c619adcf3
           args:
             - --config-path=/etc/config/config.yaml
             - --plugin-config=/etc/plugins/plugins.yaml
@@ -37,10 +37,13 @@ spec:
             - --github-endpoint=https://api.github.com
             - --github-graphql-endpoint=http://ghproxy/graphql
             - --job-config-path=/etc/job-config
-            - --kubeconfig=/etc/kubeconfig/config
             - --plugin-config=/etc/plugins/plugins.yaml
             - --s3-credentials-file=/etc/s3-credentials/service-account.json
             - --spyglass=true
+          env:
+            # Use KUBECONFIG envvar rather than --kubeconfig flag in order to provide multiple configs to merge.
+            - name: KUBECONFIG
+              value: "/etc/kubeconfig/config"
           ports:
             - name: http
               containerPort: 8080

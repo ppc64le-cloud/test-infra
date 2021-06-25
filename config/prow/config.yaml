@@ -44,11 +44,14 @@ deck:
           name: podinfo
         required_files:
           - podinfo.json
+      - lens:
+          name: links
+        required_files:
+          - artifacts/.*\.link\.txt
   tide_update_period: 1s
 
 plank:
   job_url_prefix_config:
-    # TODO: Remove the s3 suffix once https://github.com/kubernetes/test-infra/pull/17779 is in
     "*": https://prow.ppc64le-cloud.org/view/
   pod_pending_timeout: 15m
   pod_unscheduled_timeout: 1m
@@ -66,10 +69,10 @@ plank:
         path_strategy: explicit
       s3_credentials_secret: s3-credentials
       utility_images:
-        clonerefs: quay.io/powercloud/clonerefs:v20210305-64a6d4d83a
-        entrypoint: quay.io/powercloud/entrypoint:v20210305-64a6d4d83a
-        initupload: quay.io/powercloud/initupload:v20210305-64a6d4d83a
-        sidecar: quay.io/powercloud/sidecar:v20210305-64a6d4d83a
+        clonerefs: quay.io/powercloud/clonerefs:v20210623-0c619adcf3
+        entrypoint: quay.io/powercloud/entrypoint:v20210623-0c619adcf3
+        initupload: quay.io/powercloud/initupload:v20210623-0c619adcf3
+        sidecar: quay.io/powercloud/sidecar:v20210623-0c619adcf3
       ssh_key_secrets:
         - bot-ssh-secret
 
