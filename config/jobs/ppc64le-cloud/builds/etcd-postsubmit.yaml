@@ -30,6 +30,7 @@ postsubmits:
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
+                export PATH=$GOPATH/bin:$PATH
                 go version
                 ./build.sh
                 GOARCH=`go env GOARCH` TEST_OPTS="PASSES='unit integration_e2e'" make test
