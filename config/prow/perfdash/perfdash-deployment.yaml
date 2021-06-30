@@ -16,15 +16,17 @@ spec:
     spec:
       containers:
       - name: perfdash
-        image: gcr.io/k8s-testimages/perfdash:2.32
+        image: gcr.io/k8s-testimages/perfdash:2.34
         command:
           - /perfdash
           -   --www=true
           -   --dir=/www
           -   --address=0.0.0.0:8080
+          -   --storageURL=https://prow.ppc64le-cloud.org/view/gs
+          -   --logsBucket=ppc64le-kubernetes
           -   --builds=100
-          -   --githubConfigDir=https://api.github.com/repos/kubernetes/test-infra/contents/config/jobs/kubernetes/sig-scalability
-          -   --githubConfigDir=https://api.github.com/repos/kubernetes/test-infra/contents/config/jobs/kubernetes/sig-release/release-branch-jobs
+          -   --githubConfigDir=https://api.github.com/repos/ppc64le-cloud/test-infra/contents/config/jobs/periodic/kubernetes/perf-tests/
+          -   --allow-parsers-matching-all-tests=false
         imagePullPolicy: Always
         ports:
         - name: status
