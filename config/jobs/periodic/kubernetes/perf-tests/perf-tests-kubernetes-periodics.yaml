@@ -75,4 +75,4 @@ periodics:
           --ignore-destroy-errors \
           --powervs-memory 32 \
           --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 130" \
-          --test=exec -- $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/run-e2e.sh --testconfig=$GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/testing/node-throughput/config.yaml --provider=local --report-dir=/logs/artifacts
+          --test=exec -- $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/run-e2e.sh --testconfig=$GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/testing/node-throughput/config.yaml --provider=local --nodes=1 --report-dir=/logs/artifacts
