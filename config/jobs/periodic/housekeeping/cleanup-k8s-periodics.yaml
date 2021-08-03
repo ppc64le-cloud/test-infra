@@ -23,4 +23,4 @@ periodics:
               chmod +x /usr/local/bin/pvsadm
 
               # delete all the vms created before 4hrs
-              pvsadm purge vms --instance-id 083d5bf8-c41a-4f3c-8713-f5fdfb4d4b5b --dry-run --before 4h --ignore-errors --no-prompt
+              pvsadm purge vms --instance-id f57510e4-7109-45ab-9dbb-a9fd38529707 --dry-run --before 4h --ignore-errors --no-prompt
