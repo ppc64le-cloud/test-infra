@@ -4,7 +4,6 @@ periodics:
       preset-secrets: "true"
     cluster: k8s-ppc64le-cluster
     decorate: true
-    always_run: true
     interval: 2h
     spec:
       containers:
