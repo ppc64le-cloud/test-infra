@@ -18,14 +18,12 @@ periodics:
           docker run alpine
           docker ps -a
         resources: {}
-        terminationMessagePolicy: FallbackToLogsOnError
         securityContext:
           privileged: true
         volumeMounts:
         - name: docker-root
           mountPath: /var/lib/docker
       restartPolicy: Never
-      terminationGracePeriodSeconds: 18
       volumes:
       - name: docker-root
         emptyDir: {}
