@@ -5,7 +5,7 @@ periodics:
     cluster: k8s-ppc64le-cluster
     decorate: true
     always_run: true
-    interval: 2m
+    interval: 2h
     spec:
       containers:
       - image: quay.io/alunsin/all_in_one_dind
