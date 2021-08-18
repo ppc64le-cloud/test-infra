@@ -1,0 +1,57 @@
+periodics:
+  - name: docker-all-in-one-test
+    labels:
+      preset-secrets: "true"
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    interval: 2h
+    spec:
+      containers:
+      - image: quay.io/alunsin/all_in_one_dind
+        command:
+        - /bin/bash
+        args:
+        - -c
+        - |
+          bash /usr/local/bin/dockerd-entrypoint.sh &
+          echo "Waiting for dockerd to start"
+          TIMEOUT=10
+          DAEMON="dockerd"
+          i=0
+          while [ $i -lt $TIMEOUT ] && ! /usr/bin/pgrep $DAEMON
+          do
+            echo "Number: $i"
+            i=$((i+1))
+            sleep 2
+          done
+          pid=`/usr/bin/pgrep $DAEMON`
+          if [ -z "$pid" ]
+          then
+            echo "$DAEMON did not started after $(($TIMEOUT*2)) seconds"
+            exit 1
+          else
+            echo "Found $DAEMON pid:$pid"
+            ps -aef | grep docker | grep -v grep
+            sleep 10
+            ps -aef
+            echo "Launching docker info"
+            docker info
+            docker run hello-world
+            docker run --name test alpine
+            docker ps -a
+            if [ "$(docker ps -a | grep test)" ]
+            then
+              ps -e | grep $DAEMON
+              kill -9 $pid
+            fi
+          fi
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: docker-root
+          mountPath: /var/lib/docker
+      restartPolicy: Never
+      volumes:
+      - name: docker-root
+        emptyDir: {}
