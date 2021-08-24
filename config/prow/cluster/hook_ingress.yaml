@@ -1,0 +1,33 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: prow
+  name: hook
+  annotations:
+    # Change this to your issuer when using cert-manager. Does
+    # nothing when not using cert-manager.
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: public-iks-k8s-nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /hook
+spec:
+  backend:
+    # specify the default backend for `ingress-gce` (https://cloud.google.com/kubernetes-engine/docs/concepts/ingress#prow_backend)
+    serviceName: deck
+    servicePort: 80
+  rules:
+    - host: prow.ppc64le-cloud.org
+      http:
+        paths:
+          - path: /hook
+            backend:
+              serviceName: hook
+              servicePort: 8888
+          - path: /hook2
+            backend:
+              serviceName: hook2
+              servicePort: 8888
+  tls:
+    - hosts:
+        - prow.ppc64le-cloud.org
+      secretName: ppc64le-cloud
