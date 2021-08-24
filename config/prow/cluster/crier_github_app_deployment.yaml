@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prow
+  name: crier2
+  labels:
+    app: crier2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crier2
+  template:
+    metadata:
+      labels:
+        app: crier2
+    spec:
+      serviceAccountName: crier
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: crier2
+          image: gcr.io/k8s-prow/crier:v20210623-0c619adcf3
+          args:
+            - --blob-storage-workers=10
+            - --config-path=/etc/config/config.yaml
+            - --s3-credentials-file=/etc/s3-credentials/service-account.json
+            - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
+            - --github-host=github.com
+            - --github-endpoint=http://ghproxy
+            - --github-endpoint=https://api.github.com
+            - --github-app-id=120817
+            - --github-app-private-key-path=/etc/github/key
+            - --github-workers=10
+            - --job-config-path=/etc/job-config
+            - --kubernetes-blob-storage-workers=10
+          env:
+            # Use KUBECONFIG envvar rather than --kubeconfig flag in order to provide multiple configs to merge.
+            - name: KUBECONFIG
+              value: "/etc/kubeconfig/config"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: key
+              mountPath: /etc/github
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
+            - name: kubeconfig
+              mountPath: /etc/kubeconfig
+              readOnly: true
+            - name: s3-credentials
+              mountPath: /etc/s3-credentials
+              readOnly: true
+            - name: gcs-credentials
+              mountPath: /etc/gcs-credentials
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: config
+        - name: key
+          secret:
+            secretName: github-app-key
+        - name: job-config
+          configMap:
+            name: job-config
+        - name: kubeconfig
+          secret:
+            defaultMode: 0644
+            secretName: kubeconfig
+        - name: s3-credentials
+          secret:
+            secretName: s3-credentials
+        - name: gcs-credentials
+          secret:
+            secretName: gcs-credentials
