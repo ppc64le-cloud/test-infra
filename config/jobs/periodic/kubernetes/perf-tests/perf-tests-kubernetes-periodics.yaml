@@ -70,9 +70,10 @@ periodics:
           --runtime containerd \
           --workers-count 1 \
           --cluster-name perf-test-$TIMESTAMP \
+          --playbook "install-k8s-perf.yml" \
           --up --down --auto-approve --retry-on-tf-failure 3 \
           --break-kubetest-on-upfail true \
           --ignore-destroy-errors \
           --powervs-memory 32 \
-          --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 130" \
-          --test=exec -- $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/run-e2e.sh --testconfig=$GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/testing/node-throughput/config.yaml --provider=local --nodes=1 --report-dir=/logs/artifacts
+          --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" \
+          --test=clusterloader2 -- --test-configs=testing/node-throughput/config.yaml --test-overrides=testing/overrides/node_containerd.yaml --provider=local --nodes=1 --repo-root=$GOPATH/src/github.com/kubernetes/perf-tests/
