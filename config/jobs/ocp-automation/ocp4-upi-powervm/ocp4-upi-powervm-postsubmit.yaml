@@ -3,7 +3,6 @@ postsubmits:
     - name: update-github-pages-submodule
       decorate: true
       run_if_changed: 'docs'
-      always_run: true
       branches:
         - ^master$
       spec:
