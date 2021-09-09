@@ -64,6 +64,7 @@ plank:
     "*":
       timeout: 2h
       grace_period: 15s
+      censor_secrets: true
       gcs_configuration:
         bucket: s3://prow-logs
         path_strategy: explicit
