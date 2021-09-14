@@ -1,0 +1,27 @@
+presubmits:
+  Rajalakshmi-Girish/etcd:
+  - name: pull-etcd-unit-integration-e2e-test-ppc64le
+    cluster: k8s-ppc64le-cluster
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.3
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              export PATH=$GOPATH/bin:$PATH
+              url="https://storage.googleapis.com/golang/go1.16.1.linux-ppc64le.tar.gz"
+              wget -O go.tgz "$url" --progress=dot:giga
+              rm -rf /usr/local/go
+              tar -C /usr/local -xzf go.tgz
+              go version
+              ./build.sh
+              GOARCH=`go env GOARCH` TEST_OPTS="PASSES='unit integration_e2e' RACE='true'" make test
