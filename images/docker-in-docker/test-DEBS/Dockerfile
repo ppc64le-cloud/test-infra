@@ -1,4 +1,4 @@
-# Dockerfile for testing DEBs
+# Dockerfile to test DEBS packages
 
 ARG GOLANG_VERSION=1.15.2
 ARG DISTRO_NAME
