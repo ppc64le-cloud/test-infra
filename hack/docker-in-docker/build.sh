@@ -61,7 +61,7 @@ else
     patchDockerFiles .
     for DEB in ${DEBS}
     do
-      echo "= Building for:${DEB} =" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+      echo "= Building for: ${DEB} =" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 
       VERSION=${DOCKER_VERS} make debbuild/bundles-ce-${DEB}-ppc64le.tar.gz
     
@@ -78,7 +78,7 @@ else
     patchDockerFiles .
     for RPM in ${RPMS}
     do
-      echo "== Building for:${RPM} ==" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+      echo "== Building for: ${RPM} ==" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 
       VERSION=${DOCKER_VERS} make rpmbuild/bundles-ce-${RPM}-ppc64le.tar.gz
 
@@ -114,6 +114,7 @@ else
 
       for DISTRO in $DISTROS
       do
+        echo "= Building for: ${DISTRO} =" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
         make REF=${CONTAINERD_VERS} docker.io/library/${DISTRO}
 
         if test -d build/${DISTRO}
