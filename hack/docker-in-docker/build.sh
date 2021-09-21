@@ -126,7 +126,7 @@ else
       done
 
       popd
-
+      echo "=== Copying packages to ${DIR_CONTAINERD} ===" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
       cp -r containerd-packaging/build/* ${DIR_CONTAINERD}
       rm -rf containerd-packaging
       ls ${DIR_CONTAINERD} 2>&1 | tee -a ${PATH_LOG_PROWJOB}
