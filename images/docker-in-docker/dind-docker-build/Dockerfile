@@ -30,13 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     gnupg2 \
     software-properties-common \
-    lsb-release && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
+    lsb-release \
     build-essential \
-    ca-certificates \
-    curl \
     file \
     git \
     make \
@@ -49,10 +44,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xz-utils \
     zip \
     zlib1g-dev \
-##### Install docker-ce deps
     iptables libdevmapper1.02.1 \
     && rm -rf /var/lib/apt/lists/*
-
 
 RUN mkdir -p /workspace/tmp
 
