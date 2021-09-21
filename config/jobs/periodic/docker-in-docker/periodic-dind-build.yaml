@@ -75,7 +75,7 @@ periodics:
               # get the env file and the dockertest repo and the latest built of containerd if we don't want to build containerd
               echo "*** * COS Bucket * ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker_s3_env
-              docker run --env S3_SECRET_AUTH --env PATH_LOGS --env NAME_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/get_env.sh"
+              docker run --env S3_SECRET_AUTH --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/get_env.sh"
               status_code="$(docker container wait $CONT_NAME)"
               echo $status_code 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 
@@ -152,7 +152,7 @@ periodics:
               # build docker_ce and containerd
               echo "*** *** BUILD *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker-build
-              docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOGS --env NAME_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/build.sh 
+              docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/build.sh 
               docker logs -f $CONT_NAME
               status_code="$(docker container wait $CONT_NAME)"
               if [[ ${status_code} -ne 0 ]]
@@ -178,13 +178,10 @@ periodics:
                 ls /workspace 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               fi
 
-              echo "PATH_LOGS : ${PATH_LOGS}" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              echo "NAME LOG JOB : ${NAME_LOG_PROWJOB}" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-
               # test the packages
               echo "*** *** * TEST * *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker-test
-              docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOGS --env NAME_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/test.sh
+              docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/test.sh
               status_code="$(docker container wait $CONT_NAME)"
               if [[ ${status_code} -ne 0 ]]
               then
@@ -201,7 +198,7 @@ periodics:
               # push to the COS Bucket
               echo "*** *** ** COS Bucket ** *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker_s3_push
-              docker run --env S3_SECRET_AUTH --env PATH_LOGS --env NAME_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/push_COS.sh ${CHECK_TESTS_BOOL}"
+              docker run --env S3_SECRET_AUTH --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/push_COS.sh ${CHECK_TESTS_BOOL}"
               status_code="$(docker container wait $CONT_NAME)"
               echo $status_code 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 
