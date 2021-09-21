@@ -66,14 +66,14 @@ periodics:
             if ! test -d /root/.docker 
             then
               # docker login
-              echo "*** Docker login ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+              echo "** Docker login **" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               mkdir /root/.docker
               echo "$DOCKER_SECRET_AUTH" > /root/.docker/config.json
             fi
             if grep -Fq "index.docker.io" /root/.docker/config.json
             then
               # get the env file and the dockertest repo and the latest built of containerd if we don't want to build containerd
-              echo "*** * COS Bucket * ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+              echo "*** COS Bucket ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker_s3_env
               docker run --env S3_SECRET_AUTH --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/get_env.sh"
               status_code="$(docker container wait $CONT_NAME)"
@@ -110,7 +110,7 @@ periodics:
               fi
               
               # generate the env-distrib.list
-              echo "*** ** env-distrib.list ** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+              echo "*** * env-distrib.list * ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               mkdir docker-ce-packaging
               pushd docker-ce-packaging
               git init
@@ -150,7 +150,7 @@ periodics:
               fi
 
               # build docker_ce and containerd
-              echo "*** *** BUILD *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+              echo "*** ** BUILD ** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker-build
               docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/build.sh 
               docker logs -f $CONT_NAME
@@ -179,7 +179,7 @@ periodics:
               fi
 
               # test the packages
-              echo "*** *** * TEST * *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+              echo "*** *** TEST *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker-test
               docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/test.sh
               status_code="$(docker container wait $CONT_NAME)"
@@ -190,7 +190,7 @@ periodics:
                 exit 1
               else
                 docker logs $CONT_NAME 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-                echo "*** *** ** TESTS CHECK ** *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+                echo "*** *** * TESTS CHECK * *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
                 source ${PATH_SCRIPTS}/check_tests.sh
                 echo ${CHECK_TESTS_BOOL} 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               fi
