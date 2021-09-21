@@ -222,6 +222,17 @@ periodics:
         volumeMounts:
         - name: docker-root
           mountPath: /var/lib/docker
+        env:
+          - name: S3_SECRET_AUTH
+            valueFrom:
+              secretKeyRef: 
+                name: secret-s3
+                key: password
+          - name: DOCKER_SECRET_AUTH
+            valueFrom:
+              secretKeyRef:
+                name: docker-token
+                key: .dockerconfigjson
       restartPolicy: Never
       volumes:
       - name: docker-root

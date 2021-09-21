@@ -26,12 +26,12 @@ ENV WORKSPACE=/workspace \
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
-    ca-certificates \
-    curl \
     gnupg2 \
     software-properties-common \
     lsb-release \
     build-essential \
+    ca-certificates \
+    curl \
     file \
     git \
     make \

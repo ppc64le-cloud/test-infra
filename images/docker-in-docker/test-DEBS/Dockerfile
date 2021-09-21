@@ -18,7 +18,6 @@ ENV WORKSPACE=/workspace \
     TERM=xterm
 ENV PATH /usr/local/go/bin:$PATH
 
-
 RUN echo deb;\
     apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
@@ -28,12 +27,10 @@ RUN echo deb;\
     wget \
     software-properties-common \
     lsb-release\
-    ##### Install go tests deps
     make\
     gcc\
     libc-dev\
     procps\
-    ##### Install docker-ce deps
     iptables libdevmapper1.02.1 && \
     rm -rf /var/lib/apt/lists/* 
 

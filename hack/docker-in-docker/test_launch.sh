@@ -12,12 +12,12 @@ then
     echo "${SECRET_AUTH}" > /root/.docker/config.json
 fi
 
-echo "= Docker test suite for ${DISTRO_NAME} ="
+echo "= Docker test suite for ${DISTRO_NAME} =" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 export GOPATH=${WORKSPACE}/test:/go
 export GO111MODULE=auto
 cd /workspace/test/src/github.ibm.com/powercloud/dockertest
 make test WHAT="./tests/${DISTRO_NAME}" GOFLAGS="-v"
 
-echo "== End of the docker test suite =="
+echo "== End of the docker test suite ==" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 
 exit 0
