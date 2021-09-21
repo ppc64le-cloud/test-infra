@@ -116,8 +116,10 @@ else
       do
         echo "= Building for: ${DISTRO} =" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
         make REF=${CONTAINERD_VERS} docker.io/library/${DISTRO}
+        DISTRO_NAME="$(cut -d':' -f1 <<<"${DISTRO}")"
+        DISTRO_VERS="$(cut -d':' -f2 <<<"${DISTRO}")"
 
-        if test -d build/${DISTRO}
+        if test -d build/${DISTRO_NAME}/${DISTRO_VERS}
         then
           echo "${DISTRO} built" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
         else
