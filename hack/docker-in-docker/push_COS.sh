@@ -149,7 +149,6 @@ then
         then
             echo "${DIR_CONTAINERD_PRIVATE} copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
         fi
-        
     else
         # there are no directories yet
         CONTAINERD_BUILD_TAG="1"
@@ -164,9 +163,8 @@ fi
 # check TEST dir in ppc64le-docker
 # check ibm-docker-builds mnt 
 
-ls ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-
-if [[ test -d ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST ]]
+ls ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/* 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+if [[ $? -eq 0 ]]
 then
     echo "Packages in the private COS Bucket" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     BOOL_PRIVATE=0
