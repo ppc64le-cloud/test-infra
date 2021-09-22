@@ -6,12 +6,6 @@ set -ue
 sh ${PATH_SCRIPTS}/dockerd-entrypoint.sh &
 source ${PATH_SCRIPTS}/dockerd-starting.sh
 
-if ! test -d /root/.docker
-then
-    mkdir /root/.docker
-    echo "${DOCKER_SECRET_AUTH}" > /root/.docker/config.json
-fi
-
 echo "= Docker test suite for ${DISTRO_NAME} =" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 export GOPATH=${WORKSPACE}/test:/go
 export GO111MODULE=auto
