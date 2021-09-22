@@ -205,11 +205,10 @@ periodics:
 
               if [[ ${status_code} -ne 0 ]]
               then
-                echo "The docker to push the packages, the log and/or the tests has failed." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-                docker logs $CONT_NAME 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+                echo "The docker to push the packages, the log and/or the tests has failed."
                 exit 1
               else 
-                echo "The packages, the log and/or the tests have been pushed." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+                echo "The packages, the log and/or the tests have been pushed."
                 exit 0
               fi
             fi
