@@ -122,6 +122,8 @@ then
     cp -r /workspace/docker-ce-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/${DIR_DOCKER_PRIVATE}
     cp -r /workspace/test-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/
     cp -r /workspace/prow-job-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/
+else
+    echo "There are no docker-ce packages." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 fi
 
 if [[ ${CONTAINERD_VERS} != "0" ]]
@@ -138,6 +140,8 @@ then
         # !!! TEST !!!
         cp -r /workspace/containerd-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/${DIR_CONTAINERD_PRIVATE}
     fi
+else 
+    echo "There are no containerd packages." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 fi
 
 # check if pushed to COS Buckets and stop the container
@@ -157,7 +161,7 @@ else
     exit 1
 fi
 
-if [[ ${CHECK_TESTS_BOOL} == "NOERR" ]] && [[ BOOL_PRIVATE -eq 0 ]]
+if [[ ${CHECK_TESTS_BOOL} == "NOERR" ]]
 then
     if [[ test -d ${PATH_COS}/s3_${COS_BUCKET_SHARED} ]]
     then
@@ -168,7 +172,7 @@ then
         echo "No error in the tests but shared bucket not mounted." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
         exit 1
     fi
-elif [[ ${CHECK_TESTS_BOOL} == "ERR" ]] && [[ BOOL_PRIVATE -eq 0 ]]
+else
     echo "There was some errors in the test, the packages have been pushed only to the private COS Bucket." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     exit 0
 fi
