@@ -112,12 +112,25 @@ if [[ $? -eq 0 ]]
 # copy the builds into the COS Bucket ppc64le-docker, the tests and the log
 then
     DIR_DOCKER_PRIVATE=docker-ce-${DOCKER_VERS}
-    echo "${DIR_DOCKER_PRIVATE} copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-    echo "/workspace/test_* copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+    
     # !!! TEST !!!
     cp -r /workspace/docker-ce-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/${DIR_DOCKER_PRIVATE}
+    if test -d ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/${DIR_DOCKER_PRIVATE}
+    then
+        echo "${DIR_DOCKER_PRIVATE} copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+    fi
+
     cp -r /workspace/test_* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/
-    cp -r /workspace/prow-job-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/
+    if test -d ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/test_*
+    then
+        echo "/workspace/test_* copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+    fi
+
+    cp -r /workspace/prow-job-*.log ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/
+    if test -f ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/prow-job-*.log
+    then
+        echo "/workspace/prow-job-* copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+    fi
 else
     echo "There are no docker-ce packages." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 fi
