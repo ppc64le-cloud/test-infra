@@ -8,7 +8,7 @@ source env.list
 source env-distrib.list
 
 DIR_TEST="/workspace/test_docker-ce-${DOCKER_VERS}_containerd-${CONTAINERD_VERS}"
-PATH_DOCKERFILE="/workspace/${DIR_GITHUB}/images/docker-in-docker/test"
+PATH_DOCKERFILE="/workspace/${DIR_GITHUB}images/docker-in-docker/test"
 PATH_TEST_ERRORS="${DIR_TEST}/errors.txt"
 
 echo "# Dockerd #" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
