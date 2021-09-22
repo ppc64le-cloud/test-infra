@@ -88,7 +88,7 @@ else
         fi
 
         echo "### # Running the tests from the container: ${CONT_NAME} # ###" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-        docker run --env SECRET_AUTH --env DISTRO_NAME --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${IMAGE_NAME}
+        docker run --env DOCKER_SECRET_AUTH --env DISTRO_NAME --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${IMAGE_NAME}
 
         status_code="$(docker container wait $CONT_NAME)"
         if [[ ${status_code} -ne 0 ]]; then
