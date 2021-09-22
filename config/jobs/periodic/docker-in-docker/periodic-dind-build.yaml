@@ -93,10 +93,6 @@ periodics:
               fi
               set -o allexport
               source env.list
-              echo "&&& DEBUG ENV.LIST"
-              echo $DOCKER_VERS
-              echo $CONTAINERD_VERS
-              echo $PACKAGING_REF
             else
               echo "There is no env.list" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
             fi
@@ -133,9 +129,6 @@ periodics:
                 exit 1
               fi
               source env-distrib.list
-              echo "&&& DEBUG ENV-DISTRIB.LIST"
-              echo $DEBS
-              echo $RPMS
             else
               echo "There is no env-distrib.list" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               exit 1
@@ -184,7 +177,6 @@ periodics:
               echo "*** *** * TESTS CHECK * *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               source ${PATH_SCRIPTS}/check_tests.sh
               echo ${CHECK_TESTS_BOOL} 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              export CHECK_TESTS_BOOL
             fi
 
             # push to the COS Bucket
