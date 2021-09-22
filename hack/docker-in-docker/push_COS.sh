@@ -129,6 +129,7 @@ if [[ ${CONTAINERD_VERS} != "0" ]]
 then
     ls -d /workspace/containerd-* 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     if [[ $? -eq 0]]
+    then
         # copy the builds in the COS bucket ppc64le-docker
         DIR_CONTAINERD_PRIVATE=containerd-${CONTAINERD_VERS}
         # copy the package to the cos bucket
