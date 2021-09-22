@@ -168,6 +168,7 @@ if [[ $? -eq 0 ]]
 then
     echo "Packages in the private COS Bucket" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     BOOL_PRIVATE=0
+    
 else
     echo "Packages not in the private COS Bucket" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     exit 1
@@ -175,7 +176,7 @@ fi
 
 if [[ ${CHECK_TESTS_BOOL} == "NOERR" ]]
 then
-    if [[ test -d ${PATH_COS}/s3_${COS_BUCKET_SHARED} ]]
+    if test -d ${PATH_COS}/s3_${COS_BUCKET_SHARED}
     then
         ls ${PATH_COS}/s3_${COS_BUCKET_SHARED} 2>&1 | tee -a ${PATH_LOG_PROWJOB}
         echo "No error in the tests and shared bucket mounted." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
@@ -185,7 +186,7 @@ then
         exit 1
     fi
 else
-    echo "There was some errors in the test, the packages have been pushed only to the private COS Bucket." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+    echo "There were some errors in the test, the packages have been pushed only to the private COS Bucket." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     exit 0
 fi
 
