@@ -41,10 +41,12 @@ then
             echo "There is no error in the test log files. We can push to the shared COS Bucket. " 2>&1 | tee -a ${PATH_LOG_PROWJOB}
             # push NO ERROR
             CHECK_TESTS_BOOL="NOERR"
+            exit 0
         else 
             echo "We have every log but there are errors in the test log files. " 2>&1 | tee -a ${PATH_LOG_PROWJOB}
             # push ERROR
             CHECK_TESTS_BOOL="ERR"
+            exit 0
         fi
     else 
         # error and push to cos bucket ERR
@@ -68,9 +70,11 @@ then
         echo "There are ${TOTAL_MISSING} test log files missing and there are ${TOTAL_ERRORS} errors for the existing test log files." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
         # push ERROR
         CHECK_TESTS_BOOL="ERR"
+        exit 0
 
     fi
     echo "There are no build logs or no test logs." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     # push ERROR
     CHECK_TESTS_BOOL="ERR"
+    exit 0
 fi

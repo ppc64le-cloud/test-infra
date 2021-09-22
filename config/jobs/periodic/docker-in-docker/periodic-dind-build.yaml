@@ -190,7 +190,6 @@ periodics:
                 docker logs $CONT_NAME 2>&1 | tee -a ${PATH_LOG_PROWJOB}
                 exit 1
               else
-                docker logs $CONT_NAME 2>&1 | tee -a ${PATH_LOG_PROWJOB}
                 echo "*** *** * TESTS CHECK * *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
                 source ${PATH_SCRIPTS}/check_tests.sh
                 echo ${CHECK_TESTS_BOOL} 2>&1 | tee -a ${PATH_LOG_PROWJOB}
