@@ -127,8 +127,8 @@ if [[ ${CONTAINERD_VERS} != "0" ]]
 then
     ls -d /workspace/containerd-* 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     if [[ $? -eq 0]]
+    # copy the builds in the COS bucket ppc64le-docker
     then
-        # copy the builds in the COS bucket ppc64le-docker
         DIR_CONTAINERD_PRIVATE=containerd-${CONTAINERD_VERS}
         # copy the package to the cos bucket
         # cp -r /workspace/containerd-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/${DIR_CONTAINERD_PRIVATE}
