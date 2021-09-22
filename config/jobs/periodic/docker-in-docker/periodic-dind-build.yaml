@@ -25,6 +25,7 @@ periodics:
           DATE=`date +%d%m%y-%H%S`
           PATH_LOG_PROWJOB="/workspace/prow-job-${DATE}.log"
 
+          export DIR_GITHUB
           export PATH_SCRIPTS
           export PATH_LOG_PROWJOB
 
