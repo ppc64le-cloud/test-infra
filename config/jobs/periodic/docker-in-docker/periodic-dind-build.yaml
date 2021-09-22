@@ -182,7 +182,7 @@ periodics:
               # test the packages
               echo "*** *** TEST *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker-test
-              docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/test.sh
+              docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB --env DIR_GITHUB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/test.sh
               status_code="$(docker container wait $CONT_NAME)"
               if [[ ${status_code} -ne 0 ]]
               then
