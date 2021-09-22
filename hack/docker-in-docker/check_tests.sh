@@ -73,6 +73,7 @@ then
         exit 0
 
     fi
+else
     echo "There are no build logs or no test logs." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     # push ERROR
     CHECK_TESTS_BOOL="ERR"
