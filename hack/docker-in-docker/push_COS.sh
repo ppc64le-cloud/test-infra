@@ -37,10 +37,10 @@ then
     # delete the last packages (both if CONTAINERD_VERS != 0)
     # remove last version of docker-ce and last tests and last log
     # rm -rf ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/docker-ce-*
-    # rm -rf ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/test-*
+    # rm -rf ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/test_*
     # rm -rf ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/prow-job-*
     echo "${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/docker-ce-* deleted" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-    echo "${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/test-* deleted" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+    echo "${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/test_* deleted" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     echo "${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/prow-job-* deleted" 2>&1 | tee -a ${PATH_LOG_PROWJOB}   
 
     if [[ ${CONTAINERD_VERS} != "0" ]]
@@ -108,19 +108,15 @@ mkdir -p ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST
 
 # push packages, no matter what ${CHECK_TESTS_BOOL} is
 ls -d /workspace/docker-ce-* 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-if [[ $? -eq 0]]
+if [[ $? -eq 0 ]]
+# copy the builds into the COS Bucket ppc64le-docker, the tests and the log
 then
-    # copy the builds into the COS Bucket ppc64le-docker, the tests and the log
     DIR_DOCKER_PRIVATE=docker-ce-${DOCKER_VERS}
-    # copy the package to the cos bucket
-    # cp -r /workspace/docker-ce-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/${DIR_DOCKER_PRIVATE}
-    # cp -r /workspace/test-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/
-    # cp -r /workspace/prow-job-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/
     echo "${DIR_DOCKER_PRIVATE} copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-    echo "/workspace/test-* copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
+    echo "/workspace/test_* copied" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     # !!! TEST !!!
     cp -r /workspace/docker-ce-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/${DIR_DOCKER_PRIVATE}
-    cp -r /workspace/test-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/
+    cp -r /workspace/test_* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/
     cp -r /workspace/prow-job-* ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST/
 else
     echo "There are no docker-ce packages." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
@@ -178,7 +174,7 @@ else
 fi
 
 
-# if [[ test -d  ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/${DIR_DOCKER_PRIVATE} ]] && [[ test -d ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/test-* ]]
+# if [[ test -d  ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/${DIR_DOCKER_PRIVATE} ]] && [[ test -d ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/test_* ]]
 # then
 #     echo "DOCKER_CE and TEST in the private COS bucket" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 #     if [[ ${CONTAINERD_VERS} != "0" ]] 
