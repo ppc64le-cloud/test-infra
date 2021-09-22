@@ -31,7 +31,7 @@ mkdir -p ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}
 s3fs ${COS_BUCKET_PRIVATE} ${PATH_COS}/s3_${COS_BUCKET_PRIVATE} -o url=${URL_COS_PRIVATE} -o passwd_file=${PATH_PASSWORD} -o ibm_iam_auth
 
 # if there are no errors
-if [[ ${CHECK_TESTS_BOOL} -eq "NOERR" ]]
+if [[ ${CHECK_TESTS_BOOL} == "NOERR" ]]
 then
     echo "- NOERR ppc64le-docker -" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     # delete the last packages (both if CONTAINERD_VERS != 0)
@@ -155,7 +155,7 @@ else
     exit 1
 fi
 
-if [[ ${CHECK_TESTS_BOOL} -eq "NOERR" ]] && [[ BOOL_PRIVATE -eq 0 ]]
+if [[ ${CHECK_TESTS_BOOL} == "NOERR" ]] && [[ BOOL_PRIVATE -eq 0 ]]
 then
     if [[ test -d ${PATH_COS}/s3_${COS_BUCKET_SHARED} ]]
     then
@@ -166,7 +166,7 @@ then
         echo "No error in the tests but shared bucket not mounted." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
         exit 1
     fi
-elif [[ ${CHECK_TESTS_BOOL} -eq "ERR" ]] && [[ BOOL_PRIVATE -eq 0 ]]
+elif [[ ${CHECK_TESTS_BOOL} == "ERR" ]] && [[ BOOL_PRIVATE -eq 0 ]]
     echo "There was some errors in the test, the packages have been pushed only to the private COS Bucket." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
     exit 0
 fi
@@ -193,7 +193,7 @@ fi
 #     exit 1 
 # fi
 
-# if [[ ${CHECK_TESTS_BOOL} -eq "NOERR" ]] && [[ BOOL_PRIVATE -eq 0 ]]
+# if [[ ${CHECK_TESTS_BOOL} == "NOERR" ]] && [[ BOOL_PRIVATE -eq 0 ]]
 # then
 #     if [[ test -d ${PATH_COS}/s3_${COS_BUCKET_SHARED}/${DIR_DOCKER_SHARED} ]]
 #     then
