@@ -199,7 +199,7 @@ periodics:
               # push to the COS Bucket
               echo "*** *** ** COS Bucket ** *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
               CONT_NAME=docker_s3_push
-              docker run --env S3_SECRET_AUTH --env PATH_LOG_PROWJOB --env CHECK_TESTS_BOOL -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/push_COS.sh"
+              docker run --env S3_SECRET_AUTH --env DOCKER_VERS --env CONTAINERD_VERS --env PATH_LOG_PROWJOB --env CHECK_TESTS_BOOL -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/push_COS.sh"
               status_code="$(docker container wait $CONT_NAME)"
               echo $status_code 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 

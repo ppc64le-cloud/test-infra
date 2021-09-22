@@ -109,6 +109,7 @@ mkdir -p ${PATH_COS}/s3_${COS_BUCKET_PRIVATE}/prow-docker/TEST
 # push packages, no matter what ${CHECK_TESTS_BOOL} is
 ls -d /workspace/docker-ce-* 2>&1 | tee -a ${PATH_LOG_PROWJOB}
 if [[ $? -eq 0]]
+then
     # copy the builds into the COS Bucket ppc64le-docker, the tests and the log
     DIR_DOCKER_PRIVATE=docker-ce-${DOCKER_VERS}
     # copy the package to the cos bucket
