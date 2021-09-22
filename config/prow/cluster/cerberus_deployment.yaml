@@ -60,8 +60,6 @@ spec:
                   token: ${token}
               EOL
               export KUBECONFIG=/root/.kube/config
-              cp /etc/cerberus-start/start_cerberus.py /root/cerberus/.
-              cp /etc/cerberus-kubecli/client.py /root/cerberus/cerberus/kubernetes/.
               python3 start_cerberus.py -c config/kubernetes_config.yaml
           ports:
             - containerPort: 8080
@@ -70,10 +68,6 @@ spec:
               name: cerberus-config
             - mountPath: "/root/cerberus/custom_checks"
               name: custom-check
-            - mountPath: "/etc/cerberus-start"
-              name: cerberus-start
-            - mountPath: "/etc/cerberus-kubecli"
-              name: cerberus-kubecli
       volumes:
         - name: cerberus-config
           configMap:
@@ -81,9 +75,3 @@ spec:
         - name: custom-check
           configMap:
             name: cerberus-custom-check
-        - name: cerberus-start
-          configMap:
-            name: cerberus-start
-        - name: cerberus-kubecli
-          configMap:
-            name: cerberus-kubecli

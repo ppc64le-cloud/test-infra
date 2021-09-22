@@ -2,39 +2,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: statusreconciler
   namespace: prow
+  name: hook2
   labels:
-    app: statusreconciler
+    app: hook2
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   selector:
     matchLabels:
-      app: statusreconciler
+      app: hook2
   template:
     metadata:
       labels:
-        app: statusreconciler
+        app: hook2
     spec:
-      serviceAccountName: statusreconciler
+      serviceAccountName: "hook"
       terminationGracePeriodSeconds: 180
       containers:
-        - name: statusreconciler
-          image: gcr.io/k8s-prow/status-reconciler:v20210830-fcbb70627f
+        - name: hook2
+          image: gcr.io/k8s-prow/hook:v20210830-fcbb70627f
+          imagePullPolicy: Always
           args:
             - --dry-run=false
-            - --continue-on-error=true
-            - --plugin-config=/etc/plugins/plugins.yaml
             - --config-path=/etc/config/config.yaml
-            - --github-token-path=/etc/github/token
+            - --github-app-id=120817
+            - --github-app-private-key-path=/etc/github/key
             - --github-host=github.com
             - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
             - --job-config-path=/etc/job-config
-            - --s3-credentials-file=/etc/s3-credentials/service-account.json
-            - --status-path=s3://status-reconciler/status-reconciler-status
+          ports:
+            - name: http
+              containerPort: 8888
           volumeMounts:
-            - name: github-token
+            - name: hmac
+              mountPath: /etc/webhook
+              readOnly: true
+            - name: key
               mountPath: /etc/github
               readOnly: true
             - name: config
@@ -46,13 +55,26 @@ spec:
             - name: plugins
               mountPath: /etc/plugins
               readOnly: true
-            - name: s3-credentials
-              mountPath: /etc/s3-credentials
-              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 600
       volumes:
-        - name: github-token
+        - name: hmac
           secret:
-            secretName: github-token
+            secretName: hmac-token
+        - name: key
+          secret:
+            secretName: github-app-key
         - name: config
           configMap:
             name: config
@@ -62,6 +84,3 @@ spec:
         - name: plugins
           configMap:
             name: plugins
-        - name: s3-credentials
-          secret:
-            secretName: s3-credentials
