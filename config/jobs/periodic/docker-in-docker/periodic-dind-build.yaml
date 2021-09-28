@@ -29,15 +29,6 @@ periodics:
           export PATH_SCRIPTS
           export PATH_LOG_PROWJOB
 
-          # Create the log file
-          echo "Create the prow job log file"
-          touch ${PATH_LOG_PROWJOB}
-          if ! test -f ${PATH_LOG_PROWJOB}
-          then
-            echo "The log file ${PATH_LOG_PROWJOB} was not created."
-            exit 1
-          fi
-
           # clone the directory where the scripts are
           echo "* Git clone and get the dockerd-entrypoint script*" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
           git clone ${PATH_GITHUB}
@@ -78,24 +69,8 @@ periodics:
               exit 1
             fi
 
-            ls /workspace 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            
-            if [[ -f env.list ]]
-            then
-              # check there are 3 env variables in env.list
-              cat env.list 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              if grep -Fq "DOCKER_VERS" env.list && grep -Fq "CONTAINERD_VERS" env.list && grep -Fq "PACKAGING_REF" env.list
-              then 
-                echo "DOCKER_VERS, CONTAINERD_VERS, PACKAGING_REF are in env.list" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              else 
-                echo "DOCKER_VERS, CONTAINERD_VERS and/or PACKAGING_REF are not in env.list" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-                exit 1
-              fi
-              set -o allexport
-              source env.list
-            else
-              echo "There is no env.list" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            fi
+            set -o allexport
+            source env.list
             
             # generate the env-distrib.list
             echo "*** * env-distrib.list * ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
@@ -115,30 +90,12 @@ periodics:
 
             rm -rf docker-ce-packaging
 
-            # check the env.list (versions of docker-ce, containerd and list of packages)
-            if [[ -f env-distrib.list ]]
-            # if there is env.list and env-distrib.list
-            then
-              cat env-distrib.list 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              # check if there are two variables in env-distrib.list
-              if grep -Fq "DEBS" env-distrib.list && grep -Fq "RPMS" env-distrib.list
-              then 
-                echo "DEBS and RPMS are in env-distrib.list" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              else 
-                echo "DEBS and/or RPMS are not in env-distrib.list" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-                exit 1
-              fi
-              source env-distrib.list
-            else
-              echo "There is no env-distrib.list" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              exit 1
-            fi
+            source env-distrib.list
 
             # build docker_ce and containerd
             echo "*** ** BUILD ** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
             CONT_NAME=docker-build
             docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/build.sh 
-            docker logs -f $CONT_NAME
             status_code="$(docker container wait $CONT_NAME)"
             if [[ ${status_code} -ne 0 ]]
             then
