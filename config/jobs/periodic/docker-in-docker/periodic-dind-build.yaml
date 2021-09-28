@@ -56,7 +56,7 @@ periodics:
 
           # start the dockerd
           echo "** Dockerd **" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-          # bash ${PATH_SCRIPTS}/dockerd-entrypoint.sh &
+          bash ${PATH_SCRIPTS}/dockerd-entrypoint.sh &
           source ${PATH_SCRIPTS}/dockerd-starting.sh
 
           if [ -z "$pid" ]
