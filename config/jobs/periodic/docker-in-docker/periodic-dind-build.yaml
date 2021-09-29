@@ -1,7 +1,5 @@
 periodics:
   - name: docker-build
-    labels:
-      preset-secrets: "true"
     cluster: k8s-ppc64le-cluster
     decorate: true
     interval: 24h
