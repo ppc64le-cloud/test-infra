@@ -2,6 +2,11 @@ periodics:
   - name: docker-build
     cluster: k8s-ppc64le-cluster
     decorate: true
+    extra_refs:
+    - org: ppc64le-cloud
+      repo: docker-ce-build
+      base_ref: master
+      workdir: false
     interval: 24h
     spec:
       containers:
@@ -11,145 +16,7 @@ periodics:
         args:
         - -c
         - |
-          # path to the github repository
-          DIR_GITHUB="docker-ce-build"
-          PATH_GITHUB="https://github.com/florencepascual/${DIR_GITHUB}.git"
-          
-          # path to the image for building and testing
-          PATH_IMAGE_BUILD="quay.io/florencepascual/docker_ce_build"
-
-          # path to the scripts 
-          PATH_SCRIPTS="/workspace/${DIR_GITHUB}"
-          DATE=`date +%d%m%y-%H%S`
-          PATH_LOG_PROWJOB="/workspace/prow-job-${DATE}.log"
-
-          export DIR_GITHUB
-          export PATH_SCRIPTS
-          export PATH_LOG_PROWJOB
-
-          # clone the directory where the scripts are
-          echo "* Git clone and get the dockerd-entrypoint script*" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-          git clone ${PATH_GITHUB}
-          if ! test -d ${DIR_GITHUB}
-          then
-            echo "The directory from ${PATH_GITHUB} was not cloned." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            exit 1
-          fi
-          wget -O ${PATH_SCRIPTS}/dockerd-entrypoint.sh https://raw.githubusercontent.com/docker-library/docker/master/dockerd-entrypoint.sh 
-          if ! test -f ${PATH_SCRIPTS}/dockerd-entrypoint.sh
-          then
-            echo "The dockerd-entrypoint file was not downloaded." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            exit 1
-          fi
-          chmod a+x ${PATH_SCRIPTS}/*.sh
-
-          # start the dockerd
-          echo "** Dockerd **" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-          bash ${PATH_SCRIPTS}/dockerd-entrypoint.sh &
-          source ${PATH_SCRIPTS}/dockerd-starting.sh
-
-          if [ -z "$pid" ]
-          then
-            echo "There is no docker daemon." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            exit 1
-          else
-            # get the env file and the dockertest repo and the latest built of containerd if we don't want to build containerd
-            echo "*** COS Bucket ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            CONT_NAME=docker_s3_env
-            docker run --env S3_SECRET_AUTH --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/get_env.sh"
-            status_code="$(docker container wait $CONT_NAME)"
-            echo $status_code 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-
-            if [[ ${status_code} -ne 0 ]]
-            then
-              echo "The docker to get the env.list and the dockertest has failed." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              docker logs $CONT_NAME 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              exit 1
-            fi
-
-            set -o allexport
-            source env.list
-            
-            # generate the env-distrib.list
-            echo "*** * env-distrib.list * ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            mkdir docker-ce-packaging
-            pushd docker-ce-packaging
-            git init
-            git remote add origin  https://github.com/docker/docker-ce-packaging.git
-            git fetch --depth 1 origin ${PACKAGING_REF}
-            git checkout FETCH_HEAD
-
-            make REF=${DOCKER_VERS} checkout
-            popd
-
-            # get the packages list in the env_distrib.list
-            echo DEBS=\"`cd docker-ce-packaging/deb && ls -1d debian-* ubuntu-*`\" > env-distrib.list
-            echo RPMS=\"`cd docker-ce-packaging/rpm && ls -1d centos-* fedora-*`\" >> env-distrib.list
-
-            rm -rf docker-ce-packaging
-
-            source env-distrib.list
-
-            # build docker_ce and containerd
-            echo "*** ** BUILD ** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            CONT_NAME=docker-build
-            docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/build.sh 
-            status_code="$(docker container wait $CONT_NAME)"
-            if [[ ${status_code} -ne 0 ]]
-            then
-              echo "The docker supposed to build the packages has failed." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              exit 1
-            fi
-
-            # change the containerd environment variable if CONTAINERD_VERS=0
-            if [[ ${CONTAINERD_VERS} -eq 0 ]]
-            then
-              echo "Change CONTAINERD_VERS from 0 to the last version we got from the COS Bucket" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              ls -d /workspace/containerd-* 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              if [[ $? -ne 0 ]]
-              then
-                echo "There is no containerd package." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-                exit 1
-              fi
-              CONTAINERD_VERS=$(eval "ls -d /workspace/containerd-* | cut -d'-' -f2")
-              echo ${CONTAINER_VERS} 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              sed -i 's/CONTAINERD_VERS=0/CONTAINERD_VERS='${CONTAINERD_VERS}'/g' env.list
-              cat env.list 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              ls /workspace 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            fi
-
-            # test the packages
-            echo "*** *** TEST *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            CONT_NAME=docker-test
-            docker run --env DOCKER_SECRET_AUTH --env PATH_SCRIPTS --env PATH_LOG_PROWJOB --env DIR_GITHUB -d -v /workspace:/workspace --privileged --name $CONT_NAME ${PATH_IMAGE_BUILD} ${PATH_SCRIPTS}/test.sh
-            status_code="$(docker container wait $CONT_NAME)"
-            if [[ ${status_code} -ne 0 ]]
-            then
-              echo "We have not been able to check the tests." 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              docker logs $CONT_NAME 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              exit 1
-            else
-              echo "*** *** * TESTS CHECK * *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-              source ${PATH_SCRIPTS}/check_tests.sh
-              echo ${CHECK_TESTS_BOOL} 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            fi
-
-            # push to the COS Bucket
-            echo "*** *** ** COS Bucket ** *** ***" 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-            CONT_NAME=docker_s3_push
-            docker run --env S3_SECRET_AUTH --env DOCKER_VERS --env CONTAINERD_VERS --env PATH_LOG_PROWJOB --env CHECK_TESTS_BOOL -d -v /workspace:/workspace --privileged --name $CONT_NAME debian:bullseye /bin/bash -c "${PATH_SCRIPTS}/push_COS.sh"
-            status_code="$(docker container wait $CONT_NAME)"
-            echo $status_code 2>&1 | tee -a ${PATH_LOG_PROWJOB}
-
-            if [[ ${status_code} -ne 0 ]]
-            then
-              echo "The docker to push the packages, the log and/or the tests has failed."
-              exit 1
-            else 
-              echo "The packages, the log and/or the tests have been pushed."
-              exit 0
-            fi
-          fi
+          ./docker-ce-build/prowjob-periodic-dind-build.sh
         resources: {}
         securityContext:
           privileged: true
