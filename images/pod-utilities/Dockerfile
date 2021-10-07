@@ -1,5 +1,5 @@
 ARG POD_UTILITY=clonerefs
-FROM golang:1.15 as builder
+FROM golang:1.17 as builder
 
 ARG POD_UTILITY
 ARG CO_COMMIT=master
