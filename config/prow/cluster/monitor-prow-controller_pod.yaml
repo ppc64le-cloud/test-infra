@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: monitor-prow-controller
+  namespace: prow
+spec:
+  serviceAccountName: monitor-prow-controller
+  containers:
+  - name: monitor-prow-controller
+    image: quay.io/powercloud/all-in-one:0.2
+    command:
+      - /bin/bash
+    args:
+      - -c
+      - |
+        KCTL="kubectl -n prow"
+        while true;do
+            $KCTL logs deployment/prow-controller-manager | grep "Failed to get API Group-Resources"
+            if [[ $? -eq 0 ]]; then
+                $KCTL scale deployment prow-controller-manager --replicas=0
+                $KCTL scale deployment prow-controller-manager --replicas=1
+            fi
+            sleep 300
+        done
