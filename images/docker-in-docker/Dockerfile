@@ -3,14 +3,6 @@
 # This is inspired from  https://github.com/alunsin/all_in_one_dind/blob/90d0d0df6de2ea4d0666f3e10adce28a5fffcc88/Dockerfile
 ##
 
-##
-# Instruction: Manually copy or wget the deb file in the Dockerfile folder or wget in the Dockerfile
-# wget https://download.docker.com/linux/debian/dists/bullseye/pool/stable/ppc64el/containerd.io_$CONTAINERD_VERSION_ppc64el.deb
-#
-#  docker build -t docker_ce_build .
-#
-###
-
 FROM debian:bullseye
 
 ARG CONTAINERD_VERSION=1.4.6-1
@@ -39,6 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     procps \
     rsync \
+    s3fs \
     unzip \
     wget \
     xz-utils \
@@ -75,17 +68,17 @@ RUN set -eux; \
 # set up subuid/subgid so that "--userns-remap=default" works out-of-the-box
 ##
 RUN set -eux; \
-	addgroup --system dockremap; \
-	adduser --system --ingroup dockremap dockremap; \
-	echo 'dockremap:165536:65536' >> /etc/subuid; \
-	echo 'dockremap:165536:65536' >> /etc/subgid
+        addgroup --system dockremap; \
+        adduser --system --ingroup dockremap dockremap; \
+        echo 'dockremap:165536:65536' >> /etc/subuid; \
+        echo 'dockremap:165536:65536' >> /etc/subgid
 
 # https://github.com/docker/docker/tree/master/hack/dind
 ENV DIND_COMMIT ed89041433a031cafc0a0f19cfe573c31688d377
 
 RUN set -eux; \
-	wget -O /usr/local/bin/dind "https://raw.githubusercontent.com/docker/docker/${DIND_COMMIT}/hack/dind"; \
-	chmod +x /usr/local/bin/dind;
+        wget -O /usr/local/bin/dind "https://raw.githubusercontent.com/docker/docker/${DIND_COMMIT}/hack/dind"; \
+        chmod +x /usr/local/bin/dind;
 
 #COPY dockerd-entrypoint.sh /usr/local/bin/
 RUN set -eux; \

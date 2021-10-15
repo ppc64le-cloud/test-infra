@@ -10,13 +10,13 @@ periodics:
     interval: 24h
     spec:
       containers:
-      - image: quay.io/florencepascual/docker_ce_build
+      - image: quay.io/powercloud/docker-ce-build
         command:
         - /bin/bash
         args:
         - -c
         - |
-          ./docker-ce-build/prowjob-periodic-dind-build.sh
+          ./prowjob-periodic-dind-build.sh
         resources: {}
         securityContext:
           privileged: true
