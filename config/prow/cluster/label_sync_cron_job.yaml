@@ -16,12 +16,14 @@ spec:
         spec:
           containers:
             - name: label-sync
-              image: gcr.io/k8s-prow/label_sync:v20200724-4a9ed14895
+              image: gcr.io/k8s-prow/label_sync:v20211006-258d96010e
               args:
                 - --config=/etc/config/labels.yaml
                 - --confirm=true
-                - --only=ppc64le-cloud/test-infra,ocp-power-automation/ocp4-upi-powervs,ocp-power-automation/infra,ppc64le-cloud/kubetest2-plugins
+                - --only=ppc64le-cloud/test-infra,ppc64le-cloud/kubetest2-plugins,ppc64le-cloud/k8s-ansible,ppc64le-cloud/pvsadm,ocp-power-automation/ocp4-upi-powervs,ocp-power-automation/infra,ocp-power-automation/ocp4-playbooks
                 - --token=/etc/github/token
+                - --endpoint=http://ghproxy
+                - --endpoint=https://api.github.com
               volumeMounts:
                 - name: oauth
                   mountPath: /etc/github

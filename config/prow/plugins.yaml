@@ -32,6 +32,7 @@ approve:
     require_self_approval: false
   - repos:
       - ocp-power-automation/ocp4-upi-powervs
+      - ocp-power-automation/ocp4-playbooks
       - ocp-power-automation/ocp4-upi-powervm
       - ocp-power-automation/ocp-power-automation.github.io
     require_self_approval: false
@@ -77,6 +78,12 @@ require_matching_label:
   - missing_label: needs-kind
     org: ocp-power-automation
     repo: ocp4-upi-powervs
+    issues: true
+    prs: true
+    regexp: ^kind/
+  - missing_label: needs-kind
+    org: ocp-power-automation
+    repo: ocp4-playbooks
     issues: true
     prs: true
     regexp: ^kind/

@@ -6,7 +6,6 @@ periodics:
     - org: ppc64le-cloud
       repo: docker-ce-build
       base_ref: master
-      workdir: false
     interval: 24h
     spec:
       containers:
@@ -16,7 +15,12 @@ periodics:
         args:
         - -c
         - |
-          ./prowjob-periodic-dind-build.sh
+          if [[ $PWD != /home/prow/go/src/github.com/ppc64le-cloud/docker-ce-build ]]
+          then
+            cd /home/prow/go/src/github.com/ppc64le-cloud/docker-ce-build
+           fi
+           chmod a+x *.sh
+          source prowjob-periodic-dind-build.sh
         resources: {}
         securityContext:
           privileged: true
@@ -24,6 +28,11 @@ periodics:
         - name: docker-root
           mountPath: /var/lib/docker
         env:
+          - name: DOCKER_SECRET_AUTH
+            valueFrom:
+              secretKeyRef: 
+                name: docker-token
+                key: .dockerconfigjson
           - name: S3_SECRET_AUTH
             valueFrom:
               secretKeyRef: 
