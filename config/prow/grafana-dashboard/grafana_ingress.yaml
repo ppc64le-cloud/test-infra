@@ -9,17 +9,17 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-staging
     kubernetes.io/ingress.class: public-iks-k8s-nginx
 spec:
-  backend:
-    serviceName: grafana
-    servicePort: 80
   rules:
     - host: grafana.ppc64le-cloud.org
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: grafana
-              servicePort: 80
+              service:
+                name: grafana
+                port:
+                  number: 80
   tls:
     - hosts:
         - grafana.ppc64le-cloud.org
