@@ -51,6 +51,14 @@ spec:
               name: ocp4-powervs-scale
               subPath: ocp4-powervs-scale.json
               readOnly: false
+            - mountPath: /var/lib/grafana/dashboards/ocp4-powervm-e2e.json
+              name: ocp4-powervm-e2e
+              subPath: ocp4-powervm-e2e.json
+              readOnly: false
+            - mountPath: /var/lib/grafana/dashboards/ocp4-powervm-scale.json
+              name: ocp4-powervm-scale
+              subPath: ocp4-powervm-scale.json
+              readOnly: false
             - mountPath: /etc/grafana/provisioning/dashboards/grafana-dashboard-provider.yaml
               name: grafana-dashboard-provider
               readOnly: true
@@ -70,3 +78,9 @@ spec:
         - configMap:
             name: ocp4-powervs-scale
           name: ocp4-powervs-scale
+        - configMap:
+            name: ocp4-powervm-e2e
+          name: ocp4-powervm-e2e
+        - configMap:
+            name: ocp4-powervm-scale
+          name: ocp4-powervm-scale
