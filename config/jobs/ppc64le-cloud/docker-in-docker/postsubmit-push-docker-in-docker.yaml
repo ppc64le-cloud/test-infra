@@ -69,24 +69,24 @@ postsubmits:
                 new_tag=$(echo 'v'${latest_major}'.'$((latest_minor+1)))
                 pushd images/docker-in-docker
                 # Build the x86 image
-                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder -t quay.io/powercloud/docker-in-docker:$version-amd64 -f Dockerfile ./
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder -t quay.io/powercloud/docker-ce-build:$version-amd64 -f Dockerfile ./
                 # Build the ppc64le image
-                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --kubeconfig /etc/kubeconfig/config -t quay.io/powercloud/docker-in-docker:$version-ppc64le -f Dockerfile ./
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --kubeconfig /etc/kubeconfig/config -t quay.io/powercloud/docker-ce-build:$version-ppc64le -f Dockerfile ./
                 popd
                 # Manifest for the multi-arch image
                 cat > config.json << EOL
                 $DOCKER_CONFIG
                 EOL
                 cat > registry.yaml <<EOL
-                image: quay.io/powercloud/docker-in-docker:$version
+                image: quay.io/powercloud/docker-ce-build:$version
                 manifests:
                   -
-                    image: quay.io/powercloud/docker-in-docker:$version-ppc64le
+                    image: quay.io/powercloud/docker-ce-build:$version-ppc64le
                     platform:
                       architecture: ppc64le
                       os: linux
                   -
-                    image: quay.io/powercloud/docker-in-docker:$version-amd64
+                    image: quay.io/powercloud/docker-ce-build:$version-amd64
                     platform:
                       architecture: amd64
                       os: linux
