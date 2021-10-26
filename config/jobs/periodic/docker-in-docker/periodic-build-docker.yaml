@@ -1,0 +1,52 @@
+periodics:
+  - name: periodic-build-docker
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    reporter_config:
+      slack:
+        channel: 'prow-job-notifications'
+        job_states_to_report:
+         - success
+         - failure
+         - error
+        report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+    extra_refs:
+    - org: ppc64le-cloud
+      repo: docker-ce-build
+      base_ref: main
+      workdir: true
+    interval: 120h
+    spec:
+      containers:
+      - image: quay.io/powercloud/docker-ce-build
+        command:
+        - /bin/bash
+        args:
+        - -c
+        - |
+          set -o errexit
+          set -o nounset
+          set -o pipefail
+          chmod a+x *.sh
+          ./prowjob-periodic-dind-build.sh
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: docker-root
+          mountPath: /var/lib/docker
+        env:
+          - name: S3_SECRET_AUTH
+            valueFrom:
+              secretKeyRef:
+                name: docker-s3-credentials
+                key: password
+        resources:
+          requests:
+            cpu: 4000m
+            memory: 8Gi
+          limits:
+            cpu: 4000m
+            memory: 8Gi
+      volumes:
+      - name: docker-root
+        emptyDir: {}
