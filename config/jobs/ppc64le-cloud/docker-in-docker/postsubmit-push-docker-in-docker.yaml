@@ -1,6 +1,6 @@
 postsubmits:
   ppc64le-cloud/test-infra:
-    - name: postsubmit-allinone-job
+    - name: postsubmit-push-dind
       decorate: true
       run_if_changed: 'images/docker-in-docker'
       branches:
