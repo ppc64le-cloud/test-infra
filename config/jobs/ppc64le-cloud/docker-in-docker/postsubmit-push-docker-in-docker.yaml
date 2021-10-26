@@ -30,16 +30,13 @@ postsubmits:
                 set -o errexit
                 set -o nounset
                 set -o pipefail
-
                 # Build and install vmware-tanzu/buildkit-cli-for-kubectl
                 pushd $GOPATH/src/github.com/vmware-tanzu/buildkit-cli-for-kubectl
                 make build install
                 popd
-
                 # Install manifest-tool
                 curl -L https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-`go env GOARCH` -o /usr/local/bin/manifest-tool
                 chmod +x /usr/local/bin/manifest-tool
-
                 # Kubeconfig for the x86 cluster
                 ca=$(base64 -w 0 /run/secrets/kubernetes.io/serviceaccount/ca.crt)
                 token=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
@@ -65,22 +62,17 @@ postsubmits:
                     token: ${token}
                 EOL
                 export KUBECONFIG=$(pwd)/kubeconfig
-                
                 # Get the latest tag in the quay.io/powercloud/docker-ce-build
                 latest_tag=$(curl -H "Authorization: Bearer XYZ" -X GET "https://quay.io/api/v1/repository/powercloud/docker-ce-build/tag/" | jq .tags[].name | grep v | head -1 | sed -e 's|\"||g')
                 latest_major=$(echo $latest_tag | cut -d'v' -f2 | cut -d'.' -f1)
                 latest_minor=$(echo $latest_tag | cut -d'v' -f2 | cut -d'.' -f2)
                 new_tag=$(echo 'v'${latest_major}'.'$((latest_minor+1)))
-
                 pushd images/docker-in-docker
-
                 # Build the x86 image
                 kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder -t quay.io/powercloud/docker-in-docker:$version-amd64 -f Dockerfile ./
-
                 # Build the ppc64le image
                 kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --kubeconfig /etc/kubeconfig/config -t quay.io/powercloud/docker-in-docker:$version-ppc64le -f Dockerfile ./
                 popd
-
                 # Manifest for the multi-arch image
                 cat > config.json << EOL
                 $DOCKER_CONFIG
