@@ -1,0 +1,106 @@
+postsubmits:
+  ppc64le-cloud/test-infra:
+    - name: postsubmit-allinone-job
+      decorate: true
+      run_if_changed: 'images/docker-in-docker'
+      branches:
+        - master
+      extra_refs:
+        - base_ref: v0.1.2
+          org: vmware-tanzu
+          repo: buildkit-cli-for-kubectl
+      spec:
+        serviceAccountName: build-img
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.2
+            env:
+              - name: DOCKER_CONFIG
+                valueFrom:
+                  secretKeyRef:
+                    name: quay-powercloud-regcred
+                    key: .dockerconfigjson
+            volumeMounts:
+              - name: kubeconfig
+                mountPath: /etc/kubeconfig
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+
+                # Build and install vmware-tanzu/buildkit-cli-for-kubectl
+                pushd $GOPATH/src/github.com/vmware-tanzu/buildkit-cli-for-kubectl
+                make build install
+                popd
+
+                # Install manifest-tool
+                curl -L https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-`go env GOARCH` -o /usr/local/bin/manifest-tool
+                chmod +x /usr/local/bin/manifest-tool
+
+                # Kubeconfig for the x86 cluster
+                ca=$(base64 -w 0 /run/secrets/kubernetes.io/serviceaccount/ca.crt)
+                token=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+                namespace=$(cat /run/secrets/kubernetes.io/serviceaccount/namespace)
+                cat >kubeconfig <<EOL
+                apiVersion: v1
+                kind: Config
+                clusters:
+                - name: default-cluster
+                  cluster:
+                    certificate-authority-data: ${ca}
+                    server: https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}
+                contexts:
+                - name: default-context
+                  context:
+                    cluster: default-cluster
+                    namespace: ${namespace}
+                    user: default-user
+                current-context: default-context
+                users:
+                - name: default-user
+                  user:
+                    token: ${token}
+                EOL
+                export KUBECONFIG=$(pwd)/kubeconfig
+                
+                # Get the latest tag in the quay.io/powercloud/docker-ce-build
+                latest_tag=$(curl -H "Authorization: Bearer XYZ" -X GET "https://quay.io/api/v1/repository/powercloud/docker-ce-build/tag/" | jq .tags[].name | grep v | head -1 | sed -e 's|\"||g')
+                latest_major=$(echo $latest_tag | cut -d'v' -f2 | cut -d'.' -f1)
+                latest_minor=$(echo $latest_tag | cut -d'v' -f2 | cut -d'.' -f2)
+                new_tag=$(echo 'v'${latest_major}'.'$((latest_minor+1)))
+
+                pushd images/docker-in-docker
+
+                # Build the x86 image
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder -t quay.io/powercloud/docker-in-docker:$version-amd64 -f Dockerfile ./
+
+                # Build the ppc64le image
+                kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --kubeconfig /etc/kubeconfig/config -t quay.io/powercloud/docker-in-docker:$version-ppc64le -f Dockerfile ./
+                popd
+
+                # Manifest for the multi-arch image
+                cat > config.json << EOL
+                $DOCKER_CONFIG
+                EOL
+                cat > registry.yaml <<EOL
+                image: quay.io/powercloud/docker-in-docker:$version
+                manifests:
+                  -
+                    image: quay.io/powercloud/docker-in-docker:$version-ppc64le
+                    platform:
+                      architecture: ppc64le
+                      os: linux
+                  -
+                    image: quay.io/powercloud/docker-in-docker:$version-amd64
+                    platform:
+                      architecture: amd64
+                      os: linux
+                EOL
+                manifest-tool --debug --docker-cfg `pwd` push from-spec registry.yaml
+        volumes:
+          - name: kubeconfig
+            secret:
+              secretName: image-builder-ppc-kubeconfig
