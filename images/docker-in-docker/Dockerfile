@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     file \
     git \
+    libssl-dev \
     make \
     openssh-client \
     pkg-config \
