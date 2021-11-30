@@ -102,11 +102,12 @@ periodics:
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
                 --cluster-name config1-$TIMESTAMP \
+                --workers-count 2 \
                 --up --down --auto-approve --retry-on-tf-failure 3 \
                 --break-kubetest-on-upfail true \
                 --ignore-destroy-errors \
                 --powervs-memory 32 \
-                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket k8s-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
+                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket k8s-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]'
   - name: periodic-kubernetes-containerd-conformance-test-ppc64le
     cluster: k8s-ppc64le-cluster
     decorate: true
@@ -171,8 +172,9 @@ periodics:
                 --build-version $K8S_BUILD_VERSION \
                 --runtime containerd \
                 --cluster-name config2-$TIMESTAMP \
+                --workers-count 2 \
                 --up --down --auto-approve --retry-on-tf-failure 3 \
                 --break-kubetest-on-upfail true \
                 --ignore-destroy-errors \
                 --powervs-memory 32 \
-                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket k8s-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Disruptive\]|\[Serial\]'
+                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket k8s-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]'
