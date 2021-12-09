@@ -151,7 +151,8 @@ postsubmits:
                     --ssh-private-key /etc/secret-volume/ssh-privatekey \
                     --build-version $K8S_BUILD_VERSION \
                     --s3-server $S3_SERVER --bucket $BUCKET  --directory $DIRECTORY \
-                    --cluster-name config3-$TIMESTAMP \
+                    --runtime containerd \
+                    --cluster-name config2-$TIMESTAMP \
                     --workers-count 2 \
                     --up --down --auto-approve --retry-on-tf-failure 3 \
                     --break-kubetest-on-upfail true \
@@ -160,4 +161,4 @@ postsubmits:
                     --test=exec -- /usr/local/bin/ginkgo --nodes=10 /usr/local/bin/e2e.test \
                     -- --ginkgo.focus='\[Conformance\]' \
                     --report-dir=$ARTIFACTS \
-                    --kubeconfig="$(pwd)/config3-$TIMESTAMP/kubeconfig"
+                    --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"
