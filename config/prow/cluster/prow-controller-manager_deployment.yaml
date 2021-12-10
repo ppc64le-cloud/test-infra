@@ -8,6 +8,12 @@ metadata:
     app: prow-controller-manager
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: prow-controller-manager
@@ -46,6 +52,18 @@ spec:
             - name: kubeconfig
               mountPath: /etc/kubeconfig
               readOnly: true
+          livenessProbe: # Pod is killed if this fails 3 times.
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe: # Pod is not considered ready (for rolling deploy and request routing) if this fails 3 times.
+            httpGet:
+              path: /healthz/ready
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 3
       volumes:
         - name: github-token
           secret:
