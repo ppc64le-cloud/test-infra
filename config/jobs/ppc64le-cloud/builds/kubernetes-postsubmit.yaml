@@ -151,14 +151,27 @@ postsubmits:
                     --ssh-private-key /etc/secret-volume/ssh-privatekey \
                     --build-version $K8S_BUILD_VERSION \
                     --s3-server $S3_SERVER --bucket $BUCKET  --directory $DIRECTORY \
-                    --runtime containerd \
                     --cluster-name config2-$TIMESTAMP \
                     --workers-count 2 \
-                    --up --down --auto-approve --retry-on-tf-failure 3 \
+                    --up --auto-approve --retry-on-tf-failure 3 \
                     --break-kubetest-on-upfail true \
-                    --ignore-destroy-errors \
                     --powervs-memory 32 \
                     --test=exec -- /usr/local/bin/ginkgo --nodes=10 /usr/local/bin/e2e.test \
                     -- --ginkgo.focus='\[Conformance\]' \
+                    --ginkgo.skip='\[Serial\]' \
+                    --ginkgo.flakeAttempts=2 \
                     --report-dir=$ARTIFACTS \
+                    --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"
+                #Workaround for kubetest2 failure to run twice
+                #https://github.com/kubernetes-sigs/kubetest2/issues/176
+                rm metadata.json
+                kubetest2 tf --powervs-region lon --powervs-zone lon04 \
+                    --powervs-service-id f57510e4-7109-45ab-9dbb-a9fd38529707 \
+                    --ignore-cluster-dir true \
+                    --cluster-name config2-$TIMESTAMP \
+                    --down --auto-approve --ignore-destroy-errors \
+                    --test=exec -- /usr/local/bin/ginkgo /usr/local/bin/e2e.test \
+                    -- --ginkgo.focus='\[Serial\].*\[Conformance\]' \
+                    --ginkgo.flakeAttempts=2 \
+                    --report-dir=$ARTIFACTS/serial_tests_artifacts \
                     --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"
