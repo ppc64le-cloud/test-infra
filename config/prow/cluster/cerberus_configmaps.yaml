@@ -62,15 +62,14 @@ data:
         logging.info("Check health of prow controller\n")
 
     def check():
-        pod_name =  runcommand.invoke("kubectl -n prow get pods -o custom-columns=\":metadata.name\" | grep controller")
-        pod_log = runcommand.invoke("kubectl -n prow logs %s" % (pod_name))
+        pod_log = runcommand.invoke("kubectl logs deploy/prow-controller-manager -n prow")
 
         if ((pod_log.find("Failed to get API Group-Resources")) != -1):
-            message = "Prow controller Pod has Error"
+            message = "Prow controller Pod has Error. Wait for monitor-prow-controller pod to fix"
             logging.info(message)
             return False, message
         else:
-            message = "Prow controller Pod has No Error"
+            message = "Prow controller Pod has No Error related to getting API Group-Resources"
             logging.info(message)
             return True, message
 
