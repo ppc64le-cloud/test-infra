@@ -70,10 +70,10 @@ plank:
         path_strategy: explicit
       s3_credentials_secret: s3-credentials
       utility_images:
-        clonerefs: quay.io/powercloud/clonerefs:v20211203-281e29a97a
-        entrypoint: quay.io/powercloud/entrypoint:v20211203-281e29a97a
-        initupload: quay.io/powercloud/initupload:v20211203-281e29a97a
-        sidecar: quay.io/powercloud/sidecar:v20211203-281e29a97a
+        clonerefs: quay.io/powercloud/clonerefs:v20211229-d20cd1c87e
+        entrypoint: quay.io/powercloud/entrypoint:v20211229-d20cd1c87e
+        initupload: quay.io/powercloud/initupload:v20211229-d20cd1c87e
+        sidecar: quay.io/powercloud/sidecar:v20211229-d20cd1c87e
       ssh_key_secrets:
         - bot-ssh-secret
 

@@ -36,6 +36,8 @@ spec:
             requests:
               cpu: 100m
               memory: 100Mi
+          securityContext:
+            allowPrivilegeEscalation: false
           volumeMounts:
             - mountPath: /var/lib/grafana
               name: grafana-storage
@@ -63,6 +65,11 @@ spec:
               name: grafana-dashboard-provider
               readOnly: true
               subPath: grafana-dashboard-provider.yaml
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 1000
+        runAsGroup: 1000
       volumes:
         - emptyDir: {}
           name: grafana-storage
