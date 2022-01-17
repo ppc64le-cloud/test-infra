@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: prow
+  name: ci-search
+spec:
+  selector:
+    app: ci-search
+  ports:
+    - port: 8080
+      targetPort: 8080

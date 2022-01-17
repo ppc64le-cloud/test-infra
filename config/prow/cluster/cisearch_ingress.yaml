@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: prow
+  name: ci-search
+  annotations:
+    # Change this to your issuer when using cert-manager. Does
+    # nothing when not using cert-manager.
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: public-iks-k8s-nginx
+spec:
+  rules:
+    - host: search.ppc64le-cloud.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ci-search
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - search.ppc64le-cloud.org
+      secretName: ppc64le-cloud

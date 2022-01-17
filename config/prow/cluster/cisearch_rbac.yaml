@@ -1,0 +1,27 @@
+# This file contains all the required spec for service account, roles and role bindings for the ci-search deployment
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  namespace: prow
+  name: "ci-search"
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: prow
+  name: "ci-search"
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: prow
+  name: "ci-search"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: "ci-search"
+subjects:
+  - kind: ServiceAccount
+    name: "ci-search"
+    namespace: prow
