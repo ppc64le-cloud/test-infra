@@ -1,0 +1,28 @@
+periodics:
+  - name: periodic-cluster-api-provider-ibmcoud-e2e-test
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+    decorate: true
+    interval: 3h
+    extra_refs:
+      - base_ref: main
+        org: kubernetes-sigs
+        repo: cluster-api-provider-ibmcloud
+        workdir: true
+    spec:
+      containers:
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20220121-354980456e-master
+          env:
+            - name: "E2E_FLAVOR"
+              value: "powervs"
+            - name: "IBMPOWERVS_SSHKEY_NAME"
+              value: "powercloud-bot-key"
+          command:
+            - "runner.sh"
+            - "./scripts/ci-e2e.sh"
+          envFrom:
+            - secretRef:
+                name: ibm-cloud-credentials
+          securityContext:
+            privileged: true
