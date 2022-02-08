@@ -34,7 +34,7 @@ spec:
             - --github-endpoint=https://api.github.com
             - --enable-controller=plank
             - --job-config-path=/etc/job-config
-          image: gcr.io/k8s-prow/prow-controller-manager:v20211229-d20cd1c87e
+          image: gcr.io/k8s-prow/prow-controller-manager:v20220201-d251d8b00d
           env:
             # Use KUBECONFIG envvar rather than --kubeconfig flag in order to provide multiple configs to merge.
             - name: KUBECONFIG
