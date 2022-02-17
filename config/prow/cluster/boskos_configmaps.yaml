@@ -1,0 +1,71 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: resources
+  namespace: test-pods
+data:
+  boskos-resources.yaml: |
+    resources:
+      - type: "powervs-project"
+        state: dirty
+        names:
+        - "capi-powervs-0"
+        - "capi-powervs-1"
+        - "capi-powervs-2"
+        - "capi-powervs-3"
+        - "capi-powervs-4"
+        - "capi-powervs-5"
+        - "capi-powervs-6"
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: janitor-powervs
+  namespace: test-pods
+data:
+  powervs-janitor.sh: |-
+    #!/bin/bash
+
+    set -o errexit
+    set -o nounset
+    set -o pipefail
+
+    INSTANCE_ID=${INSTANCE_ID:-"0f28d13a-6e33-4d86-b6d7-a9b46ff7659e"}
+    PVSADM_VERSION=${PVSADM_VERSION:-"v0.1.4-alpha.3"}
+    ARCH=$(uname -m)
+
+    install_pvsadm(){
+        if ! command -v pvsadm &> /dev/null; then
+            echo "pvsdam command not found, installing it."
+            [ "${ARCH}" == "x86_64" ] && ARCH="amd64"
+
+            # Installing binaries from github releases
+            curl -fsL https://github.com/ppc64le-cloud/pvsadm/releases/download/${PVSADM_VERSION}/pvsadm-linux-${ARCH} -o pvsadm
+            chmod +x ./pvsadm
+            mv ./pvsadm /usr/bin
+        fi
+    }
+
+    main(){
+        args=$1
+        case $1 in
+                -p=*|--project=*)
+                        NETWORK_NAME="${1#*=}"
+                        shift
+                        ;;
+                -*|--*)
+                        echo "Unknown option $1"
+                        exit 1
+                        ;;
+                *)
+                        ;;
+        esac
+
+        install_pvsadm
+        # Deleting the powervs resources
+        pvsadm purge networks --instance-id ${INSTANCE_ID} --regexp "${NETWORK_NAME}" --instances true --ports true --no-prompt
+        [ $? = 0 ] && echo "Succesfully deleted ${NETWORK_NAME}"
+
+    }
+
+    main $@
