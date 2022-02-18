@@ -18,6 +18,8 @@ periodics:
               value: "powervs"
             - name: "IBMPOWERVS_SSHKEY_NAME"
               value: "powercloud-bot-key"
+            - name: "BOSKOS_HOST"
+              value: "boskos.test-pods.svc.cluster.local"
           command:
             - "runner.sh"
             - "./scripts/ci-e2e.sh"
