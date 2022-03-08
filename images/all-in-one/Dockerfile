@@ -1,6 +1,6 @@
-ARG GOLANG_VERSION=1.15.2
+ARG GOLANG_VERSION=1.17.8
 ARG BAZEL_VERSION=2.2.0
-ARG IBM_CLOUD_VERSION=1.2.1
+ARG IBM_CLOUD_VERSION=2.5.0
 FROM golang:$GOLANG_VERSION AS builder
 
 RUN go get rsc.io/goversion \
@@ -9,13 +9,13 @@ RUN go get rsc.io/goversion \
 FROM debian:buster
 
 ARG TF_VERSION
-ENV TF_VERSION ${TF_VERSION:-v0.13.6}
+ENV TF_VERSION ${TF_VERSION:-v1.1.7}
 
 ARG TERRAFORM_PROVIDER_IBM_VERSION
-ENV TERRAFORM_PROVIDER_IBM_VERSION ${TERRAFORM_PROVIDER_IBM_VERSION:-1.21.2}
+ENV TERRAFORM_PROVIDER_IBM_VERSION ${TERRAFORM_PROVIDER_IBM_VERSION:-1.39.1}
 
 ARG TERRAFORM_PROVIDER_NULL_VERSION
-ENV TERRAFORM_PROVIDER_NULL_VERSION ${TERRAFORM_PROVIDER_NULL_VERSION:-2.1.2}
+ENV TERRAFORM_PROVIDER_NULL_VERSION ${TERRAFORM_PROVIDER_NULL_VERSION:-3.1.0}
 
 ARG TF_PLUGIN_PATH
 ENV TF_PLUGIN_PATH ${TF_PLUGIN_PATH:-/root/.terraform.d/plugins/registry.terraform.io/hashicorp}
@@ -27,7 +27,7 @@ ARG BAZEL_VERSION
 ENV BAZEL_VERSION ${BAZEL_VERSION:-2.2.0}
 
 ARG IBM_CLOUD_VERSION
-ENV IBM_CLOUD_VERSION ${IBM_CLOUD_VERSION:-1.2.1}
+ENV IBM_CLOUD_VERSION ${IBM_CLOUD_VERSION:-2.5.0}
 
 WORKDIR /workspace
 RUN mkdir -p /workspace
@@ -88,7 +88,7 @@ RUN set -eux; \
     case "${dpkgArch##*-}" in \
         'amd64') \
             url="https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz"; \
-            ibm_cloud_url="https://clis.ng.bluemix.net/download/bluemix-cli/${IBM_CLOUD_VERSION}/linux64"; \
+            ibm_cloud_url="https://download.clis.cloud.ibm.com/ibm-cloud-cli/${IBM_CLOUD_VERSION}/IBM_Cloud_CLI_${IBM_CLOUD_VERSION}_amd64.tar.gz"; \
             curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg; \
             mv bazel.gpg /etc/apt/trusted.gpg.d/; \
             echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list; \
@@ -96,7 +96,7 @@ RUN set -eux; \
             ;; \
         'ppc64el') \
             url="https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-ppc64le.tar.gz"; \
-            ibm_cloud_url="https://clis.ng.bluemix.net/download/bluemix-cli/${IBM_CLOUD_VERSION}/ppc64le"; \
+            ibm_cloud_url="https://download.clis.cloud.ibm.com/ibm-cloud-cli/${IBM_CLOUD_VERSION}/IBM_Cloud_CLI_${IBM_CLOUD_VERSION}_ppc64le.tar.gz"; \
             wget -O /usr/local/bin/bazel "https://oplab9.parqtec.unicamp.br/pub/ppc64el/bazel/ubuntu_18.04/bazel_bin_ppc64le_$BAZEL_VERSION" --progress=dot:giga; \
             chmod +x /usr/local/bin/bazel; \
             ;; \
