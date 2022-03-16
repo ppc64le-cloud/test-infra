@@ -62,8 +62,9 @@ postsubmits:
                 export version=`cat version.txt`
                 for i in ${utils[@]}
                 do
-                    kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg POD_UTILITY=$i -t quay.io/powercloud/$i:amd64-$version -f Dockerfile ./
-                    kubectl build --push --registry-secret quay-powercloud-regcred --kubeconfig /etc/kubeconfig/config --namespace image-builder --build-arg POD_UTILITY=$i -t quay.io/powercloud/$i:ppc64le-$version -f Dockerfile ./
+                    sed "s/POD_UTILITY/$i/g" Dockerfile > Dockerfile_tmp
+                    kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder -t quay.io/powercloud/$i:amd64-$version -f Dockerfile_tmp ./
+                    kubectl build --push --registry-secret quay-powercloud-regcred --kubeconfig /etc/kubeconfig/config --namespace image-builder -t quay.io/powercloud/$i:ppc64le-$version -f Dockerfile_tmp ./
 
                 done
                 popd
