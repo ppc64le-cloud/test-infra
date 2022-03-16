@@ -1,0 +1,47 @@
+periodics:
+  - name: periodic-containerd-test-ppc64le
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    interval: 24h
+    extra_refs:
+      - base_ref: main
+        org: containerd
+        repo: containerd
+        workdir: true
+    spec:
+      nodeSelector:
+        dedicated: runtimesTeam
+      tolerations:
+      - key: dedicated
+        operator: "Equal"
+        value: runtimesTeam
+        effect: "NoSchedule"
+      containers:
+      - image: quay.io/powercloud/docker-ce-build
+        command:
+          - /bin/bash
+        args:
+          - -c
+          - |
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+            # Start docker
+            wget -O dockerctl.sh https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/dockerctl.sh
+            chmod +x dockerctl.sh
+            ./dockerctl.sh start
+
+            echo "Build docker image to test containerd within a container"
+            cd contrib
+            docker build -t containerd-test -f Dockerfile.test ../
+            echo "Run docker image"
+            docker run --privileged -v /tmp:/tmp/docker_tmp -v ${ARTIFACTS}:${ARTIFACTS} --tmpfs /var/lib/containerd-test containerd-test bash -c "script/setup/install-gotestsum; GOTEST='gotestsum --' GOTESTSUM_JUNITFILE='junit_test.xml' make binaries install test; cp junit_test.xml ${ARTIFACTS}"
+            cd ..
+
+            # Stop docker
+            ./dockerctl.sh stop
+        resources: {}
+        securityContext:
+          privileged: true
+      restartPolicy: Never
