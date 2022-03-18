@@ -1,0 +1,64 @@
+periodics:
+  - name: periodic-containerd-test-powerVS
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    interval: 24h
+    spec:
+      nodeSelector:
+        dedicated: runtimesTeam
+      tolerations:
+      - key: dedicated
+        operator: "Equal"
+        value: runtimesTeam
+        effect: "NoSchedule"
+      volumes:
+      - name: atos-ssh-volume
+        secret:
+          secretName: atos-powervs-ssh-key
+          defaultMode: 256
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.3
+          volumeMounts:
+          - name: atos-ssh-volume
+            readOnly: true
+            mountPath: "/etc/ssh-volume"
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+              export KUBE_TIMEOUT='--timeout=600s'
+              export KUBE_KEEP_VERBOSE_TEST_OUTPUT=y
+              export LOG_LEVEL=4
+
+              # Connect to IBMCloud
+              echo "" | ibmcloud login
+              ibmcloud target -r eu-gb -g runtimes-dev-resource-group
+              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:lon06:a/65b64c1f1c29460e8c2e4bbfbd893c2c:5e18d40d-c743-4274-8973-6cbfaf6bf12b::
+
+              wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instanciate_powervs_vm.sh
+              chmod +x instanciate_powervs_vm.sh
+              # Run test server in parallel
+              # sleep is needed to avoid trouble with ibmcloud
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS} --name rdr-runtimes-dev-etienne_guesnet-runc_l1 --runc runc --runtime "io.containerd.runtime.v1.linux" --key atos-key --network  'public-192_168_141_8-29-VLAN_2093' &
+              sleep 300
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS} --name rdr-runtimes-dev-etienne_guesnet-runc_v1 --runc runc --runtime "io.containerd.runc.v1" --key atos-key --network 'public-192_168_141_8-29-VLAN_2093' &
+              sleep 300
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS} --name rdr-runtimes-dev-etienne_guesnet-runc_v2 --runc runc --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_141_8-29-VLAN_2093' &
+              sleep 300
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS} --name rdr-runtimes-dev-etienne_guesnet-crun_v2 --runc crun --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_141_8-29-VLAN_2093' &
+
+              # Wait until all jobs are completed
+              while [ -n "`jobs -r`" ]; do
+                sleep 60
+              done
+              echo "Done"
+          env:
+            - name: IBMCLOUD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: containerd-apikey
+                  key: apikey
