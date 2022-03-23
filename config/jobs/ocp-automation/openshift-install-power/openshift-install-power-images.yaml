@@ -58,7 +58,7 @@ postsubmits:
                     token: ${token}
                 EOL
                 export KUBECONFIG=$(pwd)/kubeconfig
-                for version in 4.5 4.6 4.7 4.8 4.9
+                for version in 4.9 4.10
                 do
                     kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg RELEASE_VER=$version -t quay.io/powercloud/openshift-install-powervs:ocp$version-amd -t quay.io/powercloud/openshift-install-powervs:$PULL_BASE_REF-ocp$version-amd -f images/Dockerfile ./
                     kubectl build --push --registry-secret quay-powercloud-regcred --kubeconfig /etc/kubeconfig/config --namespace image-builder --build-arg RELEASE_VER=$version -t quay.io/powercloud/openshift-install-powervs:ocp$version-ppc64le -t quay.io/powercloud/openshift-install-powervs:$PULL_BASE_REF-ocp$version-ppc64le -f images/Dockerfile ./
@@ -68,7 +68,7 @@ postsubmits:
                 cat > config.json << EOL
                 $DOCKER_CONFIG
                 EOL
-                for version in 4.5 4.6 4.7 4.8 4.9
+                for version in 4.9 4.10
                 do
                 cat > registry.yaml <<EOL
                 image: quay.io/powercloud/openshift-install-powervs:ocp$version
