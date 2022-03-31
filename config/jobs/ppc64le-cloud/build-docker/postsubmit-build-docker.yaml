@@ -1,0 +1,149 @@
+postsubmits:
+ ppc64le-cloud/docker-ce-build:
+    - name: postsubmit-build-docker
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      decoration_config:
+        timeout: 3h
+      branches:
+          - main
+      run_if_changed: 'env/env.list'
+      reporter_config:
+        slack:
+          channel: 'prow-job-notifications'
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+      spec:
+        nodeSelector:
+          dedicated: runtimesTeam
+        tolerations:
+        - key: dedicated
+          operator: "Equal"
+          value: runtimesTeam
+          effect: "NoSchedule"
+        containers:
+        - image: quay.io/powercloud/docker-ce-build
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+
+            # Set the SSH key for git from the secret 'git-ssh-docker-ce-build'
+            echo "* Set up the ssh key for git *"
+            mkdir -p ~/.ssh
+            cp /etc/ssh-key/ssh-privatekey  ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
+            echo "* Start prow-build-docker *"
+            ./prow-build-docker.sh
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-build-docker exited with code:$rc"
+            exit $rc
+
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: docker-root
+            mountPath: /var/lib/docker
+          - name: ssh-key
+            readOnly: true
+            mountPath: /etc/ssh-key
+          env:
+            - name: S3_SECRET_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: docker-s3-credentials
+                  key: password
+        volumes:
+        - name: docker-root
+          emptyDir: {}
+        - name: ssh-key
+          secret:
+           secretName: git-ssh-docker-ce-build
+
+    - name: postsubmit-build-test-containerd
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      decoration_config:
+        timeout: 3h
+      run_if_changed: 'job/postsubmit-build-docker'
+      branches:
+        - prow-job-tracking
+      reporter_config:
+        slack:
+          channel: 'prow-job-notifications'
+          job_states_to_report:
+           - success
+           - failure
+           - error
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+      spec:
+        nodeSelector:
+          dedicated: runtimesTeam
+        tolerations:
+        - key: dedicated
+          operator: "Equal"
+          value: runtimesTeam
+          effect: "NoSchedule"
+        containers:
+        - image: quay.io/powercloud/docker-ce-build
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            ##
+            # This job is populated with the files from the 'prow-job-tracking' branch.
+            # We switch to the 'main' branch, as it contains the scripts used by this job.
+            ###
+
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+
+            #Set this to your dev branch for testing
+            WORK_BRANCH=main
+
+            #Timestamp file from the tracking branch (required to access the proper s3 directory)
+            TIMESTAMP_FILE=postsubmit-build-docker
+
+            echo "* Setup the files from git *"
+
+            echo "* Backup timestamp file from the previous job *"
+            cp job/${TIMESTAMP_FILE} /tmp
+
+            echo "* Switch back to the git branch: ${REPO_OWNER}/${REPO_NAME}/${WORK_BRANCH} *"
+            git fetch https://github.com/${REPO_OWNER}/${REPO_NAME} ${WORK_BRANCH}
+            git branch --force ${WORK_BRANCH} FETCH_HEAD
+            git checkout ${WORK_BRANCH}
+
+            echo "* Restore back to the time stamp file from the tracking branch *"
+            cp /tmp/${TIMESTAMP_FILE} env/date.list
+            cat env/date.list
+
+            echo "* Start prow-build-test-containerd *"
+            ./prow-build-test-containerd.sh
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-build-test-containerd exited with code:$rc"
+            exit $rc
+
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: docker-root
+            mountPath: /var/lib/docker
+          env:
+            - name: S3_SECRET_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: docker-s3-credentials
+                  key: password
+        volumes:
+        - name: docker-root
+          emptyDir: {}

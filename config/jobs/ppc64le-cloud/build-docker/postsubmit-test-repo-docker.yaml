@@ -1,0 +1,129 @@
+postsubmits:
+ ppc64le-cloud/docker-ce-build:
+    - name: postsubmit-test-docker-staging
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      run_if_changed: 'env/test-staging.list'
+      branches:
+        - main
+      reporter_config:
+        slack:
+          channel: 'prow-job-notifications'
+          job_states_to_report:
+           - success
+           - failure
+           - error
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+      spec:
+        nodeSelector:
+          dedicated: runtimesTeam
+        tolerations:
+        - key: dedicated
+          operator: "Equal"
+          value: runtimesTeam
+          effect: "NoSchedule"
+        containers:
+        - image: quay.io/powercloud/docker-ce-build
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+
+            #Timestamp file from the tracking branch (required to access the proper s3 directory)
+            TIMESTAMP_FILE=postsubmit-build-docker
+
+            FILE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/prow-job-tracking/job/${TIMESTAMP_FILE}"
+
+            echo "* Retrieve the timestamp file from the tracking branch: ${FILE_URL} *"
+            wget -O env/date.list ${FILE_URL}
+            cat env/date.list
+
+            echo "* Start prow-test-docker.sh *"
+            ./prow-test-docker.sh staging
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-test-docker exited with code:$rc"
+            exit $rc
+
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: docker-root
+            mountPath: /var/lib/docker
+          env:
+            - name: S3_SECRET_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: docker-s3-credentials
+                  key: password
+        volumes:
+        - name: docker-root
+          emptyDir: {}
+
+    - name: postsubmit-test-docker-release
+      cluster: k8s-ppc64le-cluster
+      decorate: true
+      run_if_changed: 'env/test-release.list'
+      branches:
+        - main
+      reporter_config:
+        slack:
+          channel: 'prow-job-notifications'
+          job_states_to_report:
+           - success
+           - failure
+           - error
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+      spec:
+        nodeSelector:
+          dedicated: runtimesTeam
+        tolerations:
+        - key: dedicated
+          operator: "Equal"
+          value: runtimesTeam
+          effect: "NoSchedule"
+        containers:
+        - image: quay.io/powercloud/docker-ce-build
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+
+            #Timestamp file from the tracking branch (required to access the proper s3 directory)
+            TIMESTAMP_FILE=postsubmit-build-docker
+
+            FILE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/prow-job-tracking/job/${TIMESTAMP_FILE}"
+
+            echo "* Retrieve the timestamp file from the tracking branch: ${FILE_URL} *"
+            wget -O env/date.list ${FILE_URL}
+            cat env/date.list
+
+            echo "* Start prow-test-docker.sh *"
+            ./prow-test-docker.sh release
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-test-docker exited with code:$rc"
+            exit $rc
+
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: docker-root
+            mountPath: /var/lib/docker
+          env:
+            - name: S3_SECRET_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: docker-s3-credentials
+                  key: password
+        volumes:
+        - name: docker-root
+          emptyDir: {}
