@@ -20,6 +20,7 @@ in_repo_config:
 
 deck:
   spyglass:
+    gcs_browser_prefix: https://gcsweb.k8s.io/gcs/
     lenses:
       - lens:
           name: metadata
