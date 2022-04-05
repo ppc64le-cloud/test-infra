@@ -8,7 +8,7 @@ periodics:
           secret:
             secretName: gcs-credentials
       containers:
-        - image: quay.io/powercloud/all-in-one:0.1
+        - image: quay.io/powercloud/all-in-one:0.4
           command:
             - /bin/bash
           volumeMounts:
@@ -22,7 +22,7 @@ periodics:
               set -o nounset
               set -o pipefail
               set -o xtrace
-              go get  github.com/ppc64le-cloud/gcs-cleaner
+              go install github.com/ppc64le-cloud/gcs-cleaner@latest
               cat >config.yml <<EOL
               - dir: logs/periodic-kubernetes-unit-test-ppc64le
                 daysLimit: 15
