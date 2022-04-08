@@ -3,6 +3,10 @@ periodics:
     cluster: k8s-ppc64le-cluster
     decorate: true
     interval: 24h
+    reporter_config:
+        slack:
+          channel: 'prow-job-notifications'
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
     extra_refs:
       - base_ref: main
         org: containerd
