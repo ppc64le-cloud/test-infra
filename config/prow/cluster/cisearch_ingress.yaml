@@ -4,9 +4,6 @@ metadata:
   namespace: prow
   name: ci-search
   annotations:
-    # Change this to your issuer when using cert-manager. Does
-    # nothing when not using cert-manager.
-    cert-manager.io/cluster-issuer: letsencrypt-staging
     kubernetes.io/ingress.class: public-iks-k8s-nginx
 spec:
   rules:

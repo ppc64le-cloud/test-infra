@@ -5,9 +5,6 @@ metadata:
   namespace: prow
   name: hook
   annotations:
-    # Change this to your issuer when using cert-manager. Does
-    # nothing when not using cert-manager.
-    cert-manager.io/cluster-issuer: letsencrypt-staging
     kubernetes.io/ingress.class: public-iks-k8s-nginx
     nginx.ingress.kubernetes.io/rewrite-target: /hook
 spec:
