@@ -6,7 +6,7 @@ spec:
   refreshInterval: 1h
   secretStoreRef:
     name: secretstore-ibm
-    kind: SecretStore
+    kind: ClusterSecretStore
   target:
     name: ppc64le-cloud
     # this is how the Kind=Secret will look like

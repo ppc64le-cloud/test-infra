@@ -7,11 +7,16 @@ helm install external-secrets external-secrets/external-secrets -n external-secr
 Note: Though the operator runs in one namespace, crds are available cluster wide and enables us to fetch the secrets in different namespaces.
 Updating the secret store with provider details is what it all needs.
 
-### 2. Creating ibm-secret in cluster for connecting to IBM Cloud Secrets Manager
-`kubectl create secret generic ibm-secret --from-literal=apiKey='API_KEY_VALUE' -n <namespace>`
+### 2. Create a secret in cluster with the IBMCloud APIKey for connecting to IBM Cloud Secrets Manager
+The spec by name `ibm-cloud-credentials_secret.yaml` in the https://github.ibm.com/powercloud-secrets/secrets repo has the required data.
+```
+git clone git@github.ibm.com:powercloud-secrets/secrets.git
+kubectl apply -f ./secrets/projects/k8s-prow/ibm-cloud-credentials_secret.yaml
+```
 
 ### 3. Update the secret store
-kubectl apply -f secretstore_update.yaml -n <namespace>
+Update the cluster scoped ClusterSecretStore with the IBM provider.
+`kubectl apply -f secretstore_update.yaml`
 
 ### 4. Create an external secret
-kubectl apply -f <external_secrets_name>.yaml -n <namespace>
+`kubectl apply -f <external_secrets_name>.yaml -n <namespace>`
