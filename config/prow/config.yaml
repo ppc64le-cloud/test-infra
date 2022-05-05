@@ -43,8 +43,14 @@ deck:
           - artifacts/filtered.html
       - lens:
           name: podinfo
+          config:
+            runner_configs:
+                "default":
+                  pod_link_template: "https://us-south.containers.cloud.ibm.com/kubeproxy/clusters/c2mvmdid0fcfdmiub59g/service/#/pod/test-pods/{{ .Name }}?namespace=test-pods"
         required_files:
           - podinfo.json
+        optional_files:
+          - prowjob.json
       - lens:
           name: links
         required_files:
@@ -71,10 +77,10 @@ plank:
         path_strategy: explicit
       s3_credentials_secret: s3-credentials
       utility_images:
-        clonerefs: quay.io/powercloud/clonerefs:v20220404-e2e605a820
-        entrypoint: quay.io/powercloud/entrypoint:v20220404-e2e605a820
-        initupload: quay.io/powercloud/initupload:v20220404-e2e605a820
-        sidecar: quay.io/powercloud/sidecar:v20220404-e2e605a820
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20220503-01ebd50188
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20220503-01ebd50188
+        initupload: gcr.io/k8s-prow/initupload:v20220503-01ebd50188
+        sidecar: gcr.io/k8s-prow/sidecar:v20220503-01ebd50188
       ssh_key_secrets:
         - bot-ssh-secret
 
