@@ -53,7 +53,7 @@ periodics:
 
 
               # Check results
-              if [ -n "$(grep -En 'FAIL:' *.txt)" ]; then
+              if [ -n "$(grep -En 'FAIL.*:' *.txt)" ]; then
                   echo "Failures found"
                   exit 1
               fi
