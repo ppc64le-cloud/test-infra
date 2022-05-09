@@ -1,6 +1,8 @@
 postsubmits:
   ppc64le-cloud/test-infra:
     - name: postsubmit-podutilities-job
+      # Usage of this job is deprecated as we started using upstream images
+      # Refer https://github.com/ppc64le-cloud/test-infra/blob/master/README.md#Deprecated
       decorate: true
       run_if_changed: 'images/pod-utilities'
       branches:
