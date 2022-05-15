@@ -107,9 +107,6 @@ periodics:
                 --break-kubetest-on-upfail true \
                 --powervs-memory 32 \
                 --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket k8s-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Serial\]'
-              #Workaround for kubetest2 failure to run twice
-              #https://github.com/kubernetes-sigs/kubetest2/issues/176
-              rm metadata.json
               export KUBECONFIG="$(pwd)/config1-$TIMESTAMP/kubeconfig"
               export ARTIFACTS=$ARTIFACTS/serial_tests_artifacts
               #Run Serial Conformance tests
