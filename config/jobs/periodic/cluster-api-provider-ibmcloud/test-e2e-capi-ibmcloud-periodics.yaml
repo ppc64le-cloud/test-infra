@@ -33,3 +33,35 @@ periodics:
                 name: ibm-cloud-credentials
           securityContext:
             privileged: true
+  - name: periodic-capi-provider-ibmcoud-e2e-boskos-new
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+    interval: 3h
+    extra_refs:
+      - base_ref: e2e-enhance
+        org: Amulyam24
+        repo: cluster-api-provider-ibmcloud
+        workdir: true
+    spec:
+      containers:
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20220121-354980456e-master
+          env:
+            - name: "E2E_FLAVOR"
+              value: "powervs"
+            - name: "BOSKOS_HOST"
+              value: "boskos.test-pods.svc.cluster.local"
+          command:
+            - "runner.sh"
+            - "./scripts/ci-e2e.sh"
+          envFrom:
+            - secretRef:
+                name: ibm-cloud-credentials
+          securityContext:
+            privileged: true
