@@ -110,6 +110,7 @@ tide:
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
+        - do-not-merge/non-mergeable
   squash_label: tide/merge-method-squash
 
 decorate_all_jobs: true
