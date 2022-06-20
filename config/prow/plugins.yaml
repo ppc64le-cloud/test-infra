@@ -270,3 +270,23 @@ external_plugins:
     events:
       - issue_comment
       - pull_request
+  ocp-power-automation/ocp4-upi-powervs:
+  - name: mergeable
+    events:
+      - issue_comment
+      - pull_request
+  ocp-power-automation/ocp4-upi-powervm:
+  - name: mergeable
+    events:
+      - issue_comment
+      - pull_request
+  ocp-power-automation/ocp4-playbooks:
+  - name: mergeable
+    events:
+      - issue_comment
+      - pull_request
+  ocp-power-automation/openshift-install-power:
+  - name: mergeable
+    events:
+      - issue_comment
+      - pull_request
