@@ -144,9 +144,9 @@ postsubmits:
                 wget -qO- $URL/kubernetes-client-linux-ppc64le.tar.gz | tar xz -C /usr/local/bin --strip-components=3
 
                 kubetest2 tf --powervs-dns k8s-tests \
-                    --powervs-image-name centos-8-stream-20gb \
-                    --powervs-region syd --powervs-zone syd05 \
-                    --powervs-service-id 92a1f176-ce2b-4940-86fa-ad3e634ee851 \
+                    --powervs-image-name centos-stream-8 \
+                    --powervs-region syd --powervs-zone syd04 \
+                    --powervs-service-id f8640447-b356-47be-b87f-f36b72491390 \
                     --powervs-ssh-key powercloud-bot-key \
                     --ssh-private-key /etc/secret-volume/ssh-privatekey \
                     --build-version $K8S_BUILD_VERSION \
@@ -162,8 +162,8 @@ postsubmits:
                     --ginkgo.flakeAttempts=2 \
                     --report-dir=$ARTIFACTS \
                     --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"
-                kubetest2 tf --powervs-region syd --powervs-zone syd05 \
-                    --powervs-service-id 92a1f176-ce2b-4940-86fa-ad3e634ee851 \
+                kubetest2 tf --powervs-region syd --powervs-zone syd04 \
+                    --powervs-service-id f8640447-b356-47be-b87f-f36b72491390 \
                     --ignore-cluster-dir true \
                     --cluster-name config2-$TIMESTAMP \
                     --down --auto-approve --ignore-destroy-errors \
