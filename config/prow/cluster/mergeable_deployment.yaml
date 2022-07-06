@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: mergeable
-        image: ghcr.io/ppc64le-cloud/prow-plugins:v0.1.2
+        image: ghcr.io/ppc64le-cloud/prow-plugins:v0.1.3
         imagePullPolicy: Always
         command:
         - /mergeable
