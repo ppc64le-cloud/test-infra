@@ -96,8 +96,8 @@ periodics:
 
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-image-name centos-stream-8 \
-                --powervs-region syd --powervs-zone syd04 \
-                --powervs-service-id f8640447-b356-47be-b87f-f36b72491390 \
+                --powervs-region syd --powervs-zone syd05 \
+                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
@@ -110,8 +110,8 @@ periodics:
               export KUBECONFIG="$(pwd)/config1-$TIMESTAMP/kubeconfig"
               export ARTIFACTS=$ARTIFACTS/serial_tests_artifacts
               #Run Serial Conformance tests
-              kubetest2 tf --powervs-region syd --powervs-zone syd04 \
-                --powervs-service-id f8640447-b356-47be-b87f-f36b72491390 \
+              kubetest2 tf --powervs-region syd --powervs-zone syd05 \
+                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
                 --ignore-cluster-dir true \
                 --cluster-name config1-$TIMESTAMP \
                 --down --auto-approve --ignore-destroy-errors \
