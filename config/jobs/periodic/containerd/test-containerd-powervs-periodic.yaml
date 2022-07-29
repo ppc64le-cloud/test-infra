@@ -36,7 +36,7 @@ periodics:
               # Connect to IBMCloud
               echo "" | ibmcloud login
               ibmcloud target -r eu-gb -g runtimes-dev-resource-group
-              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:lon06:a/65b64c1f1c29460e8c2e4bbfbd893c2c:5e18d40d-c743-4274-8973-6cbfaf6bf12b::
+              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:lon06:a/65b64c1f1c29460e8c2e4bbfbd893c2c:58482da9-46b2-411b-b9fb-ad4efe6be307::
 
               wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instanciate_powervs_vm.sh
               chmod +x instanciate_powervs_vm.sh
