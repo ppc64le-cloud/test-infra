@@ -5,7 +5,7 @@ periodics:
     interval: 1h
     spec:
       containers:
-        - image: golang:1.15
+        - image: golang:1.17
           command:
             - /bin/bash
             - -c
