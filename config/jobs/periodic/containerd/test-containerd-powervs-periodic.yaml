@@ -1,0 +1,66 @@
+periodics:
+  - name: periodic-containerd-test-powerVS
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    decoration_config:
+        timeout: 4h
+    interval: 24h
+    spec:
+      nodeSelector:
+        dedicated: runtimesTeam
+      tolerations:
+      - key: dedicated
+        operator: "Equal"
+        value: runtimesTeam
+        effect: "NoSchedule"
+      volumes:
+      - name: atos-ssh-volume
+        secret:
+          secretName: atos-powervs-ssh-key
+          defaultMode: 256
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.3
+          volumeMounts:
+          - name: atos-ssh-volume
+            readOnly: true
+            mountPath: "/etc/ssh-volume"
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              # Connect to IBMCloud
+              echo "" | ibmcloud login
+              ibmcloud target -r eu-gb -g runtimes-dev-resource-group
+              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:lon06:a/65b64c1f1c29460e8c2e4bbfbd893c2c:58482da9-46b2-411b-b9fb-ad4efe6be307::
+
+              wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instanciate_powervs_vm.sh
+              chmod +x instanciate_powervs_vm.sh
+
+              # Run test server
+              mkdir ${ARTIFACTS}/runc_l1/
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_l1/ --name rdr-runtimes-dev-etienne_guesnet-runc-l1 --runc runc --runtime "io.containerd.runtime.v1.linux" --key atos-key --network  'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_l1.txt
+              mkdir ${ARTIFACTS}/runc_v1/
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_v1/ --name rdr-runtimes-dev-etienne_guesnet-runc-v1 --runc runc --runtime "io.containerd.runc.v1" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_v1.txt
+              mkdir ${ARTIFACTS}/runc_v2/
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_v2/ --name rdr-runtimes-dev-etienne_guesnet-runc-v2 --runc runc --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_v2.txt
+              mkdir ${ARTIFACTS}/crun_v2/
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/crun_v2/ --name rdr-runtimes-dev-etienne_guesnet-crun-v2 --runc crun --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee crun_v2.txt
+
+
+              # Check results
+              if [ -n "$(grep -En 'FAIL.*:' *.txt)" ]; then
+                  echo "Failures found"
+                  exit 1
+              fi
+              echo "Done without failure"
+          env:
+            - name: IBMCLOUD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: containerd-apikey
+                  key: apikey
