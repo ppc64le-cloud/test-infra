@@ -11,8 +11,8 @@ periodics:
       gcs_credentials_secret: gcs-credentials
     interval: 3h
     extra_refs:
-      - base_ref: e2e-enhance
-        org: Amulyam24
+      - base_ref: main
+        org: kubernetes-sigs
         repo: cluster-api-provider-ibmcloud
         workdir: true
     spec:
@@ -20,7 +20,7 @@ periodics:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20220121-354980456e-master
           env:
             - name: "E2E_FLAVOR"
-              value: "powervs"
+              value: "md-remediation"
             - name: "BOSKOS_HOST"
               value: "boskos.test-pods.svc.cluster.local"
           command:
