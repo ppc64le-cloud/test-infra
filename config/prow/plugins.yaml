@@ -33,6 +33,7 @@ approve:
   - repos:
       - ocp-power-automation/ocp4-upi-powervs
       - ocp-power-automation/ocp4-playbooks
+      - ocp-power-automation/ocp4-playbooks-extras
       - ocp-power-automation/ocp4-upi-powervm
       - ocp-power-automation/ocp-power-automation.github.io
     require_self_approval: false
