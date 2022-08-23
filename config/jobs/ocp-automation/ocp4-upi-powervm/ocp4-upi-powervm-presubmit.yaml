@@ -1,34 +1,11 @@
 presubmits:
   ocp-power-automation/ocp4-upi-powervm:
     - name: pull-ocp4-upi-powervm-terraform-validate
-      branches:
-        - master
       always_run: true
       decorate: true
       spec:
         containers:
-          - image: hashicorp/terraform:0.13.5
-            command:
-              - sh
-            args:
-              - -c
-              - |
-                set -o errexit
-                mkdir -p $HOME/.local/share/terraform/plugins/registry.terraform.io/terraform-providers/ignition/
-                wget https://github.com/community-terraform-providers/terraform-provider-ignition/releases/download/v2.1.0/terraform-provider-ignition_2.1.0_linux_amd64.zip -P $HOME/.local/share/terraform/plugins/registry.terraform.io/terraform-providers/ignition/
-                terraform init
-                terraform validate
-      annotations:
-        testgrid-dashboards: presubmits-ocp4-upi-powervm
-        testgrid-tab-name: terraform-validate
-    - name: pull-ocp4-upi-powervm-terraform-validate-release-4.5
-      branches:
-        - release-4.5
-      always_run: true
-      decorate: true
-      spec:
-        containers:
-          - image: hashicorp/terraform:0.12.29
+          - image: hashicorp/terraform
             command:
               - sh
             args:
