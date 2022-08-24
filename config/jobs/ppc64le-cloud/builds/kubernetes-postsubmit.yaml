@@ -132,7 +132,7 @@ postsubmits:
 
                 # Details of IBM S3 storage
                 S3_SERVER=s3.us-south.cloud-object-storage.appdomain.cloud
-                BUCKET=ci-builds
+                BUCKET=ppc64le-ci-builds
                 DIRECTORY=kubernetes/master/golang/master
                 build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/kubernetes/master/golang/master/build.yaml)
 
