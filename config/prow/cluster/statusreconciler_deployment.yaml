@@ -32,7 +32,7 @@ spec:
             - --github-endpoint=https://api.github.com
             - --job-config-path=/etc/job-config
             - --s3-credentials-file=/etc/s3-credentials/service-account.json
-            - --status-path=s3://status-reconciler/status-reconciler-status
+            - --status-path=s3://ppc64le-status-reconciler/status-reconciler-status
           volumeMounts:
             - name: github-token
               mountPath: /etc/github

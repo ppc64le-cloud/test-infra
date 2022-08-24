@@ -32,8 +32,8 @@ spec:
             - --github-graphql-endpoint=http://ghproxy/graphql
             - --job-config-path=/etc/job-config
             - --s3-credentials-file=/etc/s3-credentials/service-account.json
-            - --status-path=s3://tide/tide-status
-            - --history-uri=s3://tide/tide-history.json
+            - --status-path=s3://ppc64le-tide/tide-status
+            - --history-uri=s3://ppc64le-tide/tide-history.json
           ports:
             - name: http
               containerPort: 8888
