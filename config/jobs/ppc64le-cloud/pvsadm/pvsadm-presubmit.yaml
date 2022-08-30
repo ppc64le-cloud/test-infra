@@ -1,16 +1,17 @@
 presubmits:
   ppc64le-cloud/pvsadm:
-    - name: pull-pvsadm-verify-all
-      decorate: true
-      spec:
-        containers:
-          - image: golang:1.15
-            command:
-              - sh
-            args:
-              - -c
-              - |
-                set -o errexit
-                # install addlicense tool to verify the copyrights
-                go get -u github.com/google/addlicense
-                ./hack/verify-all.sh
+  - name: pull-pvsadm-verify-all
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+      - image: golang:1.18
+        command:
+          - sh
+        args:
+          - -c
+          - |
+            set -o errexit
+            # install addlicense tool to verify the copyrights
+            go install github.com/google/addlicense@latest
+            ./hack/verify-all.sh
