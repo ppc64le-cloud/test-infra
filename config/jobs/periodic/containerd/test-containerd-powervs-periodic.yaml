@@ -43,13 +43,13 @@ periodics:
 
               # Run test server
               mkdir ${ARTIFACTS}/runc_l1/
-              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_l1/ --name rdr-runtimes-dev-etienne_guesnet-runc-l1 --runc runc --runtime "io.containerd.runtime.v1.linux" --key atos-key --network  'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_l1.txt
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_l1/ --name rdr-runtimes-dev-periodic-containerd-runc-l1 --runc runc --runtime "io.containerd.runtime.v1.linux" --key atos-key --network  'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_l1.txt
               mkdir ${ARTIFACTS}/runc_v1/
-              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_v1/ --name rdr-runtimes-dev-etienne_guesnet-runc-v1 --runc runc --runtime "io.containerd.runc.v1" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_v1.txt
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_v1/ --name rdr-runtimes-dev-periodic-containerd-runc-v1 --runc runc --runtime "io.containerd.runc.v1" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_v1.txt
               mkdir ${ARTIFACTS}/runc_v2/
-              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_v2/ --name rdr-runtimes-dev-etienne_guesnet-runc-v2 --runc runc --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_v2.txt
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/runc_v2/ --name rdr-runtimes-dev-periodic-containerd-runc-v2 --runc runc --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_v2.txt
               mkdir ${ARTIFACTS}/crun_v2/
-              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/crun_v2/ --name rdr-runtimes-dev-etienne_guesnet-crun-v2 --runc crun --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee crun_v2.txt
+              bash -x ./instanciate_powervs_vm.sh --output ${ARTIFACTS}/crun_v2/ --name rdr-runtimes-dev-periodic-containerd-crun-v2 --runc crun --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee crun_v2.txt
 
 
               # Check results
