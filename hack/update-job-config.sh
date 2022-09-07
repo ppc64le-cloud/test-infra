@@ -22,4 +22,4 @@ do
   cm_file_content="${cm_file_content} --from-file=${job}=${tmp_dir}/${job}"
 done
 
-kubectl create cm job-config "${cm_file_content}" -n prow -o=yaml --dry-run=client | kubectl apply -f -
+kubectl create cm job-config ${cm_file_content} -n prow -o=yaml --dry-run=client | kubectl apply -f -
