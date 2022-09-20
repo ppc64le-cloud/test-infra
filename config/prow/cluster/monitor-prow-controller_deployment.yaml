@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: monitor-prow-controller
-        image: quay.io/powercloud/all-in-one:0.2
+        image: quay.io/powercloud/all-in-one:0.4
         command:
           - /bin/bash
         args:
