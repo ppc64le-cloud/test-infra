@@ -11,7 +11,7 @@ postsubmits:
       spec:
         serviceAccountName: build-img
         containers:
-          - image: quay.io/powercloud/all-in-one:0.1
+          - image: quay.io/powercloud/all-in-one:0.4
             env:
               - name: DOCKER_CONFIG
                 valueFrom:
