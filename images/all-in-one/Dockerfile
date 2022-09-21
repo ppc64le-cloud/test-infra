@@ -1,39 +1,53 @@
-ARG GOLANG_VERSION=1.17.8
-ARG BAZEL_VERSION=2.2.0
-ARG IBM_CLOUD_VERSION=2.5.0
+ARG GOLANG_VERSION=1.18.6
+ARG IBM_CLOUD_VERSION=2.10.0
+ARG TERRAFORM_PROVIDER_IBM_VERSION=1.39.1
+ARG TERRAFORM_PROVIDER_NULL_VERSION=3.1.0
 FROM golang:$GOLANG_VERSION AS builder
 
-RUN go get rsc.io/goversion \
+RUN go install rsc.io/goversion@v1.2.0 \
     && GO111MODULE=on
-
-FROM debian:buster
 
 ARG TF_VERSION
 ENV TF_VERSION ${TF_VERSION:-v1.1.7}
 
 ARG TERRAFORM_PROVIDER_IBM_VERSION
-ENV TERRAFORM_PROVIDER_IBM_VERSION ${TERRAFORM_PROVIDER_IBM_VERSION:-1.39.1}
+ENV TERRAFORM_PROVIDER_IBM_VERSION=$TERRAFORM_PROVIDER_IBM_VERSION
 
 ARG TERRAFORM_PROVIDER_NULL_VERSION
-ENV TERRAFORM_PROVIDER_NULL_VERSION ${TERRAFORM_PROVIDER_NULL_VERSION:-3.1.0}
+ENV TERRAFORM_PROVIDER_NULL_VERSION=$TERRAFORM_PROVIDER_NULL_VERSION
+
+WORKDIR /workspace
+
+RUN git clone -b $TF_VERSION --single-branch https://github.com/hashicorp/terraform.git && \
+    cd terraform && \
+    go install .
+
+RUN git clone -b v${TERRAFORM_PROVIDER_IBM_VERSION} --single-branch https://github.com/IBM-Cloud/terraform-provider-ibm && \
+    cd terraform-provider-ibm && \
+    go build .
+
+RUN git clone -b v${TERRAFORM_PROVIDER_NULL_VERSION} --single-branch https://github.com/hashicorp/terraform-provider-null && \
+    cd terraform-provider-null && \
+    go build .
+
+FROM debian:bullseye
 
 ARG TF_PLUGIN_PATH
 ENV TF_PLUGIN_PATH ${TF_PLUGIN_PATH:-/root/.terraform.d/plugins/registry.terraform.io/hashicorp}
 
 ARG GOLANG_VERSION
-ENV GOLANG_VERSION ${GOLANG_VERSION:-1.17.8}
-
-ARG BAZEL_VERSION
-ENV BAZEL_VERSION ${BAZEL_VERSION:-2.2.0}
+ENV GOLANG_VERSION ${GOLANG_VERSION:-1.18.6}
 
 ARG IBM_CLOUD_VERSION
-ENV IBM_CLOUD_VERSION ${IBM_CLOUD_VERSION:-2.5.0}
+ENV IBM_CLOUD_VERSION ${IBM_CLOUD_VERSION:-2.10.0}
 
 WORKDIR /workspace
 RUN mkdir -p /workspace
 ENV WORKSPACE=/workspace \
     TERM=xterm
 ENV PATH /usr/local/go/bin:$PATH
+
+ARG KUBECTL_VERSION=v1.24.4
 
 COPY --from=builder /go/bin/* /usr/local/bin/
 
@@ -46,9 +60,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lsb-release && \
     rm -rf /var/lib/apt/lists/*
 
-RUN add-apt-repository "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 \
-    && apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ansible \
     build-essential \
     ca-certificates \
@@ -63,17 +75,6 @@ RUN add-apt-repository "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trus
     openssh-client \
     pkg-config \
     procps \
-    python \
-    python-dev \
-    python-gflags \
-    python-openssl \
-    python-pip \
-    python-yaml \
-    python3 \
-    python3-distutils \
-    python3-gflags \
-    python3-pip \
-    python3-yaml \
     rsync \
     unzip \
     wget \
@@ -89,16 +90,10 @@ RUN set -eux; \
         'amd64') \
             url="https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz"; \
             ibm_cloud_url="https://download.clis.cloud.ibm.com/ibm-cloud-cli/${IBM_CLOUD_VERSION}/IBM_Cloud_CLI_${IBM_CLOUD_VERSION}_amd64.tar.gz"; \
-            curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg; \
-            mv bazel.gpg /etc/apt/trusted.gpg.d/; \
-            echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list; \
-            apt update && apt install -y bazel=$BAZEL_VERSION; \
             ;; \
         'ppc64el') \
             url="https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-ppc64le.tar.gz"; \
             ibm_cloud_url="https://download.clis.cloud.ibm.com/ibm-cloud-cli/${IBM_CLOUD_VERSION}/IBM_Cloud_CLI_${IBM_CLOUD_VERSION}_ppc64le.tar.gz"; \
-            wget -O /usr/local/bin/bazel "https://oplab9.parqtec.unicamp.br/pub/ppc64el/bazel/ubuntu_18.04/bazel_bin_ppc64le_$BAZEL_VERSION" --progress=dot:giga; \
-            chmod +x /usr/local/bin/bazel; \
             ;; \
         's390x') \
             url="https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-s390x.tar.gzr"; \
@@ -116,7 +111,10 @@ RUN set -eux; \
     ibmcloud plugin install cloud-object-storage; \
     rm -rf ./Bluemix_CLI; \
     rm ibm_cloud.tgz; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*; \
+    curl -LO https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/`go env GOARCH`/kubectl && \
+    chmod +x ./kubectl && \
+    mv ./kubectl /usr/local/bin/kubectl
 
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:$PATH
@@ -131,23 +129,16 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.ta
     gcloud components install alpha beta gsutil && \
     gcloud info | tee /workspace/gcloud-info.txt
 
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/`go env GOARCH`/kubectl && \
-    chmod +x ./kubectl && \
-    mv ./kubectl /usr/local/bin/kubectl
+ARG TERRAFORM_PROVIDER_IBM_VERSION
+ENV TERRAFORM_PROVIDER_IBM_VERSION=$TERRAFORM_PROVIDER_IBM_VERSION
 
-RUN git clone -b $TF_VERSION --single-branch https://github.com/hashicorp/terraform.git && \
-    cd terraform && \
-    go install .
+ARG TERRAFORM_PROVIDER_NULL_VERSION
+ENV TERRAFORM_PROVIDER_NULL_VERSION=$TERRAFORM_PROVIDER_NULL_VERSION
 
-RUN git clone -b v$TERRAFORM_PROVIDER_IBM_VERSION --single-branch https://github.com/IBM-Cloud/terraform-provider-ibm && \
-    cd terraform-provider-ibm && \
-    go build .
+COPY --from=builder /workspace/terraform-provider-ibm/terraform-provider-ibm /tmp/
+COPY --from=builder /workspace/terraform-provider-null/terraform-provider-null /tmp/
 
-RUN git clone -b v$TERRAFORM_PROVIDER_NULL_VERSION --single-branch https://github.com/hashicorp/terraform-provider-null && \
-    cd terraform-provider-null && \
-    go build .
-
-RUN mkdir -p ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH`
-RUN mkdir -p ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
-RUN mv /workspace/terraform-provider-ibm/terraform-provider-ibm ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH`
-RUN mv /workspace/terraform-provider-null/terraform-provider-null ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
+RUN mkdir -p ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH` && \
+    cp /tmp/terraform-provider-ibm ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH` && \
+    mkdir -p ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH` && \
+    cp /tmp/terraform-provider-null ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
