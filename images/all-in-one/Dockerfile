@@ -1,14 +1,13 @@
 ARG GOLANG_VERSION=1.18.6
 ARG IBM_CLOUD_VERSION=2.10.0
-ARG TERRAFORM_PROVIDER_IBM_VERSION=1.39.1
-ARG TERRAFORM_PROVIDER_NULL_VERSION=3.1.0
+ARG TERRAFORM_PROVIDER_IBM_VERSION=1.45.1
+ARG TERRAFORM_PROVIDER_NULL_VERSION=3.1.1
 FROM golang:$GOLANG_VERSION AS builder
 
-RUN go install rsc.io/goversion@v1.2.0 \
-    && GO111MODULE=on
+RUN go install rsc.io/goversion@v1.2.0
 
 ARG TF_VERSION
-ENV TF_VERSION ${TF_VERSION:-v1.1.7}
+ENV TF_VERSION ${TF_VERSION:-v1.3.0}
 
 ARG TERRAFORM_PROVIDER_IBM_VERSION
 ENV TERRAFORM_PROVIDER_IBM_VERSION=$TERRAFORM_PROVIDER_IBM_VERSION
@@ -33,7 +32,7 @@ RUN git clone -b v${TERRAFORM_PROVIDER_NULL_VERSION} --single-branch https://git
 FROM debian:bullseye
 
 ARG TF_PLUGIN_PATH
-ENV TF_PLUGIN_PATH ${TF_PLUGIN_PATH:-/root/.terraform.d/plugins/registry.terraform.io/hashicorp}
+ENV TF_PLUGIN_PATH ${TF_PLUGIN_PATH:-/root/.terraform.d/plugins/registry.terraform.io}
 
 ARG GOLANG_VERSION
 ENV GOLANG_VERSION ${GOLANG_VERSION:-1.18.6}
@@ -48,8 +47,6 @@ ENV WORKSPACE=/workspace \
 ENV PATH /usr/local/go/bin:$PATH
 
 ARG KUBECTL_VERSION=v1.24.4
-
-COPY --from=builder /go/bin/* /usr/local/bin/
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
@@ -95,9 +92,6 @@ RUN set -eux; \
             url="https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-ppc64le.tar.gz"; \
             ibm_cloud_url="https://download.clis.cloud.ibm.com/ibm-cloud-cli/${IBM_CLOUD_VERSION}/IBM_Cloud_CLI_${IBM_CLOUD_VERSION}_ppc64le.tar.gz"; \
             ;; \
-        's390x') \
-            url="https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-s390x.tar.gzr"; \
-            ;; \
     esac; \
     \
     wget -O go.tgz "$url" --progress=dot:giga; \
@@ -135,10 +129,13 @@ ENV TERRAFORM_PROVIDER_IBM_VERSION=$TERRAFORM_PROVIDER_IBM_VERSION
 ARG TERRAFORM_PROVIDER_NULL_VERSION
 ENV TERRAFORM_PROVIDER_NULL_VERSION=$TERRAFORM_PROVIDER_NULL_VERSION
 
+COPY --from=builder /go/bin/* /usr/local/bin/
 COPY --from=builder /workspace/terraform-provider-ibm/terraform-provider-ibm /tmp/
 COPY --from=builder /workspace/terraform-provider-null/terraform-provider-null /tmp/
 
-RUN mkdir -p ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH` && \
-    cp /tmp/terraform-provider-ibm ${TF_PLUGIN_PATH}/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH` && \
-    mkdir -p ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH` && \
-    cp /tmp/terraform-provider-null ${TF_PLUGIN_PATH}/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
+RUN mkdir -p ${TF_PLUGIN_PATH}/hashicorp/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH` && \
+    mkdir -p ${TF_PLUGIN_PATH}/IBM-Cloud/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH` && \
+    cp /tmp/terraform-provider-ibm ${TF_PLUGIN_PATH}/hashicorp/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH` && \
+    cp /tmp/terraform-provider-ibm ${TF_PLUGIN_PATH}/IBM-Cloud/ibm/${TERRAFORM_PROVIDER_IBM_VERSION}/linux_`go env GOARCH` && \
+    mkdir -p ${TF_PLUGIN_PATH}/hashicorp/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH` && \
+    cp /tmp/terraform-provider-null ${TF_PLUGIN_PATH}/hashicorp/null/${TERRAFORM_PROVIDER_NULL_VERSION}/linux_`go env GOARCH`
