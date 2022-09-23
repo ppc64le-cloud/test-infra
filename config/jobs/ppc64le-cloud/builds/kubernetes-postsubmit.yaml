@@ -125,8 +125,8 @@ postsubmits:
 
                 go install ./...
 
-                go get sigs.k8s.io/kubetest2@latest
-                go get sigs.k8s.io/kubetest2/kubetest2-tester-exec@latest
+                go install sigs.k8s.io/kubetest2@latest
+                go install sigs.k8s.io/kubetest2/kubetest2-tester-exec@latest
 
                 TIMESTAMP=$(date +%s)
 
