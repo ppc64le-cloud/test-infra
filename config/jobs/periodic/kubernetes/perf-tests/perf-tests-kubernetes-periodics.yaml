@@ -49,8 +49,8 @@ periodics:
 
         go install ./...
 
-        go get sigs.k8s.io/kubetest2@latest
-        go get sigs.k8s.io/kubetest2/...@latest
+        go install sigs.k8s.io/kubetest2@latest
+        go install sigs.k8s.io/kubetest2/...@latest
 
         TIMESTAMP=$(date +%s)
         K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
@@ -128,8 +128,8 @@ periodics:
 
         go install ./...
 
-        go get sigs.k8s.io/kubetest2@latest
-        go get sigs.k8s.io/kubetest2/...@latest
+        go install sigs.k8s.io/kubetest2@latest
+        go install sigs.k8s.io/kubetest2/...@latest
 
         TIMESTAMP=$(date +%s)
         K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
