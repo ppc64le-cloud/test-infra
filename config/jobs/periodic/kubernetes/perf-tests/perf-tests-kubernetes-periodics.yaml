@@ -153,6 +153,6 @@ periodics:
           --up --down --auto-approve --retry-on-tf-failure 3 \
           --break-kubetest-on-upfail true \
           --ignore-destroy-errors \
-          --powervs-memory 32 \
+          --powervs-memory 16 \
           --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" \
           --test=exec -- $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/run-e2e.sh --testsuite=testing/experimental/storage/pod-startup/suite.yaml --provider=local --nodes=1 --report-dir=/logs/artifacts
