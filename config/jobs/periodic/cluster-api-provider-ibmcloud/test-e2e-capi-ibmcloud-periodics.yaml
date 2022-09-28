@@ -28,3 +28,32 @@ periodics:
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
+  - name: periodic-capi-provider-ibmcoud-e2e-vpc
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+    interval: 3h
+    extra_refs:
+      - base_ref: main
+        org: kubernetes-sigs
+        repo: cluster-api-provider-ibmcloud
+        workdir: true
+    spec:
+      containers:
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20220916-c3af09ab20-1.24
+          env:
+            - name: "E2E_FLAVOR"
+              value: "vpc"
+            - name: "BOSKOS_HOST"
+              value: "boskos.test-pods.svc.cluster.local"
+          command:
+            - "runner.sh"
+            - "./scripts/ci-e2e.sh"
+          securityContext:
+            privileged: true
