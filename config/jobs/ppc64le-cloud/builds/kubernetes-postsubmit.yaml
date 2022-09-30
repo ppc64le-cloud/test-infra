@@ -80,6 +80,9 @@ postsubmits:
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
                 export PATH=$GOPATH/bin:$PATH
+                go version
+                go env
+
                 pushd ./hack/tools
                 GO111MODULE=on go install gotest.tools/gotestsum
                 popd
@@ -122,6 +125,8 @@ postsubmits:
                 set -o xtrace
                 export PATH=$GOPATH/bin:$PATH
                 export GO111MODULE=on
+                go version
+                go env
 
                 go install ./...
 
