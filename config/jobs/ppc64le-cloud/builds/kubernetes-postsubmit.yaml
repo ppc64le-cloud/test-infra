@@ -162,6 +162,7 @@ postsubmits:
                     --ginkgo.flakeAttempts=2 \
                     --report-dir=$ARTIFACTS \
                     --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"
+                export ARTIFACTS=$ARTIFACTS/serial_tests_artifacts
                 kubetest2 tf --powervs-region syd --powervs-zone syd05 \
                     --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
                     --ignore-cluster-dir true \
@@ -170,5 +171,5 @@ postsubmits:
                     --test=exec -- /usr/local/bin/ginkgo /usr/local/bin/e2e.test \
                     -- --ginkgo.focus='\[Serial\].*\[Conformance\]' \
                     --ginkgo.flakeAttempts=2 \
-                    --report-dir=$ARTIFACTS/serial_tests_artifacts \
+                    --report-dir=$ARTIFACTS \
                     --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"
