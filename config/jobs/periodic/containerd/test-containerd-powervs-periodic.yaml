@@ -19,7 +19,7 @@ periodics:
           secretName: atos-powervs-ssh-key
           defaultMode: 256
       containers:
-        - image: quay.io/powercloud/all-in-one:0.3
+        - image: quay.io/powercloud/all-in-one:0.5
           volumeMounts:
           - name: atos-ssh-volume
             readOnly: true
@@ -77,7 +77,7 @@ periodics:
           secretName: atos-powervs-ssh-key
           defaultMode: 256
       containers:
-        - image: quay.io/powercloud/all-in-one:0.3
+        - image: quay.io/powercloud/all-in-one:0.5
           volumeMounts:
           - name: atos-ssh-volume
             readOnly: true
@@ -135,7 +135,7 @@ periodics:
           secretName: atos-powervs-ssh-key
           defaultMode: 256
       containers:
-        - image: quay.io/powercloud/all-in-one:0.3
+        - image: quay.io/powercloud/all-in-one:0.5
           volumeMounts:
           - name: atos-ssh-volume
             readOnly: true
@@ -193,7 +193,7 @@ periodics:
           secretName: atos-powervs-ssh-key
           defaultMode: 256
       containers:
-        - image: quay.io/powercloud/all-in-one:0.3
+        - image: quay.io/powercloud/all-in-one:0.5
           volumeMounts:
           - name: atos-ssh-volume
             readOnly: true
