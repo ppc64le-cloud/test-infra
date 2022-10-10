@@ -152,3 +152,21 @@ presets:
       hostPath:
         path: /sys/fs/cgroup
         type: Directory
+# containerd powervs preset
+- labels:
+    preset-containerd-powervs: "true"
+  env:
+    - name: IBMCLOUD_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: containerd-apikey
+          key: apikey
+  volumeMounts:
+    - name: atos-ssh-volume
+      readOnly: true
+      mountPath: "/etc/ssh-volume"
+  volumes:
+    - name: atos-ssh-volume
+      secret:
+        secretName: atos-powervs-ssh-key
+        defaultMode: 256
