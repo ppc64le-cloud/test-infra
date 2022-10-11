@@ -4,8 +4,6 @@ periodics:
        preset-containerd-powervs: "true"
     cluster: k8s-ppc64le-cluster
     decorate: true
-    decoration_config:
-        timeout: 1h30m
     interval: 24h
     spec:
       nodeSelector:
@@ -49,8 +47,6 @@ periodics:
        preset-containerd-powervs: "true"
     cluster: k8s-ppc64le-cluster
     decorate: true
-    decoration_config:
-        timeout: 1h30m
     interval: 24h
     spec:
       nodeSelector:
@@ -94,8 +90,6 @@ periodics:
        preset-containerd-powervs: "true"
     cluster: k8s-ppc64le-cluster
     decorate: true
-    decoration_config:
-        timeout: 1h30m
     interval: 24h
     spec:
       nodeSelector:
@@ -139,8 +133,6 @@ periodics:
        preset-containerd-powervs: "true"
     cluster: k8s-ppc64le-cluster
     decorate: true
-    decoration_config:
-        timeout: 1h30m
     interval: 24h
     spec:
       nodeSelector:
