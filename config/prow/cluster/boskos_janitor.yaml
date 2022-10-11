@@ -1,40 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: boskos-janitor-nongke
+  name: boskos-janitor-ibmcloud
   labels:
-    app: boskos-janitor-nongke
+    app: boskos-janitor-ibmcloud
   namespace: test-pods
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: boskos-janitor-nongke
+      app: boskos-janitor-ibmcloud
   template:
     metadata:
       labels:
-        app: boskos-janitor-nongke
+        app: boskos-janitor-ibmcloud
     spec:
       terminationGracePeriodSeconds: 300
       containers:
-      - name: boskos-janitor-nongke
-        image: gcr.io/k8s-staging-boskos/janitor:v20220208-21245b5
+      - name: boskos-janitor-ibmcloud
+        image: gcr.io/k8s-staging-boskos/ibmcloud-janitor-boskos:latest
         args:
         - --boskos-url=http://boskos.test-pods.svc.cluster.local.
-        - --resource-type=powervs-project
-        - --janitor-path=/root/powervs-janitor.sh
-        - --pool-size=20
-        - --
-        - --hours=0
-        envFrom:
-          - secretRef:
-              name: ibm-cloud-credentials
+        - --debug=true
+        env:
+        - name: IBMCLOUD_ENV_FILE
+          value: "/home/.ibmcloud/key"
         volumeMounts:
-          - mountPath: "/root/powervs-janitor.sh"
-            name: janitor-powervs
-            subPath: "powervs-janitor.sh"
+          - name: credentials
+            mountPath: /home/.ibmcloud
       volumes:
-        - name: janitor-powervs
-          configMap:
-            name: janitor-powervs
-            defaultMode: 0755
+        - name: credentials
+          secret:
+            secretName: ibmcloud-janitor-secret
