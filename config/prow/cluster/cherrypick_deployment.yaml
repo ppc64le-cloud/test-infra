@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: cherrypick
-        image: gcr.io/k8s-prow/cherrypicker:v20220926-17e1ece283
+        image: gcr.io/k8s-prow/cherrypicker:v20221011-5d4db25b24
         args:
         - --github-token-path=/etc/github/token
         - --github-endpoint=http://ghproxy
