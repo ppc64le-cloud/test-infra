@@ -1,6 +1,8 @@
 postsubmits:
   ppc64le-cloud/test-infra:
     - name: postsubmit-bazel-job
+      labels:
+        preset-image-builder: "true"
       decorate: true
       run_if_changed: 'images/bazel'
       branches:
@@ -12,9 +14,6 @@ postsubmits:
       spec:
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
-            volumeMounts:
-              - name: kubeconfig
-                mountPath: /etc/kubeconfig
             command:
               - /bin/bash
             args:
@@ -33,7 +32,3 @@ postsubmits:
                 do
                        kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg BAZEL_VERSION=$i -t quay.io/powercloud/bazel:$i -f Dockerfile ./
                 done
-        volumes:
-          - name: kubeconfig
-            secret:
-              secretName: image-builder-ppc-kubeconfig

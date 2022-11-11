@@ -1,6 +1,8 @@
 postsubmits:
   ocp-power-automation/openshift-install-power:
     - name: openshift-install-power-build-and-push-on-release
+      labels:
+        preset-image-builder: "true"
       decorate: true
       always_run: true
       branches:
@@ -14,15 +16,6 @@ postsubmits:
         serviceAccountName: build-img
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
-            env:
-              - name: DOCKER_CONFIG
-                valueFrom:
-                  secretKeyRef:
-                    name: quay-powercloud-regcred
-                    key: .dockerconfigjson
-            volumeMounts:
-              - name: kubeconfig
-                mountPath: /etc/kubeconfig
             command:
               - /bin/bash
             args:
@@ -87,7 +80,3 @@ postsubmits:
                 EOL
                 manifest-tool --debug --docker-cfg `pwd` push from-spec registry.yaml
                 done
-        volumes:
-          - name: kubeconfig
-            secret:
-              secretName: image-builder-ppc-kubeconfig

@@ -90,6 +90,8 @@ postsubmits:
                 make test
     - name: postsubmit-master-golang-kubernetes-conformance-test-ppc64le
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-ssh-bot: "true"
       decorate: true
       branches:
         - master
@@ -100,22 +102,10 @@ postsubmits:
           repo: kubetest2-plugins
           workdir: true
       spec:
-        volumes:
-          - name: powercloud-bot-key
-            secret:
-              defaultMode: 256
-              secretName: bot-ssh-secret
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
             command:
               - /bin/bash
-            volumeMounts:
-              - mountPath: /etc/secret-volume
-                name: powercloud-bot-key
-                readOnly: true
-            envFrom:
-              - secretRef:
-                  name: ibm-cloud-credentials
             args:
               - -c
               - |

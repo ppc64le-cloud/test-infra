@@ -1,6 +1,8 @@
 postsubmits:
   ppc64le-cloud/test-infra:
     - name: postsubmit-allinone-job
+      labels:
+        preset-image-builder: "true"
       decorate: true
       run_if_changed: 'images/all-in-one'
       branches:
@@ -13,15 +15,6 @@ postsubmits:
         serviceAccountName: build-img
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
-            env:
-              - name: DOCKER_CONFIG
-                valueFrom:
-                  secretKeyRef:
-                    name: quay-powercloud-regcred
-                    key: .dockerconfigjson
-            volumeMounts:
-              - name: kubeconfig
-                mountPath: /etc/kubeconfig
             command:
               - /bin/bash
             args:
@@ -82,7 +75,3 @@ postsubmits:
                       os: linux
                 EOL
                 manifest-tool --debug --docker-cfg `pwd` push from-spec registry.yaml
-        volumes:
-          - name: kubeconfig
-            secret:
-              secretName: image-builder-ppc-kubeconfig

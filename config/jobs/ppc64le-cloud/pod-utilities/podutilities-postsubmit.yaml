@@ -3,6 +3,8 @@ postsubmits:
     - name: postsubmit-podutilities-job
       # Usage of this job is deprecated as we started using upstream images
       # Refer https://github.com/ppc64le-cloud/test-infra/blob/master/README.md#Deprecated
+      labels:
+        preset-image-builder: "true"
       decorate: true
       run_if_changed: 'images/pod-utilities'
       branches:
@@ -15,15 +17,6 @@ postsubmits:
         serviceAccountName: build-img
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
-            env:
-              - name: DOCKER_CONFIG
-                valueFrom:
-                  secretKeyRef:
-                    name: quay-powercloud-regcred
-                    key: .dockerconfigjson
-            volumeMounts:
-              - name: kubeconfig
-                mountPath: /etc/kubeconfig
             command:
               - /bin/bash
             args:
@@ -93,7 +86,3 @@ postsubmits:
                 EOL
                 manifest-tool --debug --docker-cfg `pwd` push from-spec registry.yaml
                 done
-        volumes:
-          - name: kubeconfig
-            secret:
-              secretName: image-builder-ppc-kubeconfig
