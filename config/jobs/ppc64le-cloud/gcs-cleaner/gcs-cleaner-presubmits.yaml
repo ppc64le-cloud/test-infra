@@ -1,0 +1,29 @@
+presubmits:
+  ppc64le-cloud/gcs-cleaner:
+  - name: pull-gcs-cleaner-gofmt
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+        - image: golang:1.18
+          command:
+            - sh
+          args:
+            - -c
+            - |
+              set -o errexit
+              export PATH=$GOPATH/bin:$PATH
+              go fmt
+  - name: pull-gcs-cleaner-gobuild
+    always_run: true
+    decorate: true
+    spec:
+      containers:
+        - image: golang:1.18
+          command:
+            - sh
+          args:
+            - -c
+            - |
+              set -o errexit
+              go build
