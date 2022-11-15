@@ -1,22 +1,17 @@
 postsubmits:
   ocp-power-automation/ocp-powervm-faq:
     - name: update-github-pages-submodule
+      labels:
+        preset-ocp-ghdeploykey: "true"
       decorate: true
       run_if_changed: 'docs'
       branches:
         - ^master$
       spec:
-        volumes:
-          - name: github-key
-            secret:
-              secretName: ocp-gh-deploykey
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
             command:
               - sh
-            volumeMounts:
-              - name: github-key
-                mountPath: /etc/ssh-key
             args:
               - -c
               - |

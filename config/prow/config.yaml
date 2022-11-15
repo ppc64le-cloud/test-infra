@@ -170,3 +170,62 @@ presets:
       secret:
         secretName: atos-powervs-ssh-key
         defaultMode: 256
+# ocp github deploy key preset
+- labels:
+    preset-ocp-ghdeploykey: "true"
+  volumeMounts:
+    - mountPath: /etc/ssh-key
+      name: github-key
+  volumes:
+    - name: github-key
+      secret:
+        secretName: ocp-gh-deploykey
+# build docker preset
+- labels:
+    preset-build-docker: "true"
+  env:
+    - name: S3_SECRET_AUTH
+      valueFrom:
+        secretKeyRef:
+          name: docker-s3-credentials
+          key: password
+  volumes:
+    - name: docker-root
+      emptyDir: {}
+  volumeMounts:
+    - name: docker-root
+      mountPath: /var/lib/docker
+# image-builder preset
+- labels:
+    preset-image-builder: "true"
+  env:
+    - name: DOCKER_CONFIG
+      valueFrom:
+        secretKeyRef:
+          name: quay-powercloud-regcred
+          key: .dockerconfigjson
+  volumes:
+    - name: kubeconfig
+      secret:
+        secretName: image-builder-ppc-kubeconfig
+  volumeMounts:
+    - name: kubeconfig
+      mountPath: /etc/kubeconfig
+# ssh bot preset
+- labels:
+    preset-ssh-bot: "true"
+  volumeMounts:
+    - mountPath: /etc/secret-volume
+      name: powercloud-bot-key
+      readOnly: true
+  env:
+    - name: TF_VAR_powervs_api_key
+      valueFrom:
+        secretKeyRef:
+          name: ibm-cloud-credentials
+          key: TF_VAR_powervs_api_key
+  volumes:
+    - name: powercloud-bot-key
+      secret:
+        defaultMode: 256
+        secretName: bot-ssh-secret

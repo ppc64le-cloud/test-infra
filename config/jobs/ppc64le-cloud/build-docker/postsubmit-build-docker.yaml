@@ -2,6 +2,8 @@ postsubmits:
  ppc64le-cloud/docker-ce-build:
     - name: postsubmit-build-docker
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
       decorate: true
       decoration_config:
         timeout: 3h
@@ -48,26 +50,18 @@ postsubmits:
           securityContext:
             privileged: true
           volumeMounts:
-          - name: docker-root
-            mountPath: /var/lib/docker
           - name: ssh-key
             readOnly: true
             mountPath: /etc/ssh-key
-          env:
-            - name: S3_SECRET_AUTH
-              valueFrom:
-                secretKeyRef:
-                  name: docker-s3-credentials
-                  key: password
         volumes:
-        - name: docker-root
-          emptyDir: {}
         - name: ssh-key
           secret:
            secretName: git-ssh-docker-ce-build
 
     - name: postsubmit-build-test-containerd
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
       decorate: true
       decoration_config:
         timeout: 3h
@@ -135,15 +129,3 @@ postsubmits:
 
           securityContext:
             privileged: true
-          volumeMounts:
-          - name: docker-root
-            mountPath: /var/lib/docker
-          env:
-            - name: S3_SECRET_AUTH
-              valueFrom:
-                secretKeyRef:
-                  name: docker-s3-credentials
-                  key: password
-        volumes:
-        - name: docker-root
-          emptyDir: {}

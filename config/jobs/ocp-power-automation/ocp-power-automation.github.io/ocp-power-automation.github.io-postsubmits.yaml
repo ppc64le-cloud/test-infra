@@ -1,23 +1,18 @@
 postsubmits:
   ocp-power-automation/ocp-power-automation.github.io:
     - name: pull-github-create-page
+      labels:
+        preset-ocp-ghdeploykey: "true"
       decorate: true
       always_run: true
       branches:
         - ^main$
       skip_submodules: false
       spec:
-        volumes:
-          - name: github-key
-            secret:
-              secretName: ocp-gh-deploykey
         containers:
           - image: quay.io/powercloud/mkdocs:1.0.4
             command:
               - sh
-            volumeMounts:
-              - name: github-key
-                mountPath: /etc/ssh-key
             args:
               - -c
               - |
