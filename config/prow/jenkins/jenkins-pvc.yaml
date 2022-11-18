@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: jenkins
+ namespace: jenkins
+spec:
+ accessModes:
+ - ReadWriteOnce
+ resources:
+   requests:
+     storage: 500Gi
+ storageClassName: ibmc-vpc-block-10iops-tier
