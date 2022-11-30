@@ -100,6 +100,9 @@ postsubmits:
         - base_ref: master
           org: ppc64le-cloud
           repo: kubetest2-plugins
+        - base_ref: master
+          org: kubernetes-sigs
+          repo: kubetest2
           workdir: true
       spec:
         containers:
@@ -118,10 +121,13 @@ postsubmits:
                 go version
                 go env
 
-                go install ./...
+                make install
+                make install-tester-exec
 
-                go install sigs.k8s.io/kubetest2@latest
-                go install sigs.k8s.io/kubetest2/kubetest2-tester-exec@latest
+                pushd ../../ppc64le-cloud/kubetest2-plugins
+                make install-deployer-tf
+                popd
+
 
                 TIMESTAMP=$(date +%s)
 

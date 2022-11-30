@@ -54,6 +54,9 @@ periodics:
       - base_ref: master
         org: ppc64le-cloud
         repo: kubetest2-plugins
+      - base_ref: master
+        org: kubernetes-sigs
+        repo: kubetest2
         workdir: true
     spec:
       containers:
@@ -71,10 +74,12 @@ periodics:
               export PATH=$GOPATH/bin:$PATH
               export GO111MODULE=on
 
-              go install ./...
+              make install
+              make install-tester-ginkgo
 
-              go install sigs.k8s.io/kubetest2@latest
-              go install sigs.k8s.io/kubetest2/kubetest2-tester-ginkgo@latest
+              pushd ../../ppc64le-cloud/kubetest2-plugins
+              make install-deployer-tf
+              popd
 
               TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
