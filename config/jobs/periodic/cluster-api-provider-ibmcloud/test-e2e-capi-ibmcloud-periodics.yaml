@@ -20,7 +20,7 @@ periodics:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20221116-7c85504268-1.25
           env:
             - name: "E2E_FLAVOR"
-              value: "md-remediation"
+              value: "powervs-md-remediation"
             - name: "BOSKOS_HOST"
               value: "boskos.test-pods.svc.cluster.local"
           command:
@@ -49,7 +49,7 @@ periodics:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20221116-7c85504268-1.25
           env:
             - name: "E2E_FLAVOR"
-              value: "vpc"
+              value: "vpc-load-balancer"
             - name: "BOSKOS_HOST"
               value: "boskos.test-pods.svc.cluster.local"
           command:
