@@ -1,5 +1,5 @@
 periodics:
-  - name: periodic-capi-provider-ibmcoud-e2e-boskos-new
+  - name: periodic-capi-provider-ibmcoud-e2e-powervs
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
@@ -9,7 +9,7 @@ periodics:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
       gcs_credentials_secret: gcs-credentials
-    interval: 3h
+    interval: 12h
     extra_refs:
       - base_ref: main
         org: kubernetes-sigs
