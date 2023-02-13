@@ -34,7 +34,7 @@ periodics:
 
               # Run test server
               mkdir ${ARTIFACTS}/runc_l1/
-              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/runc_l1/ --name rdr-runtimes-containerd-runc-l1 --runc runc --runtime "io.containerd.runtime.v1.linux" --key atos-key --network  'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_l1.txt
+              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/runc_l1/ --name rdr-runtimes-containerd-runc-l1 --runc runc --runtime "io.containerd.runtime.v1.linux" --key atos-key --network  'public-192_168_139_0-29-VLAN_2028' 2>&1 | tee runc_l1.txt
 
               # Check results
               if [ -n "$(grep -En 'FAIL.*:' *.txt)" ]; then
@@ -77,7 +77,7 @@ periodics:
 
               # Run test server
               mkdir ${ARTIFACTS}/runc_v1/
-              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/runc_v1/ --name rdr-runtimes-containerd-runc-v1 --runc runc --runtime "io.containerd.runc.v1" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_v1.txt
+              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/runc_v1/ --name rdr-runtimes-containerd-runc-v1 --runc runc --runtime "io.containerd.runc.v1" --key atos-key --network 'public-192_168_139_0-29-VLAN_2028' 2>&1 | tee runc_v1.txt
 
               # Check results
               if [ -n "$(grep -En 'FAIL.*:' *.txt)" ]; then
@@ -120,7 +120,7 @@ periodics:
 
               # Run test server
               mkdir ${ARTIFACTS}/runc_v2/
-              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/runc_v2/ --name rdr-runtimes-containerd-runc-v2 --runc runc --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee runc_v2.txt
+              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/runc_v2/ --name rdr-runtimes-containerd-runc-v2 --runc runc --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_0-29-VLAN_2028' 2>&1 | tee runc_v2.txt
 
               # Check results
               if [ -n "$(grep -En 'FAIL.*:' *.txt)" ]; then
@@ -163,7 +163,7 @@ periodics:
 
               # Run test server
               mkdir ${ARTIFACTS}/crun_v2/
-              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/crun_v2/ --name rdr-runtimes-containerd-crun-v2 --runc crun --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_176-29-VLAN_2050' 2>&1 | tee crun_v2.txt
+              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/crun_v2/ --name rdr-runtimes-containerd-crun-v2 --runc crun --runtime "io.containerd.runc.v2" --key atos-key --network 'public-192_168_139_0-29-VLAN_2028' 2>&1 | tee crun_v2.txt
 
               # Check results
               if [ -n "$(grep -En 'FAIL.*:' *.txt)" ]; then
