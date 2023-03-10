@@ -85,7 +85,7 @@ periodics:
       bucket: ppc64le-kubernetes
       path_strategy: explicit
     gcs_credentials_secret: gcs-credentials
-  interval: 3h
+  interval: 24h
   extra_refs:
   - base_ref: master
     org: ppc64le-cloud
