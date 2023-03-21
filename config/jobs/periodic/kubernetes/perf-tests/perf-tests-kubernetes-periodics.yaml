@@ -1,7 +1,7 @@
 periodics:
-- name: periodic-kubernetes-containerd-node-throughput-perf-test-ppc64le
+- name: periodic-kubernetes-crio-node-throughput-perf-test-ppc64le
   tags:
-  - "perfDashPrefix: containerd-node-throughput"
+  - "perfDashPrefix: crio-node-throughput"
   - "perfDashJobType: throughput"
   cluster: k8s-ppc64le-cluster
   labels:
@@ -61,14 +61,14 @@ periodics:
           --powervs-ssh-key powercloud-bot-key \
           --ssh-private-key /etc/secret-volume/ssh-privatekey \
           --build-version $K8S_BUILD_VERSION \
-          --runtime containerd \
+          --runtime crio \
           --workers-count 1 \
           --cluster-name perf-test-$TIMESTAMP \
           --playbook "install-k8s-perf.yml" \
           --up --down --auto-approve --retry-on-tf-failure 3 \
           --break-kubetest-on-upfail true \
           --ignore-destroy-errors \
-          --powervs-memory 32 \
+          --powervs-memory 16 \
           --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" \
           --test=clusterloader2 -- --test-configs=testing/node-throughput/config.yaml --test-overrides=testing/overrides/node_containerd.yaml --provider=local --nodes=1 --repo-root=$GOPATH/src/github.com/kubernetes/perf-tests/
 
