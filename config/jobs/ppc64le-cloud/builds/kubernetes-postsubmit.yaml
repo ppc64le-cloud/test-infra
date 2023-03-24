@@ -37,7 +37,7 @@ postsubmits:
 
                 cp _output/bin/kubectl _output/release-stage/kubernetes/client/bin/
                 mv _output/bin/{apiextensions-apiserver,kube-aggregator,kube-apiserver,kube-controller-manager,kube-proxy,kube-scheduler,kubeadm,kubectl,kubelet} _output/release-stage/kubernetes/server/bin
-                mv _output/bin/{genyaml,go-runner,e2e_node.test,genman,kubemark,ginkgo,genswaggertypedocs,gendocs,genkubedocs,e2e.test} _output/release-stage/kubernetes/test/bin/
+                mv _output/bin/{go-runner,e2e_node.test,kubemark,ginkgo,e2e.test} _output/release-stage/kubernetes/test/bin/
 
                 tar -zcvf kubernetes-test-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/test/bin
                 tar -zcvf kubernetes-client-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/client/bin
