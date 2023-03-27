@@ -27,7 +27,7 @@ periodics:
               # Connect to IBMCloud
               echo "" | ibmcloud login
               ibmcloud target -r eu-gb -g runtimes-dev-resource-group
-              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:eu-de-1:a/65b64c1f1c29460e8c2e4bbfbd893c2c:107f9131-53a0-4c1f-934a-1eac93fd968c::
+              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:syd05:a/65b64c1f1c29460e8c2e4bbfbd893c2c:c3b44a6c-bc0c-4bc3-802c-b78ff68be862::
 
               wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instantiate_vm_and_test.sh
               chmod +x instantiate_vm_and_test.sh
@@ -70,7 +70,7 @@ periodics:
               # Connect to IBMCloud
               echo "" | ibmcloud login
               ibmcloud target -r eu-gb -g runtimes-dev-resource-group
-              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:eu-de-1:a/65b64c1f1c29460e8c2e4bbfbd893c2c:107f9131-53a0-4c1f-934a-1eac93fd968c::
+              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:syd05:a/65b64c1f1c29460e8c2e4bbfbd893c2c:c3b44a6c-bc0c-4bc3-802c-b78ff68be862::
 
               wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instantiate_vm_and_test.sh
               chmod +x instantiate_vm_and_test.sh
@@ -113,7 +113,7 @@ periodics:
               # Connect to IBMCloud
               echo "" | ibmcloud login
               ibmcloud target -r eu-gb -g runtimes-dev-resource-group
-              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:eu-de-1:a/65b64c1f1c29460e8c2e4bbfbd893c2c:107f9131-53a0-4c1f-934a-1eac93fd968c::
+              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:syd05:a/65b64c1f1c29460e8c2e4bbfbd893c2c:c3b44a6c-bc0c-4bc3-802c-b78ff68be862::
 
               wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instantiate_vm_and_test.sh
               chmod +x instantiate_vm_and_test.sh
@@ -156,7 +156,7 @@ periodics:
               # Connect to IBMCloud
               echo "" | ibmcloud login
               ibmcloud target -r eu-gb -g runtimes-dev-resource-group
-              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:eu-de-1:a/65b64c1f1c29460e8c2e4bbfbd893c2c:107f9131-53a0-4c1f-934a-1eac93fd968c::
+              ibmcloud pi service-target crn:v1:bluemix:public:power-iaas:syd05:a/65b64c1f1c29460e8c2e4bbfbd893c2c:c3b44a6c-bc0c-4bc3-802c-b78ff68be862::
 
               wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instantiate_vm_and_test.sh
               chmod +x instantiate_vm_and_test.sh
