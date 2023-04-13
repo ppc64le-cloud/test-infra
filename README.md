@@ -11,8 +11,14 @@ https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#u
 # set the kubeconfig to proper cluster
 $ export KUBECONFIG=/home/.kube/config
 
-# run the ./hack/test-pj.sh script, following the script runs the k8s-ppc64le-cluster-health-check on the cluster configured by KUBECONFIG(default: ${HOME}/.kube/config)
-$ CONFIG_PATH=$(pwd)/config/prow/config.yaml JOB_CONFIG_PATH=$(pwd)/config/jobs/ppc64le-cloud/test-infra/test-infra-periodics.yaml ./hack/test-pj.sh k8s-ppc64le-cluster-health-check
+# run the ./hack/test-pj.sh script, following the script runs the k8s-ppc64le-cluster-health-check
+# on the cluster configured by KUBECONFIG(default: ${HOME}/.kube/config) and creates 
+# a file pod_table.txt in the present working directory with details about the 
+# job. The -j flag is used to specify the job to be run and is mandatory. The -p (purpose) flag
+# is used to specify the purpose for which the job is being run and is optional. 
+# The job name and the purpose among other details will be populated in pod_table.txt 
+# if the purpose flag is set.
+$ CONFIG_PATH=$(pwd)/config/prow/config.yaml JOB_CONFIG_PATH=$(pwd)/config/jobs/ppc64le-cloud/test-infra/test-infra-periodics.yaml ./hack/test-pj.sh -j k8s-ppc64le-cluster-health-check -p "Cluster health after new jobs"
 ```
 
 ## Tools exposed via this repository
