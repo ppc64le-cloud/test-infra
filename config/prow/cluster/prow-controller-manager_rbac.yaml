@@ -65,6 +65,7 @@ rules:
       - pods
     verbs:
       - delete
+      - get
       - list
       - watch
       - create
