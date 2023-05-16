@@ -31,6 +31,8 @@ postsubmits:
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
                 export PATH=$GOPATH/bin:$PATH
+                export KEEP_GOING_MODULE=true
+                export KEEP_GOING_SUITE=true
                 go version
                 ./scripts/build.sh
-                GOARCH=`go env GOARCH` TEST_OPTS="PASSES='unit integration_e2e'" make test
+                GOARCH=`go env GOARCH` make test
