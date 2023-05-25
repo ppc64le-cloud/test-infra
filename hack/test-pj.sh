@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Inspired by https://github.com/kubernetes/test-infra/blob/047b0a0596f7d42b909405c0b8ed4366de2bef72/prow/pj-on-kind.sh
 # Required kubectl
-# Rightnow this work only on the x86 platform(Linux, MacOS)
+# Right now this work only on the x86 platform(Linux, MacOS)
 
 set -o errexit
 set -o nounset
@@ -18,11 +18,43 @@ function main() {
   echo "Applying pod to the mkpod cluster. Configure kubectl for the mkpod cluster with:"
   echo "Press Control+c for exiting the script"
   pod=$(kubectl apply -f "${PWD}/pod.yaml" | cut -d ' ' -f 1)
+  if [[ ! -z ${purpose} ]];then
+    if [[ ! -f "${PWD}/pod_table.txt" ]];then
+      echo -e "Pod UUID\t\t\t\t\tJob\t\t\tPurpose\t\t\tTimestamp" >> "${PWD}/pod_table.txt"
+    fi
+    echo "The file pod_table.txt in present working directory contains records
+of pods created by testpj jobs"
+    echo -e "${pod:4} \t ${job} \t ${purpose} \t $(kubectl get "${pod}" -o jsonpath='{.metadata.creationTimestamp}')" >> "${PWD}/pod_table.txt"
+  fi
   kubectl get "${pod}" -w
 }
 
 function parseArgs() {
-  job="${1:-}"
+  while [[ $# != 0 ]]
+  do
+    case "$1" in
+      -j)
+          job=$2
+          ;;
+     -p)
+         purpose=$2
+         ;;
+      -h)
+          echo -e "Usage: testpj -j job [-p purpose]\nJob: Job to be run. Must be one of the jobs in JOB_CONFIG_PATH\nPurpose: User-defined string denoting the purpose for which this job is being run"
+          exit 0
+          ;;
+      *)
+          echo "Invalid option: $1"
+          exit 2
+          ;;
+    esac
+    if [[ -z $2 || ${2:0:1} == "-" ]];then
+      echo -e "Value of parameter $1 must be specified!\nUsage: testpj -j job [-p purpose]"
+      exit 2
+    fi
+  shift
+  shift
+  done
   config="${CONFIG_PATH:-}"
   job_config_path="${JOB_CONFIG_PATH:-}"
   out_dir="${OUT_DIR:-/tmp/prowjob-out}"
@@ -35,8 +67,11 @@ function parseArgs() {
   #echo "NODE_DIR=${node_dir}"
 
   if [[ -z "${job}" ]]; then
-    echo "Must specify a job name as the first argument."
+    echo -e "Job name must be specified!\nUsage: testpj -j job [-p purpose]"
     exit 2
+  fi
+  if [[ -z ${purpose+x} ]]; then
+    purpose=""
   fi
   if [[ -z "${config}" ]]; then
     echo "Must specify config.yaml location via CONFIG_PATH env var."
