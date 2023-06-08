@@ -66,6 +66,7 @@ postsubmits:
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
+                export OPENSHIFT_SKIP_EXTERNAL_TESTS=true
                 make GO_REQUIRED_MIN_VERSION:= WHAT=cmd/openshift-tests
                 cp ./openshift-tests /usr/local/bin
                 openshift-tests help
