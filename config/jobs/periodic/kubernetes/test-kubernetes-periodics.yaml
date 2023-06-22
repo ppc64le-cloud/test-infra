@@ -7,7 +7,7 @@ periodics:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
       gcs_credentials_secret: gcs-credentials
-    interval: 3h
+    cron: "0 1/3 * * *"
     extra_refs:
       - base_ref: master
         org: kubernetes
@@ -49,7 +49,7 @@ periodics:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
       gcs_credentials_secret: gcs-credentials
-    interval: 3h
+    cron: "0 2/3 * * *"
     extra_refs:
       - base_ref: master
         org: ppc64le-cloud
