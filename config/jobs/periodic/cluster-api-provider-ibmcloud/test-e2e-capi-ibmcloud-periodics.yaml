@@ -18,6 +18,11 @@ periodics:
     spec:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20221116-7c85504268-1.25
+          resources:
+          limits:
+           cpu: "2500m"
+          requests:
+           cpu: "2500m"
           env:
             - name: "E2E_FLAVOR"
               value: "powervs-md-remediation"

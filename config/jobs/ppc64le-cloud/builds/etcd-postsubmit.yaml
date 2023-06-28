@@ -14,6 +14,11 @@ postsubmits:
       spec:
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
+            resources:
+            requests:
+              cpu: "2500m"
+            limits:
+              cpu: "2500m"
             command:
               - /bin/bash
             args:
