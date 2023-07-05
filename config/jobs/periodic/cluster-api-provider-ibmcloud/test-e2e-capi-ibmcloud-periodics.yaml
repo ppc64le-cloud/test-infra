@@ -9,7 +9,7 @@ periodics:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
       gcs_credentials_secret: gcs-credentials
-    cron: "0 9,21 * * *"
+    cron: "0 21 * * *"
     extra_refs:
       - base_ref: main
         org: kubernetes-sigs
