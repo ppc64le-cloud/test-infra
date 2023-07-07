@@ -14,6 +14,11 @@ postsubmits:
       spec:
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
+            resources:
+              requests:
+                cpu: "3000m"
+              limits:
+                cpu: "3000m"
             command:
               - /bin/bash
             args:
@@ -30,6 +35,7 @@ postsubmits:
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
+                export FORCE_HOST_GO=y
                 KUBE_BUILD_PLATFORMS=linux/ppc64le make cross
                 for server in kubectl kube-apiserver kube-controller-manager kube-scheduler kubelet kube-proxy kubeadm
                 do
