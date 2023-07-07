@@ -14,6 +14,11 @@ postsubmits:
       spec:
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
+            resources:
+              requests:
+                cpu: "3000m"
+              limits:
+                cpu: "3000m"
             command:
               - /bin/bash
             args:
@@ -30,6 +35,7 @@ postsubmits:
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
+                export FORCE_HOST_GO=y
                 KUBE_BUILD_PLATFORMS=linux/ppc64le make cross
 
                 GITCOMMIT=$(git rev-parse --short HEAD)
@@ -58,6 +64,11 @@ postsubmits:
       spec:
         containers:
           - image: quay.io/powercloud/all-in-one:0.5
+            resources:
+              requests:
+                cpu: "3000m"
+              limits:
+                cpu: "3000m"
             command:
               - /bin/bash
             args:
@@ -87,6 +98,7 @@ postsubmits:
                 GO111MODULE=on go install gotest.tools/gotestsum
                 popd
 
+                export FORCE_HOST_GO=y
                 make test
     - name: postsubmit-master-golang-kubernetes-conformance-test-ppc64le
       cluster: k8s-ppc64le-cluster
