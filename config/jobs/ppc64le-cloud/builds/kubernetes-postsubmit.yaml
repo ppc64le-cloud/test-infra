@@ -35,8 +35,19 @@ postsubmits:
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
+                # Storing go version of environment
+                go_version_env=`go version | cut -d ' ' -f4`
+                # go version of development master go will be of the kind "go version devel go1.21-39c5070712 Thu Jul 6 23:23:41 2023 +0000 linux/ppc64le"
+                # hence the cut at f4 will store go1.21-39c5070712 to go_version_env variable
+                echo "The Go version of environment is $go_version_env"
+
                 export FORCE_HOST_GO=y
                 KUBE_BUILD_PLATFORMS=linux/ppc64le make cross
+
+                # Check golang used for binary building
+                go_version_bin=`go version _output/bin/kube-apiserver | cut -d ' ' -f3`
+                [[ "$go_version_env" == "$go_version_bin" ]] || { echo "The binary was not built with master go version"; exit 1; }
+                echo "The binaries are built with go version $go_version_bin"
 
                 GITCOMMIT=$(git rev-parse --short HEAD)
                 mkdir -p _output/release-stage/kubernetes/{client,test,server}/bin
@@ -90,6 +101,12 @@ postsubmits:
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
                 export PATH=/usr/local/go/bin:$PATH
+                # Storing go version of environment
+                go_version_env=`go version | cut -d ' ' -f4`
+                # go version of development master go will be of the kind "go version devel go1.21-39c5070712 Thu Jul 6 23:23:41 2023 +0000 linux/ppc64le"
+                # hence the cut at f4 will store go1.21-39c5070712 to go_version_env variable
+                echo "The Go version of environment is $go_version_env"
+
                 export PATH=$GOPATH/bin:$PATH
                 go version
                 go env
@@ -100,6 +117,10 @@ postsubmits:
 
                 export FORCE_HOST_GO=y
                 make test
+                # Check golang used for binary building
+                go_version_bin=`go version _output/local/go/bin/ncpu | cut -d ' ' -f3`
+                [[ "$go_version_env" == "$go_version_bin" ]] || { echo "The binary was not built with master go version"; exit 1; }
+                echo "The binaries are built with go version $go_version_bin"
     - name: postsubmit-master-golang-kubernetes-conformance-test-ppc64le
       cluster: k8s-ppc64le-cluster
       labels:
