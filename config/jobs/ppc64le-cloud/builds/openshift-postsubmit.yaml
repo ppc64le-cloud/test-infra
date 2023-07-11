@@ -44,7 +44,7 @@ postsubmits:
                 export FORCE_HOST_GO=y
                 KUBE_BUILD_PLATFORMS=linux/ppc64le make cross
 
-                Check golang used for binary building
+                # Check golang used for binary building
                 go_version_bin=`go version _output/bin/kube-apiserver | cut -d ' ' -f3`
                 [[ "$go_version_env" == "$go_version_bin" ]] || { echo "The binary was not built with master go version"; exit 1; }
                 echo "The binaries are built with go version $go_version_bin"
