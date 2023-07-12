@@ -20,9 +20,9 @@ periodics:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20230703-e6ae5b372a-1.27
           resources:
           limits:
-           cpu: "2500m"
+           cpu: "3000m"
           requests:
-           cpu: "2500m"
+           cpu: "3000m"
           env:
             - name: "E2E_FLAVOR"
               value: "powervs-md-remediation"
@@ -52,6 +52,10 @@ periodics:
     spec:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20230703-e6ae5b372a-1.27
+          limits:
+           cpu: "3000m"
+          requests:
+           cpu: "3000m"
           env:
             - name: "E2E_FLAVOR"
               value: "vpc-load-balancer"
