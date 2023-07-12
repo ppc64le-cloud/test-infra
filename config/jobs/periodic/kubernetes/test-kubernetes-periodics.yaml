@@ -18,9 +18,9 @@ periodics:
         - image: quay.io/powercloud/all-in-one:0.5
           resources:
             requests:
-              cpu: "2500m"
+              cpu: "4000m"
             limits:
-              cpu: "2500m"
+              cpu: "4000m"
           command:
             - /bin/bash
           args:
@@ -66,6 +66,11 @@ periodics:
     spec:
       containers:
         - image: quay.io/powercloud/all-in-one:0.5
+          resources:
+            requests:
+              cpu: "4000m"
+            limits:
+              cpu: "4000m"
           command:
             - /bin/bash
           args:
