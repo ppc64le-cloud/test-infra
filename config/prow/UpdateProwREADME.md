@@ -10,7 +10,7 @@ https://github.com/ppc64le-cloud/test-infra/blob/master/images/pod-utilities/ver
 
 #### 3: Build and Push podutility images to quay.io
 Wait for the postsubmit-podutilities-job to push images to quay repo.
-Check the dashboard https://prow.ppc64le-cloud.org/ for job completion.
+Check the dashboard https://prow.ppc64le-cloud.cis.ibm.net/ for job completion.
 
 #### 4: Check for spec changes
 Keenly observe the commits/changes between your current prow version and the version to which you are upgrading. Make a note of changes to be added.
@@ -30,4 +30,4 @@ kubectl apply -f <component_deployment>.yaml
 
 #### 9: Confirm the successful upgradation 
 Check logs of prow-components on the cluster to see no failures.
-Obeserving the prow dashboard https://prow.ppc64le-cloud.org/ for job runs.
+Obeserving the prow dashboard https://prow.ppc64le-cloud.cis.ibm.net/ for job runs.

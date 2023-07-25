@@ -819,8 +819,8 @@ data:
           "links": [
             {
               "targetBlank": true,
-              "title": "http://jenkins.ppc64le-cloud.org/",
-              "url": "http://jenkins.ppc64le-cloud.org/"
+              "title": "http://jenkins.ppc64le-cloud.cis.ibm.net/",
+              "url": "http://jenkins.ppc64le-cloud.cis.ibm.net/"
             }
           ],
           "mappingType": 1,
@@ -1151,7 +1151,7 @@ data:
               "link": true,
               "linkTargetBlank": true,
               "linkTooltip": "Click to go to Jenkins",
-              "linkUrl": "http://jenkins.ppc64le-cloud.org/",
+              "linkUrl": "http://jenkins.ppc64le-cloud.cis.ibm.net/",
               "mappingType": 1,
               "pattern": "clusterinfo.project_name",
               "thresholds": [],
@@ -1239,7 +1239,7 @@ data:
               "link": true,
               "linkTargetBlank": true,
               "linkTooltip": "Click to open Jenkins job",
-              "linkUrl": "http://jenkins.ppc64le-cloud.org",
+              "linkUrl": "http://jenkins.ppc64le-cloud.cis.ibm.net",
               "mappingType": 1,
               "pattern": "clusterinfo.build_number",
               "preserveFormat": false,
@@ -1429,7 +1429,7 @@ data:
               "link": true,
               "linkTargetBlank": true,
               "linkTooltip": "Click to open Jenkins Job",
-              "linkUrl": "http://jenkins.ppc64le-cloud.org/",
+              "linkUrl": "http://jenkins.ppc64le-cloud.cis.ibm.net/",
               "mappingType": 1,
               "pattern": "jenkins_data.build_result_ordinal",
               "thresholds": [

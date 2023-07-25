@@ -14,5 +14,5 @@ RUN curl -L https://github.com/BurntSushi/ripgrep/releases/download/12.0.1/ripgr
 RUN mkdir /var/lib/ci-search && chown 1000:1000 /var/lib/ci-search && chmod 1777 /var/lib/ci-search
 USER 1000:1000
 ENTRYPOINT ["search"]
-CMD ["--path=/var/lib/ci-search/", "--deck-uri=https://prow.ppc64le-cloud.org"]
+CMD ["--path=/var/lib/ci-search/", "--deck-uri=https://prow.ppc64le-cloud.cis.ibm.net"]
 EXPOSE 8080

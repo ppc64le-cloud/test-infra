@@ -369,7 +369,7 @@ data:
             {
             "targetBlank": true,
             "title": "Click to Open Jenkins",
-            "url": "https://jenkins.ppc64le-cloud.org/job/powervm/"
+            "url": "https://jenkins.ppc64le-cloud.cis.ibm.net/job/powervm/"
             }
           ],
           "mappingType": 1,
@@ -811,7 +811,7 @@ data:
               "link": true,
               "linkTooltip": "Open Jenkins",
               "linkTargetBlank": true,
-              "linkUrl": "https://jenkins.ppc64le-cloud.org/job/powervm/",
+              "linkUrl": "https://jenkins.ppc64le-cloud.cis.ibm.net/job/powervm/",
               "mappingType": 1,
               "pattern": "clusterinfo.build_number",
               "preserveFormat": false,

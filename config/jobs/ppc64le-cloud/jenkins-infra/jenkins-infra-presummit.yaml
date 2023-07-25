@@ -17,5 +17,5 @@ presubmits:
               - -c
               - |
                 set -o errexit
-                export JENKINS_URI="https://jenkins.ppc64le-cloud.org"
+                export JENKINS_URI="https://jenkins.ppc64le-cloud.cis.ibm.net"
                 ./hack/verify-validate-pipelines.sh

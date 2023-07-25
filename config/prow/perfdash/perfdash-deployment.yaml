@@ -22,7 +22,7 @@ spec:
           -   --www=true
           -   --dir=/www
           -   --address=0.0.0.0:8080
-          -   --storageURL=https://prow.ppc64le-cloud.org/view/gs
+          -   --storageURL=https://prow.ppc64le-cloud.cis.ibm.net/view/gs
           -   --logsBucket=ppc64le-kubernetes
           -   --builds=100
           -   --githubConfigDir=https://api.github.com/repos/ppc64le-cloud/test-infra/contents/config/jobs/periodic/kubernetes/perf-tests/

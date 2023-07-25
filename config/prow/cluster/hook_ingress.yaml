@@ -15,7 +15,7 @@ spec:
       port:
         number: 80
   rules:
-    - host: prow.ppc64le-cloud.org
+    - host: prow.ppc64le-cloud.cis.ibm.net
       http:
         paths:
           - path: /hook
@@ -34,5 +34,5 @@ spec:
                   number: 8888
   tls:
     - hosts:
-        - prow.ppc64le-cloud.org
-      secretName: ppc64le-cloud
+        - prow.ppc64le-cloud.cis.ibm.net
+      secretName: ppc64le-cloud-cis
