@@ -16,6 +16,6 @@ postsubmits:
               - -c
               - |
                 set -o errexit
-                export JENKINS_URI="https://jenkins.ppc64le-cloud.org"
+                export JENKINS_URI="https://jenkins.ppc64le-cloud.cis.ibm.net"
                 crudini --set /etc/jenkins_jobs/jenkins_jobs.ini jenkins url ${JENKINS_URI}
                 ./hack/load-jenkins-pipelines.sh

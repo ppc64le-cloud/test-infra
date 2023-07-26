@@ -1,23 +1,23 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: ppc64le-cloud-tls
+  name: ppc64le-cloud-cis-tls
 spec:
   refreshInterval: 1h
   secretStoreRef:
     name: secretstore-ibm
     kind: ClusterSecretStore
   target:
-    name: ppc64le-cloud
+    name: ppc64le-cloud-cis
     # this is how the Kind=Secret will look like
     template:
       type: kubernetes.io/tls
   data:
   - secretKey: tls.crt
     remoteRef:
-      key: public_cert/82d10b13-e2dd-7f8c-7515-4346747035aa
+      key: public_cert/4d0b3521-5d1f-1bce-1172-71609adf5eaa
       property: certificate
   - secretKey: tls.key
     remoteRef:
-      key: public_cert/82d10b13-e2dd-7f8c-7515-4346747035aa
+      key: public_cert/4d0b3521-5d1f-1bce-1172-71609adf5eaa
       property: private_key
