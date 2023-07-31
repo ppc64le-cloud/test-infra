@@ -14,7 +14,7 @@ periodics:
         value: runtimesTeam
         effect: "NoSchedule"
       containers:
-        - image: quay.io/powercloud/all-in-one:0.5
+        - image: quay.io/powercloud/all-in-one:0.6
           command:
             - /bin/bash
             - -c
@@ -57,7 +57,7 @@ periodics:
         value: runtimesTeam
         effect: "NoSchedule"
       containers:
-        - image: quay.io/powercloud/all-in-one:0.5
+        - image: quay.io/powercloud/all-in-one:0.6
           command:
             - /bin/bash
             - -c

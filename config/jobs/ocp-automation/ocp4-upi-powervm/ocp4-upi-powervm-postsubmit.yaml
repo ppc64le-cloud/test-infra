@@ -9,7 +9,7 @@ postsubmits:
         - ^master$
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.5
+          - image: quay.io/powercloud/all-in-one:0.6
             command:
               - sh
             args:
