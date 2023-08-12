@@ -1,13 +1,13 @@
-ARG GOLANG_VERSION=1.18.6
-ARG IBM_CLOUD_VERSION=2.10.0
-ARG TERRAFORM_PROVIDER_IBM_VERSION=1.45.1
-ARG TERRAFORM_PROVIDER_NULL_VERSION=3.1.1
+ARG GOLANG_VERSION=1.20.6
+ARG IBM_CLOUD_VERSION=2.18.0
+ARG TERRAFORM_PROVIDER_IBM_VERSION=1.55.0
+ARG TERRAFORM_PROVIDER_NULL_VERSION=3.2.1
 FROM golang:$GOLANG_VERSION AS builder
 
 RUN go install rsc.io/goversion@v1.2.0
 
 ARG TF_VERSION
-ENV TF_VERSION ${TF_VERSION:-v1.3.0}
+ENV TF_VERSION ${TF_VERSION:-v1.5.4}
 
 ARG TERRAFORM_PROVIDER_IBM_VERSION
 ENV TERRAFORM_PROVIDER_IBM_VERSION=$TERRAFORM_PROVIDER_IBM_VERSION
@@ -29,16 +29,16 @@ RUN git clone -b v${TERRAFORM_PROVIDER_NULL_VERSION} --single-branch https://git
     cd terraform-provider-null && \
     go build .
 
-FROM debian:bullseye
+FROM debian:bookworm
 
 ARG TF_PLUGIN_PATH
 ENV TF_PLUGIN_PATH ${TF_PLUGIN_PATH:-/root/.terraform.d/plugins/registry.terraform.io}
 
 ARG GOLANG_VERSION
-ENV GOLANG_VERSION ${GOLANG_VERSION:-1.18.6}
+ENV GOLANG_VERSION ${GOLANG_VERSION:-1.20.6}
 
 ARG IBM_CLOUD_VERSION
-ENV IBM_CLOUD_VERSION ${IBM_CLOUD_VERSION:-2.10.0}
+ENV IBM_CLOUD_VERSION ${IBM_CLOUD_VERSION:-2.18.0}
 
 WORKDIR /workspace
 RUN mkdir -p /workspace
@@ -46,7 +46,7 @@ ENV WORKSPACE=/workspace \
     TERM=xterm
 ENV PATH /usr/local/go/bin:$PATH
 
-ARG KUBECTL_VERSION=v1.24.4
+ARG KUBECTL_VERSION=v1.27.4
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
@@ -62,7 +62,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     ca-certificates \
     curl \
-    default-jdk \
     file \
     git \
     gcc \
