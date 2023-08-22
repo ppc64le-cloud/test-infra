@@ -24,6 +24,11 @@ postsubmits:
           effect: "NoSchedule"
         containers:
         - image: quay.io/powercloud/docker-ce-build
+          resources:
+            requests:
+              cpu: "8000m"
+            limits:
+              cpu: "8000m"
           command:
           - /bin/bash
           args:
@@ -86,6 +91,11 @@ postsubmits:
           effect: "NoSchedule"
         containers:
         - image: quay.io/powercloud/docker-ce-build
+          resources:
+            requests:
+              cpu: "8000m"
+            limits:
+              cpu: "8000m"
           command:
           - /bin/bash
           args:
