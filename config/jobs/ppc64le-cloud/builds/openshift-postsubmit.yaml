@@ -95,4 +95,3 @@ postsubmits:
                 openshift-tests help
                 openshift-tests images --to-repository=quay.io/powercloud/community-e2e-images
                 openshift-tests run kubernetes/conformance --dry-run
-                openshift-tests run-upgrade --dry-run --to-image quay.io/openshift/community-e2e-images:e2e-3-k8s-gcr-io-e2e-test-images-sample-apiserver-1-17-4-AC3A0x1ePf4fLoiv all
