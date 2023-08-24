@@ -13,7 +13,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.5
+          - image: quay.io/powercloud/all-in-one:0.6
             resources:
               requests:
                 cpu: "3000m"
@@ -41,6 +41,7 @@ postsubmits:
                 # hence the cut at f4 will store go1.21-39c5070712 to go_version_env variable
                 echo "The Go version of environment is $go_version_env"
 
+                export CGO_ENABLED=0
                 export FORCE_HOST_GO=y
                 KUBE_BUILD_PLATFORMS=linux/ppc64le make cross
 
