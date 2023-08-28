@@ -9,13 +9,6 @@ periodics:
         repo: containerd
         workdir: true
     spec:
-      nodeSelector:
-        dedicated: runtimesTeam
-      tolerations:
-      - key: dedicated
-        operator: "Equal"
-        value: runtimesTeam
-        effect: "NoSchedule"
       containers:
       - image: quay.io/powercloud/docker-ce-build
         command:

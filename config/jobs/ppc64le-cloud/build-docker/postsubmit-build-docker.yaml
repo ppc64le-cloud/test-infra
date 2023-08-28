@@ -15,13 +15,6 @@ postsubmits:
           channel: 'prow-job-notifications'
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
-        nodeSelector:
-          dedicated: runtimesTeam
-        tolerations:
-        - key: dedicated
-          operator: "Equal"
-          value: runtimesTeam
-          effect: "NoSchedule"
         containers:
         - image: quay.io/powercloud/docker-ce-build
           resources:
@@ -82,13 +75,6 @@ postsubmits:
            - error
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
-        nodeSelector:
-          dedicated: runtimesTeam
-        tolerations:
-        - key: dedicated
-          operator: "Equal"
-          value: runtimesTeam
-          effect: "NoSchedule"
         containers:
         - image: quay.io/powercloud/docker-ce-build
           resources:
