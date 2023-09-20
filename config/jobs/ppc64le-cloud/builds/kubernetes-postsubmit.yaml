@@ -65,6 +65,11 @@ postsubmits:
     - name: postsubmit-master-golang-kubernetes-unit-test-ppc64le
       cluster: k8s-ppc64le-cluster
       decorate: true
+      decoration_config:
+        gcs_configuration:
+          bucket: ppc64le-kubernetes
+          path_strategy: explicit
+        gcs_credentials_secret: gcs-credentials
       branches:
         - master
       run_if_changed: '^golang/master/'
