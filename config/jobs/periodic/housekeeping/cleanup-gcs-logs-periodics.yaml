@@ -30,5 +30,7 @@ periodics:
                 daysLimit: 7
               - dir: logs/periodic-kubernetes-containerd-conformance-test-ppc64le
                 daysLimit: 7
+              - dir: logs/postsubmit-master-golang-kubernetes-unit-test-ppc64le
+                daysLimit: 30
               EOL
               $(go env GOPATH)/bin/gcs-cleaner
