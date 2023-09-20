@@ -33,6 +33,74 @@ periodics:
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
+  - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.6
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+    cron: "0 6 * * 6"
+    extra_refs:
+      - base_ref: release-0.6
+        org: kubernetes-sigs
+        repo: cluster-api-provider-ibmcloud
+        workdir: true
+    spec:
+      containers:
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20230703-e6ae5b372a-1.27
+          resources:
+          limits:
+           cpu: "3000m"
+          requests:
+           cpu: "3000m"
+          env:
+            - name: "E2E_FLAVOR"
+              value: "powervs-md-remediation"
+            - name: "BOSKOS_HOST"
+              value: "boskos.test-pods.svc.cluster.local"
+          command:
+            - "runner.sh"
+            - "./scripts/ci-e2e.sh"
+          securityContext:
+            privileged: true
+  - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.5
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+    cron: "0 8 * * 0"
+    extra_refs:
+      - base_ref: release-0.5
+        org: kubernetes-sigs
+        repo: cluster-api-provider-ibmcloud
+        workdir: true
+    spec:
+      containers:
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20230703-e6ae5b372a-1.27
+          resources:
+          limits:
+           cpu: "3000m"
+          requests:
+           cpu: "3000m"
+          env:
+            - name: "E2E_FLAVOR"
+              value: "powervs-md-remediation"
+            - name: "BOSKOS_HOST"
+              value: "boskos.test-pods.svc.cluster.local"
+          command:
+            - "runner.sh"
+            - "./scripts/ci-e2e.sh"
+          securityContext:
+            privileged: true
   - name: periodic-capi-provider-ibmcoud-e2e-vpc
     labels:
       preset-dind-enabled: "true"
@@ -46,6 +114,72 @@ periodics:
     cron: "0 0 * * *"
     extra_refs:
       - base_ref: main
+        org: kubernetes-sigs
+        repo: cluster-api-provider-ibmcloud
+        workdir: true
+    spec:
+      containers:
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20230703-e6ae5b372a-1.27
+          limits:
+           cpu: "3000m"
+          requests:
+           cpu: "3000m"
+          env:
+            - name: "E2E_FLAVOR"
+              value: "vpc-load-balancer"
+            - name: "BOSKOS_HOST"
+              value: "boskos.test-pods.svc.cluster.local"
+          command:
+            - "runner.sh"
+            - "./scripts/ci-e2e.sh"
+          securityContext:
+            privileged: true
+  - name: periodic-capi-provider-ibmcloud-e2e-vpc-release-0.6
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+    cron: "0 2 * * 6"
+    extra_refs:
+      - base_ref: release-0.6
+        org: kubernetes-sigs
+        repo: cluster-api-provider-ibmcloud
+        workdir: true
+    spec:
+      containers:
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20230703-e6ae5b372a-1.27
+          limits:
+           cpu: "3000m"
+          requests:
+           cpu: "3000m"
+          env:
+            - name: "E2E_FLAVOR"
+              value: "vpc-load-balancer"
+            - name: "BOSKOS_HOST"
+              value: "boskos.test-pods.svc.cluster.local"
+          command:
+            - "runner.sh"
+            - "./scripts/ci-e2e.sh"
+          securityContext:
+            privileged: true
+  - name: periodic-capi-provider-ibmcloud-e2e-vpc-release-0.5
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+    cron: "0 4 * * 0"
+    extra_refs:
+      - base_ref: release-0.5
         org: kubernetes-sigs
         repo: cluster-api-provider-ibmcloud
         workdir: true
