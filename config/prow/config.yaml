@@ -79,10 +79,10 @@ plank:
         path_strategy: explicit
       s3_credentials_secret: s3-credentials
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20230901-e9e5d470a5
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20230901-e9e5d470a5
-        initupload: gcr.io/k8s-prow/initupload:v20230901-e9e5d470a5
-        sidecar: gcr.io/k8s-prow/sidecar:v20230901-e9e5d470a5
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20231004-f64f17f7bb
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20231004-f64f17f7bb
+        initupload: gcr.io/k8s-prow/initupload:v20231004-f64f17f7bb
+        sidecar: gcr.io/k8s-prow/sidecar:v20231004-f64f17f7bb
       ssh_key_secrets:
         - bot-ssh-secret
 
