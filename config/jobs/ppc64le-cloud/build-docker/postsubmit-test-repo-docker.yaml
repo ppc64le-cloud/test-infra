@@ -40,7 +40,7 @@ postsubmits:
             FILE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/prow-job-tracking/job/${TIMESTAMP_FILE}"
 
             echo "* Retrieve the timestamp file from the tracking branch: ${FILE_URL} *"
-            wget -O env/date.list ${FILE_URL}
+            curl -o env/date.list ${FILE_URL}
             cat env/date.list
 
             echo "* Start prow-test-docker.sh *"
@@ -92,7 +92,7 @@ postsubmits:
             FILE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/prow-job-tracking/job/${TIMESTAMP_FILE}"
 
             echo "* Retrieve the timestamp file from the tracking branch: ${FILE_URL} *"
-            wget -O env/date.list ${FILE_URL}
+            curl -o env/date.list ${FILE_URL}
             cat env/date.list
 
             echo "* Start prow-test-docker.sh *"
