@@ -1,0 +1,87 @@
+periodics:
+  - name: periodic-kubeflow-pipeline-e2e-test-ppc64le
+    cluster: kubeflow-ppc64le-cluster
+    labels:
+      preset-kubeflow-powervs: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+    cron: "0 12 * * *"     
+    extra_refs:
+      - base_ref: master
+        org: kubeflow
+        repo: pipelines
+      - base_ref: master
+        org: ppc64le-cloud
+        repo: kubetest2-plugins
+      - base_ref: master
+        org: kubernetes-sigs
+        repo: kubetest2
+        workdir: true
+    spec:
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.6
+          resources:
+            requests:
+              cpu: "4000m"
+            limits:
+              cpu: "4000m"
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              export PATH=$GOPATH/bin:$PATH
+              export GO111MODULE=on
+
+              make install
+              make install-tester-ginkgo
+
+              pushd ../../ppc64le-cloud/kubetest2-plugins
+              make install-deployer-tf
+              popd
+
+              TIMESTAMP=$(date +%s)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+
+              # kubectl needed for the e2e tests
+              curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
+              chmod +x /usr/local/bin/kubectl
+
+              # creates the k8s cluster
+              kubetest2 tf --powervs-dns kubeflow-private-network \
+                --powervs-image-name CentOS-Stream-8 \
+                --powervs-region mon --powervs-zone mon01 \
+                --powervs-service-id fb5d2d9b-06f3-4bb9-9d5b-72fef3ef9af6 \
+                --powervs-ssh-key kubeflow-pub-key \
+                --ssh-private-key /etc/kubeflow-volume/kubeflow-ssh-key \
+                --build-version $K8S_BUILD_VERSION \
+                --cluster-name config1-$TIMESTAMP \
+                --workers-count 2 \
+                --up --auto-approve --retry-on-tf-failure 3 \
+                --break-kubetest-on-upfail true \
+                --powervs-memory 32 \
+              
+              cp $(pwd)/config1-$TIMESTAMP/kubeconfig $HOME/.kube/config
+
+              pushd ../../kubeflow/pipelines
+
+              # run kubeflow e2e tests
+              ./test/presubmit-tests-with-pipeline-deployment.sh --workflow_file e2e_test_gke_v2.yaml --test_result_folder e2e_test
+              popd
+
+              # deletes the k8s cluster 
+              kubetest2 tf --powervs-region mon --powervs-zone mon01 \
+                --powervs-service-id fb5d2d9b-06f3-4bb9-9d5b-72fef3ef9af6 \
+                --ignore-cluster-dir true \
+                --cluster-name config1-$TIMESTAMP \
+                --down --auto-approve --ignore-destroy-errors \
+
