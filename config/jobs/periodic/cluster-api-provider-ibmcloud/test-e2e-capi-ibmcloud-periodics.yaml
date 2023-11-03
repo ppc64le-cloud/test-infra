@@ -1,5 +1,5 @@
 periodics:
-  - name: periodic-capi-provider-ibmcoud-e2e-powervs
+  - name: periodic-capi-provider-ibmcloud-e2e-powervs
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
@@ -101,7 +101,7 @@ periodics:
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
-  - name: periodic-capi-provider-ibmcoud-e2e-vpc
+  - name: periodic-capi-provider-ibmcloud-e2e-vpc
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
