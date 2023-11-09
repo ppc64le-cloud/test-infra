@@ -1,0 +1,23 @@
+  periodics:
+  - name: kubeflow-pipelines-component-yaml-ppc64le
+    cluster: kubeflow-ppc64le-cluster
+    labels:
+      preset-kubeflow-powervs: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: kubeflow-upstreamci-bucket
+        path_strategy: explicit
+      gcs_credentials_secret: kubeflow-ppc64le-s3-credentials
+    cron: "0 12 * * *"
+    extra_refs:
+      - base_ref: master
+        org: valen-mascarenhas14
+        repo: pipelines
+        workdir: true
+    spec:
+      containers:
+        - image: ppc64le/python:3.7
+          imagePullPolicy: Always
+          command:
+          - ./test/presubmit-component-yaml.sh
