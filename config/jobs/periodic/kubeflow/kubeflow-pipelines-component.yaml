@@ -4,9 +4,9 @@
     decorate: true
     decoration_config:
       gcs_configuration:
-        bucket: s3://kubeflow-upstreamci-bucket
+        bucket: s3://ppc64le-prow-logs
         path_strategy: explicit
-      s3_credentials_secret: kubeflow-ppc64le-s3-credentials
+      s3_credentials_secret: s3-credentials
     cron: "0 12 * * *"
     extra_refs:
       - base_ref: master
