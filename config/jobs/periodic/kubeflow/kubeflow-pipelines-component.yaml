@@ -2,11 +2,6 @@
   - name: kubeflow-pipelines-component-yaml-ppc64le
     cluster: kubeflow-ppc64le-cluster
     decorate: true
-    decoration_config:
-      gcs_configuration:
-        bucket: s3://ppc64le-prow-logs
-        path_strategy: explicit
-      s3_credentials_secret: s3-credentials
     cron: "0 12 * * *"
     extra_refs:
       - base_ref: master
