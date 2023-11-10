@@ -1,8 +1,6 @@
   periodics:
   - name: kubeflow-pipelines-component-yaml-ppc64le
     cluster: kubeflow-ppc64le-cluster
-    labels:
-      preset-kubeflow-powervs: "true"
     decorate: true
     decoration_config:
       gcs_configuration:
@@ -12,7 +10,7 @@
     cron: "0 12 * * *"
     extra_refs:
       - base_ref: master
-        org: valen-mascarenhas14
+        org: kubeflow
         repo: pipelines
         workdir: true
     spec:

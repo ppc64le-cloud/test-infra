@@ -219,21 +219,3 @@ presets:
       secret:
         defaultMode: 256
         secretName: bot-ssh-secret
-# kubeflow powervs preset
-- labels:
-    preset-kubeflow-powervs: "true"
-  env:
-    - name: TF_VAR_IBMCLOUD_API_KEY
-      valueFrom:
-        secretKeyRef:
-          name: kubeflow-apikey
-          key: apikey
-  volumeMounts:
-    - name: kubeflow-volume
-      readOnly: true
-      mountPath: "/etc/kubeflow-volume"
-  volumes:
-    - name: kubeflow-volume
-      secret:
-        secretName: kubeflow-ssh-key
-        defaultMode: 256
