@@ -30,6 +30,7 @@ approve:
       - ocp-power-automation/ocp4-playbooks-extras
       - ocp-power-automation/ocp4-upi-powervm
       - ocp-power-automation/ocp-power-automation.github.io
+      - ocp-power-automation/ocp4-extras
     require_self_approval: false
 
 # Lower bounds in number of lines changed; XS is assumed to be zero.
@@ -242,6 +243,11 @@ external_plugins:
       - pull_request
   ocp-power-automation/openshift-install-power:
   - name: mergeable
+    events:
+      - issue_comment
+      - pull_request
+  ocp-power-automation/ocp4-extras:
+  - name: mergable
     events:
       - issue_comment
       - pull_request
