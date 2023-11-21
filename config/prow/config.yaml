@@ -92,6 +92,7 @@ tide:
     - orgs:
         - ppc64le-cloud
         - ocp-power-automation
+        - PDeXchange
       labels:
         - lgtm
         - approved
