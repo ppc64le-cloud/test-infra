@@ -13,6 +13,10 @@ triggers:
     join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervs#contributing
     only_org_members: true
   - repos:
+      - PDeXchange
+    join_org_url: https://github.com/PDeXchange#power-access-cloud
+    only_org_members: true
+  - repos:
       - trigger-prow/test-trigger
     join_org_url: https://github.com/trigger-prow/test-trigger/blob/main/README.md
   - repos:
@@ -148,6 +152,36 @@ plugins:
       - heart
       - help
       - hold
+      - label
+      - lgtm
+      - lifecycle
+      - mergecommitblocker
+      - owners-label
+      - pony
+      - retitle
+      - shrug
+      - size
+      - skip
+      - trigger
+      - verify-owners
+      - welcome
+      - wip
+      - yuks
+
+  PDeXchange:
+    plugins:
+      - approve
+      - assign
+      - blunderbuss
+      - cat
+      - config-updater
+      - dog
+      - golint
+      - goose
+      - heart
+      - help
+      - hold
+      - invalidcommitmsg
       - label
       - lgtm
       - lifecycle
