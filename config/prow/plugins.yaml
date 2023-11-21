@@ -23,20 +23,6 @@ triggers:
       - Rajalakshmi-Girish/etcd
     join_org_url: https://github.com/Rajalakshmi-Girish/etcd/blob/main/README.md#contributing
 
-approve:
-  - repos:
-      - ppc64le-cloud/test-infra
-      - ppc64le-cloud/kubetest2-plugins
-    require_self_approval: false
-  - repos:
-      - ocp-power-automation/ocp4-upi-powervs
-      - ocp-power-automation/ocp4-playbooks
-      - ocp-power-automation/ocp4-playbooks-extras
-      - ocp-power-automation/ocp4-upi-powervm
-      - ocp-power-automation/ocp-power-automation.github.io
-      - ocp-power-automation/ocp4-extras
-    require_self_approval: false
-
 # Lower bounds in number of lines changed; XS is assumed to be zero.
 size:
   s:   10
