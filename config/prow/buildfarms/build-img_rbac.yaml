@@ -80,3 +80,12 @@ subjects:
   - kind: ServiceAccount
     name: "build-img"
     namespace: test-pods
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: build-img-secret
+  namespace: test-pods
+  annotations:
+    kubernetes.io/service-account.name: build-img
+type: kubernetes.io/service-account-token
