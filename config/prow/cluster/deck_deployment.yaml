@@ -43,7 +43,7 @@ spec:
           env:
             # Use KUBECONFIG envvar rather than --kubeconfig flag in order to provide multiple configs to merge.
             - name: KUBECONFIG
-              value: "/etc/kubeconfig/config"
+              value: "/etc/kubeconfig/config:/etc/kubeflow-kubeconfig/config"
           ports:
             - name: http
               containerPort: 8080
@@ -62,6 +62,9 @@ spec:
               readOnly: true
             - name: kubeconfig
               mountPath: /etc/kubeconfig
+              readOnly: true
+            - name: kubeflow-kubeconfig
+              mountPath: /etc/kubeflow-kubeconfig
               readOnly: true
             - name: s3-credentials
               mountPath: /etc/s3-credentials
@@ -93,6 +96,10 @@ spec:
           secret:
             defaultMode: 0644
             secretName: kubeconfig
+        - name: kubeflow-kubeconfig
+          secret:
+            defaultMode: 0644
+            secretName: kubeflow-kubeconfig
         - name: plugins
           configMap:
             name: plugins
