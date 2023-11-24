@@ -87,8 +87,7 @@ plank:
         - bot-ssh-secret
   - cluster: kubeflow-ppc64le-cluster
     config:
-      ssh_key_secrets:
-        - ""
+      ssh_key_secrets: null
 
 tide:
   sync_period: 2m
