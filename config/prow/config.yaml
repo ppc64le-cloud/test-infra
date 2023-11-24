@@ -69,8 +69,8 @@ plank:
       [Full PR test history](https://prow.ppc64le-cloud.cis.ibm.net/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
       [Your PR dashboard](https://prow.ppc64le-cloud.cis.ibm.net/pr?query=is:pr+state:open+author:{{with
       index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
-  default_decoration_configs:
-    "*":
+  default_decoration_config_entries:
+  - config:
       timeout: 2h
       grace_period: 15s
       censor_secrets: true
@@ -85,6 +85,10 @@ plank:
         sidecar: gcr.io/k8s-prow/sidecar:v20231101-86c2fe4d89
       ssh_key_secrets:
         - bot-ssh-secret
+  - cluster: kubeflow-ppc64le-cluster
+    config:
+      ssh_key_secrets:
+        - ""
 
 tide:
   sync_period: 2m
