@@ -271,3 +271,8 @@ external_plugins:
     events:
       - issue_comment
       - pull_request
+  ocp-power-automation/ci-monitoring-automation:
+  - name: mergable
+    events:
+      - issue_comment
+      - pull_request
