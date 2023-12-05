@@ -123,3 +123,81 @@ periodics:
                 --test=ginkgo -- --flake-attempts 2 \
                 --test-package-bucket k8s-release-dev --test-package-dir ci \
                 --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Serial\].*\[Conformance\]'
+  - name: periodic-kubernetes-containerd-e2e-node-tests-ppc64le
+    cluster: k8s-ppc64le-cluster
+    labels:
+      preset-ssh-bot: "true"
+    decorate: true
+    decoration_config:
+      gcs_configuration:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+      timeout: 2h
+    cron: "0 3/3 * * *"
+    extra_refs:
+      - base_ref: master
+        org: ppc64le-cloud
+        repo: kubetest2-plugins
+      - base_ref: master
+        org: kubernetes-sigs
+        repo: kubetest2
+        workdir: true
+    spec:
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.6
+          resources:
+            requests:
+              cpu: "4000m"
+            limits:
+              cpu: "4000m"
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              export PATH=$GOPATH/bin:$PATH
+              export GO111MODULE=on
+
+              make install
+              make install-tester-exec
+
+              pushd ../../ppc64le-cloud/kubetest2-plugins
+              make install-deployer-tf
+              popd
+
+              TIMESTAMP=$(date +%s)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+              jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
+
+              # kubectl needed for the e2e tests
+              curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
+              chmod +x /usr/local/bin/kubectl
+
+              kubetest2 tf --powervs-dns k8s-tests \
+                --powervs-image-name centos-stream-8 \
+                --powervs-region syd --powervs-zone syd05 \
+                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
+                --powervs-ssh-key powercloud-bot-key \
+                --ssh-private-key /etc/secret-volume/ssh-privatekey \
+                --cluster-name config3-$TIMESTAMP \
+                --up --set-kubeconfig=false --auto-approve \
+                --build-version $K8S_BUILD_VERSION --retry-on-tf-failure 3 \
+                --break-kubetest-on-upfail true --powervs-memory 32 \
+                --playbook k8s-node-remote.yml
+              EXTERNAL_IP=`grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' $(pwd)/config3-$TIMESTAMP/hosts`
+              set +o errexit
+              kubetest2 tf --powervs-region syd --powervs-zone syd05 \
+                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
+                --ignore-cluster-dir true \
+                --cluster-name config3-$TIMESTAMP \
+                --down --auto-approve --ignore-destroy-errors \
+                --test=exec -- ssh -i /etc/secret-volume/ssh-privatekey root@$EXTERNAL_IP \
+                "export SKIP='\[Flaky\]|\[Slow\]|\[Serial\]|Containers.Lifecycle.should|Summary.API' && /make-test-e2e-node.sh"; \
+                rc=$?; scp -r -i /etc/secret-volume/ssh-privatekey root@$EXTERNAL_IP:/tmp/_artifacts $ARTIFACTS; \
+                [ $rc != 0 ] && echo "ERROR: E2ENode Test suite exited with code:$rc"; exit $rc
