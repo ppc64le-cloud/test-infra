@@ -59,6 +59,8 @@ periodics:
         curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
         chmod +x /usr/local/bin/kubectl
 
+        echo POD_STARTUP_LATENCY_THRESHOLD: 10s >> $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/testing/overrides/node_containerd.yaml
+
         kubetest2 tf --powervs-dns k8s-tests \
           --powervs-image-name centos-stream-8 \
           --powervs-region syd --powervs-zone syd05 \
@@ -74,8 +76,9 @@ periodics:
           --break-kubetest-on-upfail true \
           --ignore-destroy-errors \
           --powervs-memory 16 \
-          --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" \
-          --test=clusterloader2 -- --test-configs=testing/node-throughput/config.yaml --test-overrides=testing/overrides/node_containerd.yaml --provider=local --nodes=1 --repo-root=$GOPATH/src/github.com/kubernetes/perf-tests/
+          --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" --test=clusterloader2 -- \
+          --test-configs=testing/node-throughput/config.yaml --test-overrides=testing/overrides/node_containerd.yaml --provider=local \
+          --nodes=1 --repo-root=$GOPATH/src/github.com/kubernetes/perf-tests/
 
 - name: periodic-kubernetes-storage-perf-test-ppc64le
   tags:
@@ -152,5 +155,6 @@ periodics:
           --break-kubetest-on-upfail true \
           --ignore-destroy-errors \
           --powervs-memory 16 \
-          --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" \
-          --test=exec -- $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/run-e2e.sh --testsuite=testing/experimental/storage/pod-startup/suite.yaml --provider=local --nodes=1 --report-dir=/logs/artifacts
+          --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" --test=exec -- \
+          $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/run-e2e.sh \
+          --testsuite=testing/experimental/storage/pod-startup/suite.yaml --provider=local --nodes=1 --report-dir=/logs/artifacts
