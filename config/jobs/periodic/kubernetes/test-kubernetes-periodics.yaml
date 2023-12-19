@@ -59,7 +59,7 @@ periodics:
       - base_ref: master
         org: ppc64le-cloud
         repo: kubetest2-plugins
-      - base_ref: master
+      - base_ref: b07ab779dbbff3e26bc68313962251b503d74583
         org: kubernetes-sigs
         repo: kubetest2
         workdir: true
