@@ -59,7 +59,7 @@ periodics:
       - base_ref: master
         org: ppc64le-cloud
         repo: kubetest2-plugins
-      - base_ref: b07ab779dbbff3e26bc68313962251b503d74583
+      - base_ref: master
         org: kubernetes-sigs
         repo: kubetest2
         workdir: true
@@ -111,7 +111,7 @@ periodics:
                 --up --auto-approve --retry-on-tf-failure 3 \
                 --break-kubetest-on-upfail true \
                 --powervs-memory 32 \
-                --test=ginkgo -- --parallel 10 --flake-attempts 2 --test-package-bucket k8s-release-dev --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Serial\]'
+                --test=ginkgo -- --parallel 10 --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Serial\]'
               export KUBECONFIG="$(pwd)/config1-$TIMESTAMP/kubeconfig"
               export ARTIFACTS=$ARTIFACTS/serial_tests_artifacts
               #Run Serial Conformance tests
@@ -120,8 +120,8 @@ periodics:
                 --ignore-cluster-dir true \
                 --cluster-name config1-$TIMESTAMP \
                 --down --auto-approve --ignore-destroy-errors \
-                --test=ginkgo -- --flake-attempts 2 \
-                --test-package-bucket k8s-release-dev --test-package-dir ci \
+                --test=ginkgo -- \
+                --test-package-dir ci \
                 --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Serial\].*\[Conformance\]'
   - name: periodic-kubernetes-containerd-e2e-node-tests-ppc64le
     cluster: k8s-ppc64le-cluster
