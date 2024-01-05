@@ -3,7 +3,7 @@ periodics:
     cluster: k8s-ppc64le-cluster
     decorate: true
     decoration_config:
-      decoration_config:
+      gcs_configuration:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
       gcs_credentials_secret: gcs-credentials
