@@ -1,0 +1,44 @@
+periodics:
+  - name: periodic-etcd-test-ppc64le
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    decoration_config:
+      decoration_config:
+        bucket: ppc64le-kubernetes
+        path_strategy: explicit
+      gcs_credentials_secret: gcs-credentials
+    cron: "0 5/3 * * *"
+    extra_refs:
+      - base_ref: main
+        org: etcd-io
+        repo: etcd
+        workdir: true
+    spec:
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.6
+          resources:
+          requests:
+            cpu: "5000m"
+          limits:
+            cpu: "5000m"
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              export PATH=$GOPATH/bin:$PATH
+              export KEEP_GOING_MODULE=true
+              export KEEP_GOING_SUITE=true
+              GOLANG_VERSION=`cat .go-version`
+              url="https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-ppc64le.tar.gz"
+              wget -O go.tgz "$url" --progress=dot:giga
+              rm -rf /usr/local/go
+              tar -C /usr/local -xzf go.tgz
+              go version
+              ./scripts/build.sh
+              GOARCH=`go env GOARCH` make test
