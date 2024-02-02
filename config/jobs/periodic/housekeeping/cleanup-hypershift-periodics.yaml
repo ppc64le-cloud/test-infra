@@ -1,0 +1,28 @@
+periodics:
+  - name: periodic-hypershift-powervs-cleanup
+    cluster: k8s-ppc64le-cluster
+    decorate: true
+    interval: 24h
+    spec:
+      containers:
+        - image: alpine:latest
+          command:
+            - /bin/sh
+          envFrom:
+            - secretRef:
+                name: ibm-cloud-credentials-hypershift
+          args:
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1.1-alpha.7/pvsadm-linux-ppc64le
+              chmod +x /usr/local/bin/pvsadm
+
+              # delete all the vms created before 24hrs
+              pvsadm purge vms --instance-id 5ac28aa5-47b2-46b8-958f-d9c2284aab04 --before 24h --ignore-errors --no-prompt
+              pvsadm purge vms --instance-id 3358be60-dd61-41af-ab07-79139e149142 --before 24h --ignore-errors --no-prompt
+              pvsadm purge vms --instance-id d04e2b0c-58aa-4e64-85c1-ecb5ab00d03d --before 24h --regexp '[^bastion]' --ignore-errors --no-prompt
