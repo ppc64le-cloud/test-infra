@@ -53,9 +53,7 @@ postsubmits:
                 export KUBECONFIG=$(pwd)/kubeconfig
                 for version in 4.11 4.12 4.13 4.14
                 do
-                    kubectl buildkit create --runtime=containerd --namespace image-builder
                     kubectl build --push --registry-secret quay-powercloud-regcred --namespace image-builder --build-arg RELEASE_VER=$version -t quay.io/powercloud/openshift-install-powervs:ocp$version-amd -t quay.io/powercloud/openshift-install-powervs:$PULL_BASE_REF-ocp$version-amd -f images/Dockerfile ./
-                    kubectl buildkit create --runtime=containerd --namespace image-builder --kubeconfig /etc/kubeconfig/config
                     kubectl build --push --registry-secret quay-powercloud-regcred --kubeconfig /etc/kubeconfig/config --namespace image-builder --build-arg RELEASE_VER=$version -t quay.io/powercloud/openshift-install-powervs:ocp$version-ppc64le -t quay.io/powercloud/openshift-install-powervs:$PULL_BASE_REF-ocp$version-ppc64le -f images/Dockerfile ./
                 done
                 curl -L https://github.com/estesp/manifest-tool/releases/download/v1.0.3/manifest-tool-linux-`go env GOARCH` -o /usr/local/bin/manifest-tool
