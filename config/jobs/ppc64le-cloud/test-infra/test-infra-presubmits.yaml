@@ -23,7 +23,7 @@ presubmits:
       containers:
       - image: gcr.io/k8s-prow/checkconfig:v20240205-8f023a0da6
         command:
-        - /checkconfig
+        - checkconfig
         args:
         - --config-path=config/prow/config.yaml
         - --job-config-path=config/jobs
