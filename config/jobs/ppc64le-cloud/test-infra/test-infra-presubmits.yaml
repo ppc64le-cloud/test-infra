@@ -5,7 +5,7 @@ presubmits:
     decorate: true
     spec:
       containers:
-        - image: quay.io/kubermatic/yamllint:0.1
+        - image: quay.io/powercloud/yamllint:1.34.0
           command:
             - yamllint
             - -c
