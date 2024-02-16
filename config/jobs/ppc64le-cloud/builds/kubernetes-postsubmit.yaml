@@ -122,8 +122,7 @@ postsubmits:
                 popd
 
                 export FORCE_HOST_GO=y
-                # Skipping UT TestVerify in typecheck package due to https://github.com/kubernetes/kubernetes/issues/120142
-                make test GOFLAGS=-skip="TestVerify$"
+                make test
                 # Check golang used for binary building
                 go_version_bin=`go version _output/local/go/bin/ncpu | cut -d ' ' -f3`
                 [[ "$go_version_env" == "$go_version_bin" ]] || { echo "The binary was not built with master go version"; exit 1; }
