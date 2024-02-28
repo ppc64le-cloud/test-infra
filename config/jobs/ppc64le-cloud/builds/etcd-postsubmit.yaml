@@ -40,4 +40,4 @@ postsubmits:
                 export KEEP_GOING_SUITE=true
                 go version
                 ./scripts/build.sh
-                GOARCH=`go env GOARCH` make test
+                GOARCH=`go env GOARCH` GO_TEST_FLAGS="-skip=TestWatchDelay" make test

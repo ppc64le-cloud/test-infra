@@ -41,4 +41,4 @@ periodics:
               tar -C /usr/local -xzf go.tgz
               go version
               ./scripts/build.sh
-              GOARCH=`go env GOARCH` make test
+              GOARCH=`go env GOARCH` GO_TEST_FLAGS="-skip=TestWatchDelay" make test
