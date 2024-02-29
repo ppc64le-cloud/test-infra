@@ -19,10 +19,10 @@ periodics:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240211-f101bf4199-1.28
           resources:
-          limits:
-           cpu: "3000m"
-          requests:
-           cpu: "3000m"
+            limits:
+              cpu: "3000m"
+            requests:
+              cpu: "3000m"
           env:
             - name: "E2E_FLAVOR"
               value: "powervs-md-remediation"
@@ -53,10 +53,10 @@ periodics:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20231208-8b9fd88e88-1.28
           resources:
-          limits:
-           cpu: "3000m"
-          requests:
-           cpu: "3000m"
+            limits:
+              cpu: "3000m"
+            requests:
+              cpu: "3000m"
           env:
             - name: "E2E_FLAVOR"
               value: "powervs-md-remediation"
