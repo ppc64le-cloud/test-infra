@@ -20,9 +20,9 @@ periodics:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240211-f101bf4199-1.28
           resources:
             limits:
-              cpu: "3000m"
+              cpu: "1000m"
             requests:
-              cpu: "3000m"
+              cpu: "1000m"
           env:
             - name: "E2E_FLAVOR"
               value: "powervs-md-remediation"
@@ -54,9 +54,9 @@ periodics:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20231208-8b9fd88e88-1.28
           resources:
             limits:
-              cpu: "3000m"
+              cpu: "1000m"
             requests:
-              cpu: "3000m"
+              cpu: "1000m"
           env:
             - name: "E2E_FLAVOR"
               value: "powervs-md-remediation"
@@ -88,9 +88,9 @@ periodics:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20231208-8b9fd88e88-1.27
           resources:
           limits:
-           cpu: "3000m"
+           cpu: "1000m"
           requests:
-           cpu: "3000m"
+           cpu: "1000m"
           env:
             - name: "E2E_FLAVOR"
               value: "powervs-md-remediation"
@@ -121,9 +121,9 @@ periodics:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20240211-f101bf4199-1.28
           limits:
-           cpu: "3000m"
+           cpu: "1000m"
           requests:
-           cpu: "3000m"
+           cpu: "1000m"
           env:
             - name: "E2E_FLAVOR"
               value: "vpc"
@@ -154,9 +154,9 @@ periodics:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20231208-8b9fd88e88-1.28
           limits:
-           cpu: "3000m"
+           cpu: "1000m"
           requests:
-           cpu: "3000m"
+           cpu: "1000m"
           env:
             - name: "E2E_FLAVOR"
               value: "vpc"
@@ -187,9 +187,9 @@ periodics:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20231208-8b9fd88e88-1.27
           limits:
-           cpu: "3000m"
+           cpu: "1000m"
           requests:
-           cpu: "3000m"
+           cpu: "1000m"
           env:
             - name: "E2E_FLAVOR"
               value: "vpc-load-balancer"
