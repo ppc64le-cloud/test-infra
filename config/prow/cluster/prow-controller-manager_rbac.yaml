@@ -64,11 +64,11 @@ rules:
     resources:
       - pods
     verbs:
+      - create
       - delete
-      - get
       - list
       - watch
-      - create
+      - get
       - patch
 ---
 kind: RoleBinding
