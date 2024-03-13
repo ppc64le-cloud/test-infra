@@ -1,6 +1,8 @@
 periodics:
   - name: periodic-etcd-test-ppc64le
     cluster: k8s-ppc64le-cluster
+    labels:
+      preset-golang-build: "true"
     decorate: true
     decoration_config:
       gcs_configuration:
@@ -33,7 +35,6 @@ periodics:
               set -o pipefail
               set -o xtrace
 
-              export PATH=$GOPATH/bin:$PATH
               export KEEP_GOING_MODULE=true
               export KEEP_GOING_SUITE=true
               GOLANG_VERSION=`cat .go-version`

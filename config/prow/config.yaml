@@ -223,3 +223,9 @@ presets:
       secret:
         defaultMode: 256
         secretName: bot-ssh-secret
+# Building Golang binaries
+- labels:
+    preset-golang-build: "true"
+  env:
+    - name: GOPPC64
+      value: power9

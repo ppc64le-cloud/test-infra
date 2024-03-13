@@ -1,6 +1,8 @@
 periodics:
   - name: periodic-golang-master-build-ppc64le
     cluster: k8s-ppc64le-cluster
+    labels:
+      preset-golang-build: "true"
     decorate: true
     cron: "50 1/1 * * *"
     spec:
