@@ -2,6 +2,8 @@ postsubmits:
   ppc64le-cloud/builds:
     - name: postsubmit-kubernetes-build-golang-master-ppc64le
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-golang-build: "true"
       decorate: true
       branches:
         - master
@@ -34,7 +36,6 @@ postsubmits:
                 curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
-                export PATH=/usr/local/go/bin:$PATH
                 # Storing go version of environment
                 go_version_env=`go version | cut -d ' ' -f4`
                 # go version of development master go will be of the kind "go version devel go1.21-39c5070712 Thu Jul 6 23:23:41 2023 +0000 linux/ppc64le"
@@ -64,6 +65,8 @@ postsubmits:
                 curl -v -X POST http://build-bot.prow:8090/build -H 'Content-Type: multipart/form-data' -F file1=@kubernetes-test-linux-`go env GOARCH`.tar.gz -F file2=@kubernetes-client-linux-`go env GOARCH`.tar.gz -F file3=@kubernetes-server-linux-`go env GOARCH`.tar.gz -F source=github.com/kubernetes/kubernetes.git -F commit=$GITCOMMIT -F project=kubernetes/master/golang/master
     - name: postsubmit-master-golang-kubernetes-unit-test-ppc64le
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-golang-build: "true"
       decorate: true
       decoration_config:
         gcs_configuration:
@@ -106,14 +109,12 @@ postsubmits:
                 curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
-                export PATH=/usr/local/go/bin:$PATH
                 # Storing go version of environment
                 go_version_env=`go version | cut -d ' ' -f4`
                 # go version of development master go will be of the kind "go version devel go1.21-39c5070712 Thu Jul 6 23:23:41 2023 +0000 linux/ppc64le"
                 # hence the cut at f4 will store go1.21-39c5070712 to go_version_env variable
                 echo "The Go version of environment is $go_version_env"
 
-                export PATH=$GOPATH/bin:$PATH
                 go version
                 go env
 

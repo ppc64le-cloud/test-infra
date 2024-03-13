@@ -1,6 +1,8 @@
 periodics:
   - name: periodic-kubernetes-unit-test-ppc64le
     cluster: k8s-ppc64le-cluster
+    labels:
+      preset-golang-build: "true"
     decorate: true
     decoration_config:
       gcs_configuration:
@@ -126,6 +128,7 @@ periodics:
   - name: periodic-kubernetes-containerd-e2e-node-tests-ppc64le
     cluster: k8s-ppc64le-cluster
     labels:
+      preset-golang-build: "true"
       preset-ssh-bot: "true"
     decorate: true
     decoration_config:

@@ -2,6 +2,8 @@ postsubmits:
   ppc64le-cloud/builds:
     - name: postsubmit-os-kubernetes-build-golang-master-ppc64le
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-golang-build: "true"
       decorate: true
       branches:
         - master
@@ -34,7 +36,6 @@ postsubmits:
                 curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
-                export PATH=/usr/local/go/bin:$PATH
                 # Storing go version of environment
                 go_version_env=`go version | cut -d ' ' -f4`
                 # go version of development master go will be of the kind "go version devel go1.21-39c5070712 Thu Jul 6 23:23:41 2023 +0000 linux/ppc64le"
@@ -56,6 +57,8 @@ postsubmits:
                 done
     - name: postsubmit-os-origin-build-golang-master-ppc64le
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-golang-build: "true"
       decorate: true
       branches:
         - master
@@ -88,7 +91,6 @@ postsubmits:
                 curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
-                export PATH=/usr/local/go/bin:$PATH
                 export OPENSHIFT_SKIP_EXTERNAL_TESTS=true
                 make GO_REQUIRED_MIN_VERSION:= WHAT=cmd/openshift-tests
                 cp ./openshift-tests /usr/local/bin

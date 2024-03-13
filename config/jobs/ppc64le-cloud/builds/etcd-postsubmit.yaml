@@ -2,6 +2,8 @@ postsubmits:
   ppc64le-cloud/builds:
     - name: postsubmit-master-golang-etcd-build-test-ppc64le
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-golang-build: "true"
       decorate: true
       branches:
         - master
@@ -36,8 +38,6 @@ postsubmits:
                 curl -X GET http://build-bot.prow:8090/build\?project\=$build_project\&commit\=$build_commit -o /tmp/golang.tar.gz
                 rm -rf /usr/local/go
                 tar -C /usr/local -xzf /tmp/golang.tar.gz
-                export PATH=/usr/local/go/bin:$PATH
-                export PATH=$GOPATH/bin:$PATH
                 export KEEP_GOING_MODULE=true
                 export KEEP_GOING_SUITE=true
                 go version
