@@ -96,4 +96,5 @@ postsubmits:
                 cp ./openshift-tests /usr/local/bin
                 openshift-tests help
                 openshift-tests images --to-repository=quay.io/powercloud/community-e2e-images
-                openshift-tests run kubernetes/conformance --dry-run
+                # Commenting dry-run until https://github.com/openshift/origin/issues/28681 is addressed
+                # openshift-tests run kubernetes/conformance --dry-run
