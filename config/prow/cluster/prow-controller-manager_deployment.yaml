@@ -38,7 +38,7 @@ spec:
           env:
             # Use KUBECONFIG envvar rather than --kubeconfig flag in order to provide multiple configs to merge.
             - name: KUBECONFIG
-              value: "/etc/kubeconfig/config:/etc/kubeflow-kubeconfig/config"
+              value: "/etc/kubeconfig/config"
           volumeMounts:
             - name: github-token
               mountPath: /etc/github
@@ -51,9 +51,6 @@ spec:
               readOnly: true
             - name: kubeconfig
               mountPath: /etc/kubeconfig
-              readOnly: true
-            - name: kubeflow-kubeconfig
-              mountPath: /etc/kubeflow-kubeconfig
               readOnly: true
           livenessProbe: # Pod is killed if this fails 3 times.
             httpGet:
@@ -81,7 +78,3 @@ spec:
           secret:
             defaultMode: 0644
             secretName: kubeconfig
-        - name: kubeflow-kubeconfig
-          secret:
-            defaultMode: 0644
-            secretName: kubeflow-kubeconfig

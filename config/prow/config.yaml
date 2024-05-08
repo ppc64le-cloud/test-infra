@@ -86,9 +86,6 @@ plank:
         sidecar: gcr.io/k8s-prow/sidecar:v20240410-4be743f3e
       ssh_key_secrets:
         - bot-ssh-secret
-  - cluster: kubeflow-ppc64le-cluster
-    config:
-      ssh_key_secrets: null
 
 tide:
   sync_period: 2m
