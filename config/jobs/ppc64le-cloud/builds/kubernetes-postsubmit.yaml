@@ -189,6 +189,7 @@ postsubmits:
                 # kubectl needed for the e2e tests
                 wget -qO- $URL/kubernetes-client-linux-ppc64le.tar.gz | tar xz -C /usr/local/bin --strip-components=3
 
+                set +o errexit
                 kubetest2 tf --powervs-dns k8s-tests \
                     --powervs-image-name centos-9-stream-20Gb \
                     --powervs-region syd --powervs-zone syd05 \
@@ -207,7 +208,7 @@ postsubmits:
                     --ginkgo.skip='\[Serial\]' \
                     --ginkgo.flakeAttempts=2 \
                     --report-dir=$ARTIFACTS \
-                    --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"
+                    --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"; rc1=$?
                 export ARTIFACTS=$ARTIFACTS/serial_tests_artifacts
                 kubetest2 tf --powervs-region syd --powervs-zone syd05 \
                     --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
@@ -218,4 +219,11 @@ postsubmits:
                     -- --ginkgo.focus='\[Serial\].*\[Conformance\]' \
                     --ginkgo.flakeAttempts=2 \
                     --report-dir=$ARTIFACTS \
-                    --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"
+                    --kubeconfig="$(pwd)/config2-$TIMESTAMP/kubeconfig"; rc2=$?
+                if [ $rc1 != 0 ]; then
+                    echo "ERROR: Non Serial k8s Conformance tests exited with code: $rc1"
+                    exit $rc1
+                elif [ $rc2 != 0 ]; then
+                    echo "ERROR: Serial k8s Conformance tests exited with code: $rc2"
+                    exit $rc2
+                fi
