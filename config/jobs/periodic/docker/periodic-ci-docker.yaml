@@ -1,6 +1,8 @@
 periodics:
     - name: periodic-config-docker
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
       cron: 0 0 * * *
       decorate: true
       extra_refs:
@@ -45,6 +47,8 @@ periodics:
             path: /boot/
     - name: periodic-build-dev-image-docker
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
       cron: 0 3 * * *
       decorate: true
       extra_refs:
@@ -82,6 +86,8 @@ periodics:
             privileged: true
     - name: periodic-unit-test-docker
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
       cron: 0 9 * * *
       decorate: true
       extra_refs:
@@ -119,6 +125,8 @@ periodics:
             privileged: true
     - name: periodic-integration-test-docker
       cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
       cron: 0 14 * * *
       decorate: true
       decoration_config:
