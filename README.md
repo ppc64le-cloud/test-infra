@@ -3,7 +3,7 @@
 ## How to test the ProwJob
 
 #### Method 1: Test using the kind cluster
-https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#using-pj-on-kindsh
+https://docs.prow.k8s.io/docs/build-test-update/#using-pj-on-kindsh
 
 #### Method 2: Test on the already deployed kubernetes cluster
 
