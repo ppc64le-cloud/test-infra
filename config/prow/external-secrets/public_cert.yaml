@@ -15,9 +15,9 @@ spec:
   data:
   - secretKey: tls.crt
     remoteRef:
-      key: public_cert/4d0b3521-5d1f-1bce-1172-71609adf5eaa
+      key: public_cert/b1cbe807-bb71-24b5-9190-41318f949bc0
       property: certificate
   - secretKey: tls.key
     remoteRef:
-      key: public_cert/4d0b3521-5d1f-1bce-1172-71609adf5eaa
+      key: public_cert/b1cbe807-bb71-24b5-9190-41318f949bc0
       property: private_key
