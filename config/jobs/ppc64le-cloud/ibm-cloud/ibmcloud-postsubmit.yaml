@@ -12,7 +12,7 @@ postsubmits:
       spec:
         serviceAccountName: build-img
         containers:
-          - image: quay.io/powercloud/all-in-one:0.6
+          - image: quay.io/powercloud/all-in-one:0.7
             command:
               - /bin/bash
             args:

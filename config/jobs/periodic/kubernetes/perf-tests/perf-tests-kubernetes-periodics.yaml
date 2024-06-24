@@ -26,7 +26,7 @@ periodics:
     repo: perf-tests
   spec:
     containers:
-    - image: quay.io/powercloud/all-in-one:0.6
+    - image: quay.io/powercloud/all-in-one:0.7
       resources:
         requests:
           cpu: "3000m"
@@ -107,7 +107,7 @@ periodics:
     repo: perf-tests
   spec:
     containers:
-    - image: quay.io/powercloud/all-in-one:0.6
+    - image: quay.io/powercloud/all-in-one:0.7
       resources:
         requests:
           cpu: "3000m"
