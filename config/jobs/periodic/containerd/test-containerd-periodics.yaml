@@ -21,7 +21,7 @@ periodics:
             set -o pipefail
             set -o xtrace
             # Start docker
-            wget -O dockerctl.sh https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/dockerctl.sh
+            curl -o dockerctl.sh https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/dockerctl.sh
             chmod +x dockerctl.sh
             ./dockerctl.sh start
 
