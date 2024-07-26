@@ -15,7 +15,7 @@ periodics:
             report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:2231f00d1b1af02c018ea8f2f2ee2a890174d0bb0ce7067d128519e442776cbc
+        - image: quay.io/powercloud/docker-ce-build@sha256:f93b6d36ad414d30f584c6555d8c2116de58bd56601da36f4e13d4b5b624114a
           resources:
             requests:
               cpu: "8000m"
@@ -61,7 +61,7 @@ periodics:
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:2231f00d1b1af02c018ea8f2f2ee2a890174d0bb0ce7067d128519e442776cbc
+        - image: quay.io/powercloud/docker-ce-build@sha256:f93b6d36ad414d30f584c6555d8c2116de58bd56601da36f4e13d4b5b624114a
           resources:
             requests:
               cpu: "8000m"
@@ -100,7 +100,7 @@ periodics:
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:2231f00d1b1af02c018ea8f2f2ee2a890174d0bb0ce7067d128519e442776cbc
+        - image: quay.io/powercloud/docker-ce-build@sha256:f93b6d36ad414d30f584c6555d8c2116de58bd56601da36f4e13d4b5b624114a
           resources:
             requests:
               cpu: "8000m"
@@ -141,7 +141,7 @@ periodics:
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:2231f00d1b1af02c018ea8f2f2ee2a890174d0bb0ce7067d128519e442776cbc
+        - image: quay.io/powercloud/docker-ce-build@sha256:f93b6d36ad414d30f584c6555d8c2116de58bd56601da36f4e13d4b5b624114a
           resources:
             requests:
               cpu: "8000m"
