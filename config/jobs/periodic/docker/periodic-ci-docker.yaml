@@ -168,7 +168,7 @@ periodics:
       cluster: k8s-ppc64le-cluster
       labels:
         preset-build-docker: "true"
-      cron: 0 14 * * *
+      cron: 30 14 * * *
       decorate: true
       decoration_config:
         timeout: 3h
@@ -185,9 +185,9 @@ periodics:
         - image: quay.io/powercloud/docker-ce-build@sha256:f93b6d36ad414d30f584c6555d8c2116de58bd56601da36f4e13d4b5b624114a
           resources:
             requests:
-              cpu: "8000m"
+              cpu: "4000m"
             limits:
-              cpu: "8000m"
+              cpu: "4000m"
           command:
           - /bin/bash
           args:
