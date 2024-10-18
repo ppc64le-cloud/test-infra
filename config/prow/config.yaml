@@ -250,8 +250,6 @@ presets:
       value: /root/.docker
 
   volumeMounts:
-    - name: git-volume
-      mountPath: /opt/cluster/
     - name: ssh-key-volume
       mountPath: /root/.ssh/
       readOnly: true
@@ -260,10 +258,6 @@ presets:
       readOnly: true
 
   volumes:
-    - name: git-volume
-      secret:
-        defaultMode: 256 
-        secretName: github-token
     - name: ssh-key-volume
       secret:
         secretName: ssh-key-secret
