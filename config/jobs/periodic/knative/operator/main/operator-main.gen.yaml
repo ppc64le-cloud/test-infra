@@ -1,14 +1,8 @@
 periodics:
   - name: knative-operator-main-periodic 
-    cluster: k8s-ppc64le-cluster
     labels:
       preset-knative-powervs: "true"
     decorate: true
-    decoration_config:
-      gcs_configuration:
-        bucket: s3://ppc64le-prow-logs
-        path_strategy: explicit
-      s3_credentials_secret: s3-credentials
     cron: "20 0 * * *"
     extra_refs:
       - base_ref: master
@@ -51,8 +45,8 @@ periodics:
           
               export KUBECONFIG="$(pwd)/knative-$TIMESTAMP/kubeconfig"
 
-              git clone https://$(GITHUB_TOKEN)@github.ibm.com/ppc64le-automation/knative-upstream-ci.git 
-              cd knative-upstream-ci
+              git clone https://github.com/ppc64le-cloud/knative-upstream-ci.git
+              pushd knative-upstream-ci
           
               grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' /workspace/operator/knative-$TIMESTAMP/hosts > HOSTS_IP
               source setup-environment.sh HOSTS_IP
