@@ -47,7 +47,6 @@ periodics:
               tar -C /usr/local -xzf go.tgz
               make test KUBE_RACE=-race
   - name: periodic-kubernetes-containerd-conformance-test-ppc64le
-    cluster: k8s-ppc64le-cluster
     labels:
       preset-ssh-bot: "true"
     decorate: true
@@ -61,18 +60,15 @@ periodics:
       - base_ref: master
         org: ppc64le-cloud
         repo: kubetest2-plugins
-      - base_ref: master
-        org: kubernetes-sigs
-        repo: kubetest2
         workdir: true
     spec:
       containers:
-        - image: quay.io/powercloud/all-in-one:0.7
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-master
           resources:
             requests:
-              cpu: "4000m"
+              cpu: "1500m"
             limits:
-              cpu: "4000m"
+              cpu: "1500m"
           command:
             - /bin/bash
           args:
@@ -86,12 +82,31 @@ periodics:
               export PATH=$GOPATH/bin:$PATH
               export GO111MODULE=on
 
-              make install
-              make install-tester-ginkgo
 
-              pushd ../../ppc64le-cloud/kubetest2-plugins
               make install-deployer-tf
-              popd
+              TF_LATEST=$(curl -s https://api.github.com/repos/hashicorp/terraform/releases/latest | grep tag_name | cut -d '"' -f4)
+
+              curl -fsSL https://releases.hashicorp.com/terraform/${TF_LATEST:1}/terraform_${TF_LATEST:1}_linux_amd64.zip -o ./terraform.zip
+              unzip -o ./terraform.zip  >/dev/null 2>&1
+              rm -f ./terraform.zip
+              TF="$PWD/terraform"
+              export PATH=$PWD:$PATH
+
+              cat <<EOF > versions.tf
+              terraform {
+                required_providers {
+                  null = {
+                    source = "hashicorp/null"
+                  }
+                  ibm = {
+                    source = "IBM-Cloud/ibm"
+                  }
+                }
+              }
+              EOF
+              $TF init
+
+              apt-get update && apt-get install -y ansible
 
               TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
