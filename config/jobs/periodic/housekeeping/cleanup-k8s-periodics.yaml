@@ -19,9 +19,9 @@ periodics:
               set -o pipefail
               set -o xtrace
 
-              wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1.1-alpha.7/pvsadm-linux-ppc64le
+              wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1.18/pvsadm-linux-ppc64le
               chmod +x /usr/local/bin/pvsadm
 
               # delete all the vms created before 4hrs
-              pvsadm purge vms --instance-id c3f5354a-517e-4927-8523-890c4bf3d6c5 --before 4h --ignore-errors --no-prompt
-              pvsadm purge networks --instance-id c3f5354a-517e-4927-8523-890c4bf3d6c5 --before 4h --ignore-errors --no-prompt
+              pvsadm purge vms --workspace-id c3f5354a-517e-4927-8523-890c4bf3d6c5 --before 4h --ignore-errors --no-prompt
+              pvsadm purge networks --workspace-id c3f5354a-517e-4927-8523-890c4bf3d6c5 --ignore-errors --no-prompt
