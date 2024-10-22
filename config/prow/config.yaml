@@ -226,3 +226,38 @@ presets:
   env:
     - name: GOPPC64
       value: power9
+# knative powervs preset
+- labels:
+    preset-knative-powervs: "true"
+  env:
+    - name: IBMCLOUD_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: knative-apikey
+          key: apikey
+    - name: KO_FLAGS
+      value: --platform=linux/ppc64le
+    - name: PLATFORM
+      value: linux/ppc64le
+    - name: KO_DOCKER_REPO
+      value: icr.io/upstream-k8s-registry/knative
+    - name: DOCKER_CONFIG
+      value: /root/.docker
+
+  volumeMounts:
+    - name: ssh-key-volume
+      mountPath: /root/.ssh/
+      readOnly: true
+    - name: config-json-volume
+      mountPath: /root/.docker/
+      readOnly: true
+
+  volumes:
+    - name: ssh-key-volume
+      secret:
+        secretName: ssh-key-secret
+        defaultMode: 384 
+    - name: config-json-volume
+      secret:
+        secretName: config-json-secret
+        defaultMode: 420 
