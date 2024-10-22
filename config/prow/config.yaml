@@ -235,17 +235,12 @@ presets:
         secretKeyRef:
           name: knative-apikey
           key: apikey
-    - name: GITHUB_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: github-token
-          key: token
     - name: KO_FLAGS
       value: --platform=linux/ppc64le
     - name: PLATFORM
       value: linux/ppc64le
     - name: KO_DOCKER_REPO
-      value: na.artifactory.swg-devops.com/sys-linux-power-team-ftp3distro-docker-images-docker-local/knative
+      value: icr.io/upstream-k8s-registry/knative
     - name: DOCKER_CONFIG
       value: /root/.docker
 
