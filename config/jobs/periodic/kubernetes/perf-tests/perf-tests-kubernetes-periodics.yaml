@@ -76,7 +76,7 @@ periodics:
           --break-kubetest-on-upfail true \
           --ignore-destroy-errors \
           --powervs-memory 16 \
-          --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" --test=clusterloader2 -- \
+          --extra-vars=kubelet_extra_args:"--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" --test=clusterloader2 -- \
           --test-configs=testing/node-throughput/config.yaml --test-overrides=testing/overrides/node_containerd.yaml --provider=local \
           --nodes=1 --repo-root=$GOPATH/src/github.com/kubernetes/perf-tests/
 
@@ -155,6 +155,6 @@ periodics:
           --break-kubetest-on-upfail true \
           --ignore-destroy-errors \
           --powervs-memory 16 \
-          --extra-vars "kubelet_extra_args=--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" --test=exec -- \
+          --extra-vars=kubelet_extra_args:"--kube-api-qps=100 --kube-api-burst=100 --max-pods 140" --test=exec -- \
           $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/run-e2e.sh \
           --testsuite=testing/experimental/storage/pod-startup/suite.yaml --provider=local --nodes=1 --report-dir=/logs/artifacts
