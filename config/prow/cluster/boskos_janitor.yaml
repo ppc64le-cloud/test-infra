@@ -58,7 +58,7 @@ spec:
         - --boskos-url=http://boskos.test-pods.svc.cluster.local.
         - --debug=true
         - --ignore-api-key=true
-        - --resource-type=powervs-workspace
+        - --resource-type=powervs-k8s-conformance
         env:
         - name: IBMCLOUD_ENV_FILE
           value: "/home/.ibmcloud/k8s-key"

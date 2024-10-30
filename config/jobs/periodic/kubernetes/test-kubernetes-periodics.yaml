@@ -89,7 +89,7 @@ periodics:
               make install-deployer-tf
               TF_LATEST="v1.9.8"
 
-              RESOURCE_TYPE="powervs-workspace"
+              RESOURCE_TYPE="powervs-k8s-conformance"
               USER="periodic-k8s-containerd-conformance-job"
 
               trap cleanup EXIT

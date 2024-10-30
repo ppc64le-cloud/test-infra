@@ -13,7 +13,7 @@ data:
         - "k8s-boskos-powervs-osa21-02"
         - "k8s-boskos-powervs-syd04-00"
         - "k8s-boskos-powervs-syd04-01"
-      - type: "powervs-workspace"
+      - type: "powervs-k8s-conformance"
         state: dirty
         names:
         - "k8s-boskos-powervs-syd04-02"
