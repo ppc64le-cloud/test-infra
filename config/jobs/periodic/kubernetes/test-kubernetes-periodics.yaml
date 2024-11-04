@@ -64,6 +64,9 @@ periodics:
     spec:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241021-d3a4913879-1.31
+          env:
+            - name: "BOSKOS_HOST"
+              value: "boskos.test-pods.svc.cluster.local"
           resources:
             requests:
               cpu: "1500m"
@@ -86,6 +89,16 @@ periodics:
               make install-deployer-tf
               TF_LATEST="v1.9.8"
 
+              RESOURCE_TYPE="powervs-k8s-conformance"
+              USER="periodic-k8s-containerd-conformance-job"
+
+              trap cleanup EXIT
+
+              cleanup(){
+                # stop the boskos heartbeat
+                [[ -z ${HEART_BEAT_PID:-} ]] || kill -9 "${HEART_BEAT_PID}" || true
+              }
+
               curl -fsSL https://releases.hashicorp.com/terraform/${TF_LATEST:1}/terraform_${TF_LATEST:1}_linux_amd64.zip -o ./terraform.zip
               unzip -o ./terraform.zip  >/dev/null 2>&1
               rm -f ./terraform.zip
@@ -103,10 +116,48 @@ periodics:
               chmod +x /usr/local/bin/kubectl
 
               set +o errexit
+
+              heartbeat_account(){
+                count=0
+                url="http://${BOSKOS_HOST}/update?name=${BOSKOS_RESOURCE_NAME}&state=busy&owner=${USER}"
+                while [ ${count} -lt 120 ]
+                do
+                  status_code=$(curl -s -o /dev/null -w '%{http_code}' -X POST ${url})
+                  if [[ ${status_code} != 200 ]]; then
+                    echo "Heart beat to resource '${BOSKOS_RESOURCE_NAME}' failed due to invalid response, status code: ${status_code}"
+                    exit 1
+                  fi
+                  count=$(( $count + 1 ))
+                  sleep 60
+                done
+              }
+
+              if [ -n "${BOSKOS_HOST:-}" ]; then
+                url="http://${BOSKOS_HOST}/acquire?type=${RESOURCE_TYPE}&state=free&dest=busy&owner=${USER}"
+                output=$(curl -X POST ${url})
+                [ $? = 0 ] && status_code=200
+
+                if [[ ${status_code} == 200 && ${output} =~ "failed" ]]; then
+                  echo "Failed to acquire resource from Boskos of type ${RESOURCE_TYPE}"
+                  exit 1
+                elif [[ ${status_code} == 200 ]]; then
+                  export BOSKOS_RESOURCE_NAME=$(echo ${output} | jq -r '.name')
+                  export BOSKOS_REGION=$(echo ${output} | jq -r '.userdata["region"]')
+                  export BOSKOS_RESOURCE_ID=$(echo ${output} | jq -r '.userdata["service-instance-id"]')
+                  export BOSKOS_ZONE=$(echo ${output} | jq -r '.userdata["zone"]')
+                  rm -rf output.json
+                else
+                  echo "Failed to acquire resource due to invalid response, status code : ${status_code}"
+                  exit 1
+                fi
+
+                heartbeat_account >> "$ARTIFACTS/boskos.log" 2>&1 &
+                HEART_BEAT_PID=$(echo $!)
+              fi
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-image-name centos-9-stream-20Gb \
-                --powervs-region syd --powervs-zone syd05 \
-                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
+                --powervs-region ${BOSKOS_REGION} --powervs-zone ${BOSKOS_ZONE} \
+                --powervs-service-id ${BOSKOS_RESOURCE_ID} \
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --build-version $K8S_BUILD_VERSION \
@@ -119,8 +170,8 @@ periodics:
               export KUBECONFIG="$(pwd)/config1-$TIMESTAMP/kubeconfig"
               export ARTIFACTS=$ARTIFACTS/serial_tests_artifacts
               #Run Serial Conformance tests
-              kubetest2 tf --powervs-region syd --powervs-zone syd05 \
-                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
+              kubetest2 tf --powervs-region ${BOSKOS_REGION} --powervs-zone ${BOSKOS_ZONE} \
+                --powervs-service-id ${BOSKOS_RESOURCE_ID} \
                 --ignore-cluster-dir true \
                 --cluster-name config1-$TIMESTAMP \
                 --down --auto-approve --ignore-destroy-errors \
@@ -135,6 +186,14 @@ periodics:
                   exit $rc2
               fi
 
+              if [ -n "${BOSKOS_HOST:-}" ]; then
+                url="http://${BOSKOS_HOST}/release?name=${BOSKOS_RESOURCE_NAME}&dest=dirty&owner=${USER}"
+                status_code=$(curl -w '%{http_code}' -X POST ${url})
+                if [[ ${status_code} != 200 ]]; then
+                  echo "Failed to release resource: ${BOSKOS_RESOURCE_NAME}"
+                  exit 1
+                fi
+              fi
   - name: periodic-kubernetes-containerd-e2e-node-tests-ppc64le
     labels:
       preset-golang-build: "true"
