@@ -133,6 +133,7 @@ periodics:
               }
 
               if [ -n "${BOSKOS_HOST:-}" ]; then
+                set +o xtrace
                 url="http://${BOSKOS_HOST}/acquire?type=${RESOURCE_TYPE}&state=free&dest=busy&owner=${USER}"
                 output=$(curl -X POST ${url})
                 [ $? = 0 ] && status_code=200
@@ -154,6 +155,8 @@ periodics:
                 heartbeat_account >> "$ARTIFACTS/boskos.log" 2>&1 &
                 HEART_BEAT_PID=$(echo $!)
               fi
+
+              set -o xtrace
               kubetest2 tf --powervs-dns k8s-tests \
                 --powervs-image-name centos-9-stream-20Gb \
                 --powervs-region ${BOSKOS_REGION} --powervs-zone ${BOSKOS_ZONE} \
