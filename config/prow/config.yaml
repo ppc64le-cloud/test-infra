@@ -226,3 +226,15 @@ presets:
   env:
     - name: GOPPC64
       value: power9
+# credentials for pushing to IBM COS
+- labels:
+    preset-s3-stage-cred: "true"
+  volumeMounts:
+    - mountPath: /root/.aws
+      name: s3-stage-credentials
+      readOnly: true
+  volumes:
+    - name: s3-stage-credentials
+      secret:
+        defaultMode: 256
+        secretName: s3-stage-credentials

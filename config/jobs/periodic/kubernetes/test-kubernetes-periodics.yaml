@@ -49,6 +49,8 @@ periodics:
   - name: periodic-kubernetes-containerd-conformance-test-ppc64le
     labels:
       preset-ssh-bot: "true"
+      preset-dind-enabled: "true"
+      preset-s3-stage-cred: "true"
     decorate: true
     decoration_config:
       gcs_configuration:
@@ -61,20 +63,28 @@ periodics:
         org: ppc64le-cloud
         repo: kubetest2-plugins
         workdir: true
+      - base_ref: master
+        org: kubernetes
+        repo: kubernetes
     spec:
       containers:
         - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241021-d3a4913879-1.31
+          securityContext:
+            privileged: true
           env:
             - name: "BOSKOS_HOST"
               value: "boskos.test-pods.svc.cluster.local"
           resources:
             requests:
               cpu: "1500m"
+              memory: "5Gi"
             limits:
               cpu: "1500m"
+              memory: "5Gi"
           command:
-            - /bin/bash
+            - runner.sh
           args:
+            - bash
             - -c
             - |
               set -o errexit
@@ -107,13 +117,19 @@ periodics:
 
               apt-get update && apt-get install -y ansible
 
+              # Details of IBM S3 storage
+              S3_SERVER=s3.us-south.cloud-object-storage.appdomain.cloud
+              BUCKET=ppc64le-ci-builds
+              DIRECTORY=ci
+
+              # Build and push artifacts to IBM COS
+              REPOROOT=../../kubernetes/kubernetes
+              kubetest2 tf --build --repo-root $REPOROOT --stage cos://us-south/$BUCKET/$DIRECTORY
+              K8S_BUILD_VERSION=`cat $REPOROOT/_output/release-stage/server/linux-ppc64le/kubernetes/version`
+
               TIMESTAMP=$(date +%s)
-              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
               jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
 
-              # kubectl needed for the e2e tests
-              curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
-              chmod +x /usr/local/bin/kubectl
 
               set +o errexit
 
@@ -160,13 +176,17 @@ periodics:
                 --powervs-service-id ${BOSKOS_RESOURCE_ID} \
                 --powervs-ssh-key powercloud-bot-key \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
+                --s3-server $S3_SERVER --bucket $BUCKET  --directory $DIRECTORY \
+                --extra-vars=k8s_tar_bundles:kubernetes-server-linux-ppc64le.tar.gz \
                 --build-version $K8S_BUILD_VERSION \
+                --release-marker $K8S_BUILD_VERSION \
                 --cluster-name config1-$TIMESTAMP \
                 --workers-count 2 \
                 --up --auto-approve --retry-on-tf-failure 3 \
                 --break-kubetest-on-upfail true \
                 --powervs-memory 32 \
-                --test=ginkgo -- --parallel 10 --test-package-dir ci --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Conformance\]' --skip-regex='\[Serial\]'; rc1=$?
+                --test=ginkgo -- --parallel 10 --use-built-binaries true --focus-regex='\[Conformance\]' --skip-regex='\[Serial\]'; rc1=$?
+
               export KUBECONFIG="$(pwd)/config1-$TIMESTAMP/kubeconfig"
               export ARTIFACTS=$ARTIFACTS/serial_tests_artifacts
               #Run Serial Conformance tests
@@ -176,8 +196,8 @@ periodics:
                 --cluster-name config1-$TIMESTAMP \
                 --down --auto-approve --ignore-destroy-errors \
                 --test=ginkgo -- \
-                --test-package-dir ci \
-                --test-package-version $K8S_BUILD_VERSION --focus-regex='\[Serial\].*\[Conformance\]'; rc2=$?
+                --use-built-binaries true \
+                --focus-regex='\[Serial\].*\[Conformance\]'; rc2=$?
               if [ $rc1 != 0 ]; then
                   echo "ERROR: Non Serial k8s Conformance tests exited with code: $rc1"
                   exit $rc1
@@ -194,6 +214,7 @@ periodics:
                   exit 1
                 fi
               fi
+
   - name: periodic-kubernetes-containerd-e2e-node-tests-ppc64le
     labels:
       preset-golang-build: "true"
