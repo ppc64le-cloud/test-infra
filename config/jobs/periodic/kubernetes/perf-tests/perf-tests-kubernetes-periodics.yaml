@@ -61,7 +61,7 @@ periodics:
 
         echo POD_STARTUP_LATENCY_THRESHOLD: 10s >> $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/testing/overrides/node_containerd.yaml
 
-        kubetest2 tf --rundir-in-artifacts --powervs-dns k8s-tests \
+        kubetest2 tf --powervs-dns k8s-tests \
           --powervs-image-name centos-9-stream-20Gb \
           --powervs-region syd --powervs-zone syd05 \
           --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
@@ -140,7 +140,7 @@ periodics:
         curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
         chmod +x /usr/local/bin/kubectl
 
-        kubetest2 tf --rundir-in-artifacts --powervs-dns k8s-tests \
+        kubetest2 tf --powervs-dns k8s-tests \
           --powervs-image-name centos-9-stream-20Gb \
           --powervs-region syd --powervs-zone syd05 \
           --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
