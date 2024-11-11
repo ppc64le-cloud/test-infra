@@ -3,7 +3,7 @@ periodics:
     labels:
       preset-knative-powervs: "true"
     decorate: true
-    cron: "20 0 * * *"
+    cron: "4 10 * * *"
     extra_refs:
       - base_ref: main
         org: ppc64le-cloud
@@ -34,6 +34,16 @@ periodics:
               TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
 
+              cleanup() {
+                kubetest2 tf --powervs-region syd --powervs-zone syd05 \
+                  --powervs-service-id af3e8574-29ea-41a2-a9c5-e88cba5c5858 \
+                  --ignore-cluster-dir true \
+                  --cluster-name knative-$TIMESTAMP \
+                  --down --auto-approve --ignore-destroy-errors
+              }
+
+              trap cleanup EXIT
+
               kubetest2 tf --powervs-image-name CentOS9-Stream\
                 --powervs-region syd --powervs-zone syd05 \
                 --powervs-service-id af3e8574-29ea-41a2-a9c5-e88cba5c5858 \
@@ -55,11 +65,6 @@ periodics:
               ./test/e2e-tests.sh --run-tests
               popd
 
-              kubetest2 tf --powervs-region syd --powervs-zone syd05 \
-                --powervs-service-id af3e8574-29ea-41a2-a9c5-e88cba5c5858 \
-                --ignore-cluster-dir true \
-                --cluster-name knative-$TIMESTAMP \
-                --down --auto-approve --ignore-destroy-errors
           env:
-          - name: CI_JOB
-            value: operator-main
+            - name: CI_JOB
+              value: operator-main
