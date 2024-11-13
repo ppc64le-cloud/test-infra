@@ -1,15 +1,15 @@
 periodics:
-  - name: knative-operator-main-periodic
+  - name: knative-operator-release-1.16-periodic
     labels:
       preset-knative-powervs: "true"
     decorate: true
-    cron: "4 10 * * *"
+    cron: "40 9 * * *"
     extra_refs:
       - base_ref: main
         org: ppc64le-cloud
         repo: knative-upstream-ci
         workdir: true
-      - base_ref: main
+      - base_ref: release-1.16
         org: knative
         repo: operator
     spec:
@@ -67,4 +67,4 @@ periodics:
 
           env:
             - name: CI_JOB
-              value: operator-main
+              value: operator-release-1.16
