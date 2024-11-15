@@ -76,10 +76,8 @@ periodics:
               value: "boskos.test-pods.svc.cluster.local"
           resources:
             requests:
-              cpu: "1500m"
               memory: "5Gi"
             limits:
-              cpu: "1500m"
               memory: "5Gi"
           command:
             - runner.sh
