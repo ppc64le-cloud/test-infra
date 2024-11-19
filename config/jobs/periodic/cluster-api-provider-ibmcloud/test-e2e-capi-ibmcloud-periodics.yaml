@@ -28,11 +28,20 @@ periodics:
               value: "powervs-md-remediation"
             - name: "BOSKOS_HOST"
               value: "boskos.test-pods.svc.cluster.local"
+            - name: IBM_CREDENTIALS_FILE
+              value: /home/.ibmcloud/ibm-credentials.env
+          volumeMounts:
+            - name: credentials
+              mountPath: /home/.ibmcloud
           command:
             - "runner.sh"
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
+      volumes:
+        - name: credentials
+          secret:
+            secretName: capi-cloud-credentials
   - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.7
     labels:
       preset-dind-enabled: "true"
@@ -62,11 +71,20 @@ periodics:
               value: "powervs-md-remediation"
             - name: "BOSKOS_HOST"
               value: "boskos.test-pods.svc.cluster.local"
+            - name: IBM_CREDENTIALS_FILE
+              value: /home/.ibmcloud/ibm-credentials.env
+          volumeMounts:
+            - name: credentials
+              mountPath: /home/.ibmcloud
           command:
             - "runner.sh"
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
+      volumes:
+        - name: credentials
+          secret:
+            secretName: capi-cloud-credentials
   - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.8
     labels:
       preset-dind-enabled: "true"
@@ -96,11 +114,20 @@ periodics:
               value: "powervs-md-remediation"
             - name: "BOSKOS_HOST"
               value: "boskos.test-pods.svc.cluster.local"
+            - name: IBM_CREDENTIALS_FILE
+              value: /home/.ibmcloud/ibm-credentials.env
+          volumeMounts:
+            - name: credentials
+              mountPath: /home/.ibmcloud
           command:
             - "runner.sh"
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
+      volumes:
+        - name: credentials
+          secret:
+            secretName: capi-cloud-credentials
   - name: periodic-capi-provider-ibmcloud-e2e-vpc
     labels:
       preset-dind-enabled: "true"
