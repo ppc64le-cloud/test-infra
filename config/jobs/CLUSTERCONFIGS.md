@@ -5,3 +5,4 @@
 | config1-\<Timestamp\> | periodic-kubernetes-containerd-conformance-test-ppc64le      | latest nightly build from upstream                                 | containerd | To run conformance tests from e2e suite        |
 | config2-\<Timestamp\> | postsubmit-master-golang-kubernetes-conformance-test-ppc64le | k8s built by job postsubmit-kubernetes-build-golang-master-ppc64le | containerd     | To run conformance tests from e2e suite         |
 | config3-\<Timestamp\> | periodic-kubernetes-containerd-e2e-node-tests-ppc64le | latest nightly build from upstream | containerd | To run NodeConformace tests from e2e-node suite |
+| config4-\<Timestamp\> | periodic-kubernetes-unit-tests-non-root-ppc64le | k8s upstream master | N/A | To run Unit Tests using make test |
