@@ -35,11 +35,13 @@ periodics:
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
 
               cleanup() {
+                pushd $GOPATH/src/github.com/ppc64le-cloud/knative-upstream-ci
                 kubetest2 tf --powervs-region syd --powervs-zone syd05 \
                   --powervs-service-id af3e8574-29ea-41a2-a9c5-e88cba5c5858 \
                   --ignore-cluster-dir true \
                   --cluster-name knative-$TIMESTAMP \
                   --down --auto-approve --ignore-destroy-errors
+                popd
               }
 
               trap cleanup EXIT
