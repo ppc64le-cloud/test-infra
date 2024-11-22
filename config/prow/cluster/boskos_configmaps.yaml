@@ -16,9 +16,9 @@ data:
       - type: "powervs-k8s-conformance"
         state: dirty
         names:
-        - "k8s-boskos-powervs-syd04-02"
-        - "k8s-boskos-powervs-syd05-00"
-        - "k8s-boskos-powervs-syd05-01"
+        - "k8s-infra-boskos-dal12"
+        - "k8s-infra-boskos-us-south"
+        - "k8s-infra-boskos-wdc06"
       - type: "vpc-service"
         state: dirty
         names:
