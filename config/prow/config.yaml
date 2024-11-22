@@ -263,15 +263,27 @@ presets:
       secret:
         secretName: config-json-secret
         defaultMode: 420
-# credentials for pushing to IBM COS
 - labels:
-    preset-s3-stage-cred: "true"
+    preset-ibmcloud-cred: "true"
   volumeMounts:
-    - mountPath: /root/.aws
-      name: s3-stage-credentials
+    - mountPath: /etc/secret-volume
+      name: k8s-infra-ssh-key
       readOnly: true
+    - mountPath: /root/.ibmcloud
+      name: s3-hmac-credentials
+      readOnly: true
+  env:
+    - name: TF_VAR_powervs_api_key
+      valueFrom:
+        secretKeyRef:
+          name: ibmcloud-iam
+          key: key
   volumes:
-    - name: s3-stage-credentials
+    - name: k8s-infra-ssh-key
       secret:
         defaultMode: 256
-        secretName: s3-stage-credentials
+        secretName: k8s-infra-ssh-key
+    - name: s3-hmac-credentials
+      secret:
+        defaultMode: 256
+        secretName: s3-hmac-credentials

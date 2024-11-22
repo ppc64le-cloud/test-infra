@@ -1,0 +1,17 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: k8s-infra-ssh-key
+  namespace: test-pods
+spec:
+  refreshInterval: 60m
+  secretStoreRef:
+    name: secretstore-ibm-k8s-infra
+    kind: ClusterSecretStore
+  target:
+    name: k8s-infra-ssh-key
+    creationPolicy: Owner
+  data: 
+  - secretKey: ssh-privatekey
+    remoteRef:
+      key: df7624a8-d6c0-59ba-27e2-b560e21b8f48

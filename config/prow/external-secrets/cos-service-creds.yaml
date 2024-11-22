@@ -1,0 +1,17 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: s3-hmac-credentials
+  namespace: test-pods
+spec:
+  refreshInterval: 60m
+  secretStoreRef:
+    name: secretstore-ibm-k8s-infra
+    kind: ClusterSecretStore
+  target:
+    name: s3-hmac-credentials
+    creationPolicy: Owner
+  data:
+  - secretKey: hmac_credentials
+    remoteRef:
+      key: service_credentials/c1286cb2-95f2-1814-e501-17fa8013548f

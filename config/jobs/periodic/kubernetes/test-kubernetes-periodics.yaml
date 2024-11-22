@@ -111,9 +111,8 @@ periodics:
               make test KUBE_RACE=-race
   - name: periodic-kubernetes-containerd-conformance-test-ppc64le
     labels:
-      preset-ssh-bot: "true"
       preset-dind-enabled: "true"
-      preset-s3-stage-cred: "true"
+      preset-ibmcloud-cred: "true"
     decorate: true
     decoration_config:
       gcs_configuration:
@@ -179,13 +178,13 @@ periodics:
               apt-get update && apt-get install -y ansible
 
               # Details of IBM S3 storage
-              S3_SERVER=s3.us-south.cloud-object-storage.appdomain.cloud
-              BUCKET=ppc64le-ci-builds
+              S3_SERVER=s3.us.cloud-object-storage.appdomain.cloud
+              BUCKET=k8s-infra-cos-bucket
               DIRECTORY=ci
 
               # Build and push artifacts to IBM COS
               REPOROOT=../../kubernetes/kubernetes
-              kubetest2 tf --build --repo-root $REPOROOT --stage cos://us-south/$BUCKET/$DIRECTORY
+              kubetest2 tf --build --repo-root $REPOROOT --stage cos://us/$BUCKET/$DIRECTORY --cos-cred-type cos_hmac
               K8S_BUILD_VERSION=`cat $REPOROOT/_output/release-stage/server/linux-ppc64le/kubernetes/version`
 
               TIMESTAMP=$(date +%s)
@@ -234,11 +233,10 @@ periodics:
               fi
 
               set -o xtrace
-              kubetest2 tf --powervs-dns k8s-tests \
-                --powervs-image-name CentOS-Stream-9 \
+              kubetest2 tf --powervs-image-name CentOS-Stream-9 \
                 --powervs-region ${BOSKOS_REGION} --powervs-zone ${BOSKOS_ZONE} \
                 --powervs-service-id ${BOSKOS_RESOURCE_ID} \
-                --powervs-ssh-key powercloud-bot-key \
+                --powervs-ssh-key k8s-infra-sshkey \
                 --ssh-private-key /etc/secret-volume/ssh-privatekey \
                 --s3-server $S3_SERVER --bucket $BUCKET  --directory $DIRECTORY \
                 --extra-vars=k8s_tar_bundles:kubernetes-server-linux-ppc64le.tar.gz \

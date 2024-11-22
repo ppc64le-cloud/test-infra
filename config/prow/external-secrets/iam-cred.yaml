@@ -1,0 +1,17 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: ibmcloud-iam
+  namespace: test-pods
+spec:
+  refreshInterval: 60m
+  secretStoreRef:
+    name: secretstore-ibm-k8s-infra
+    kind: ClusterSecretStore
+  target:
+    name: ibmcloud-iam
+    creationPolicy: Owner
+  data: 
+  - secretKey: key
+    remoteRef:
+      key: iam_credentials/bfdb638a-3d0e-3b1b-0b30-6dd97b899559
