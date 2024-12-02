@@ -1,5 +1,5 @@
 periodics:
-  - name: periodic-kubernetes-unit-tests-non-root-ppc64le
+  - name: periodic-kubernetes-unit-test-ppc64le
     labels:
       preset-ssh-bot: "true"
     decorate: true
