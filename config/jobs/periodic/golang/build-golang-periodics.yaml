@@ -32,7 +32,7 @@ periodics:
                 echo "time to build"
                 ./make.bash
                 cd ../..;rm -rf go/.git
-                tar -czvf go.tar.gz go
+                tar -czf go.tar.gz go
                 curl -v -X POST http://build-bot.prow:8090/build --fail -H 'Content-Type: multipart/form-data' -F file=@go.tar.gz -F source=github.com/golang/go.git -F commit=$GITCOMMIT -F project=golang/master
               else
                 echo "$GITCOMMIT build already exist, hence skipping it"
