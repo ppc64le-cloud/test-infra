@@ -45,7 +45,7 @@ periodics:
         export PATH=$GOPATH/bin:$PATH
         export GO111MODULE=on
 
-        make install-all
+        make install install-tester-clusterloader2
 
         pushd ../../ppc64le-cloud/kubetest2-plugins
         make install-deployer-tf
@@ -126,7 +126,7 @@ periodics:
         export PATH=$GOPATH/bin:$PATH
         export GO111MODULE=on
 
-        make install-all
+        make install install-tester-exec
 
         pushd ../../ppc64le-cloud/kubetest2-plugins
         make install-deployer-tf
