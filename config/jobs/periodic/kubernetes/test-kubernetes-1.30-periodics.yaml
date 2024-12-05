@@ -1,5 +1,5 @@
 periodics:
-  - name: periodic-kubernetes-unit-test-ppc64le
+  - name: periodic-kubernetes-unit-test-ppc64le-1-30
     labels:
       preset-ssh-bot: "true"
     decorate: true
@@ -8,7 +8,7 @@ periodics:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
       gcs_credentials_secret: gcs-credentials
-    cron: "0 1/3 * * *"
+    cron: "0 5 * * *"
     extra_refs:
       - base_ref: master
         org: ppc64le-cloud
@@ -16,7 +16,7 @@ periodics:
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-master
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-1.30
           resources:
             requests:
               cpu: "1500m"
@@ -60,6 +60,7 @@ periodics:
                 --up --set-kubeconfig=false --auto-approve \
                 --retry-on-tf-failure 3 \
                 --break-kubetest-on-upfail true --powervs-memory 32 \
+                --extra-vars=k8s_branch:release-1.30 \
                 --playbook k8s-ut-remote.yml
               EXTERNAL_IP=`grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' $(pwd)/config4-$TIMESTAMP/hosts`
               kubetest2 tf --test=exec -- ssh -i /etc/secret-volume/ssh-privatekey root@$EXTERNAL_IP \
@@ -71,45 +72,7 @@ periodics:
                 --cluster-name config4-$TIMESTAMP \
                 --down --auto-approve --ignore-destroy-errors
               [ $rc != 0 ] && echo "ERROR: Unit Test suite exited with code:$rc"; exit $rc
-  - name: periodic-kubernetes-unit-test-root-ppc64le
-    cluster: k8s-ppc64le-cluster
-    labels:
-      preset-golang-build: "true"
-    decorate: true
-    decoration_config:
-      gcs_configuration:
-        bucket: ppc64le-kubernetes
-        path_strategy: explicit
-      gcs_credentials_secret: gcs-credentials
-    cron: "0 0 * * 1,4"
-    extra_refs:
-      - base_ref: master
-        org: kubernetes
-        repo: kubernetes
-        workdir: true
-    spec:
-      containers:
-        - image: quay.io/powercloud/all-in-one:0.7
-          resources:
-            requests:
-              cpu: "5000m"
-            limits:
-              cpu: "5000m"
-          command:
-            - /bin/bash
-          args:
-            - -c
-            - |
-              set -o errexit
-              set -o nounset
-              set -o pipefail
-              set -o xtrace
-
-              export KUBE_TIMEOUT='--timeout=600s'
-              export KUBE_KEEP_VERBOSE_TEST_OUTPUT=y
-              export LOG_LEVEL=4
-              make test KUBE_RACE=-race
-  - name: periodic-kubernetes-containerd-conformance-test-ppc64le
+  - name: periodic-kubernetes-containerd-conformance-test-ppc64le-1-30
     labels:
       preset-dind-enabled: "true"
       preset-ibmcloud-cred: "true"
@@ -119,18 +82,18 @@ periodics:
         bucket: ppc64le-kubernetes
         path_strategy: explicit
       gcs_credentials_secret: gcs-credentials
-    cron: "0 2/3 * * *"
+    cron: "0 6 * * *"
     extra_refs:
       - base_ref: master
         org: ppc64le-cloud
         repo: kubetest2-plugins
         workdir: true
-      - base_ref: master
+      - base_ref: release-1.30
         org: kubernetes
         repo: kubernetes
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-master
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-1.30
           securityContext:
             privileged: true
           env:
@@ -180,7 +143,7 @@ periodics:
               # Details of IBM S3 storage
               S3_SERVER=s3.us.cloud-object-storage.appdomain.cloud
               BUCKET=k8s-infra-cos-bucket
-              DIRECTORY=ci
+              DIRECTORY=1.30
 
               # Build and push artifacts to IBM COS
               REPOROOT=../../kubernetes/kubernetes
@@ -276,85 +239,3 @@ periodics:
                   exit 1
                 fi
               fi
-
-  - name: periodic-kubernetes-containerd-e2e-node-tests-ppc64le
-    labels:
-      preset-golang-build: "true"
-      preset-ssh-bot: "true"
-    decorate: true
-    decoration_config:
-      gcs_configuration:
-        bucket: ppc64le-kubernetes
-        path_strategy: explicit
-      gcs_credentials_secret: gcs-credentials
-      timeout: 2h
-    cron: "0 3/3 * * *"
-    extra_refs:
-      - base_ref: master
-        org: ppc64le-cloud
-        repo: kubetest2-plugins
-        workdir: true
-    spec:
-      containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241021-d3a4913879-1.31
-          resources:
-            requests:
-              cpu: "1500m"
-            limits:
-              cpu: "1500m"
-          command:
-            - /bin/bash
-          args:
-            - -c
-            - |
-              set -o errexit
-              set -o nounset
-              set -o pipefail
-              set -o xtrace
-
-              export PATH=$GOPATH/bin:$PATH
-              export GO111MODULE=on
-
-
-              make install-deployer-tf
-
-              TF_LATEST="v1.9.8"
-
-              curl -fsSL https://releases.hashicorp.com/terraform/${TF_LATEST:1}/terraform_${TF_LATEST:1}_linux_amd64.zip -o ./terraform.zip
-              unzip -o ./terraform.zip  >/dev/null 2>&1
-              rm -f ./terraform.zip
-              TF="$PWD/terraform"
-              export PATH=$PWD:$PATH
-
-              apt-get update && apt-get install -y ansible
-
-              TIMESTAMP=$(date +%s)
-              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
-              jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
-
-              # kubectl needed for the e2e tests
-              curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
-              chmod +x /usr/local/bin/kubectl
-
-              set +o errexit
-              kubetest2 tf --powervs-dns k8s-tests \
-                --powervs-image-name CentOS-Stream-9 \
-                --powervs-region syd --powervs-zone syd05 \
-                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
-                --powervs-ssh-key powercloud-bot-key \
-                --ssh-private-key /etc/secret-volume/ssh-privatekey \
-                --cluster-name config3-$TIMESTAMP \
-                --up --set-kubeconfig=false --auto-approve \
-                --build-version $K8S_BUILD_VERSION --retry-on-tf-failure 3 \
-                --break-kubetest-on-upfail true --powervs-memory 32 \
-                --playbook k8s-node-remote.yml
-              EXTERNAL_IP=`grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' $(pwd)/config3-$TIMESTAMP/hosts`
-              kubetest2 tf --test=exec -- ssh -i /etc/secret-volume/ssh-privatekey root@$EXTERNAL_IP \
-                "export SKIP='\[Flaky\]|\[Slow\]|\[Serial\]|Containers.Lifecycle.should|should.execute.readiness.probe.while.in.preStop' && /make-test-e2e-node.sh"; \
-                rc=$?; scp -r -i /etc/secret-volume/ssh-privatekey root@$EXTERNAL_IP:/tmp/_artifacts $ARTIFACTS
-              kubetest2 tf --powervs-region syd --powervs-zone syd05 \
-                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
-                --ignore-cluster-dir true \
-                --cluster-name config3-$TIMESTAMP \
-                --down --auto-approve --ignore-destroy-errors
-              [ $rc != 0 ] && echo "ERROR: E2ENode Test suite exited with code:$rc"; exit $rc
