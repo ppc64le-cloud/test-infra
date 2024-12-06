@@ -18,7 +18,7 @@ postsubmits:
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:f93b6d36ad414d30f584c6555d8c2116de58bd56601da36f4e13d4b5b624114a
+        - image: quay.io/powercloud/docker-ce-build@sha256:b89afc315f96f5cfd43de82b3b02f9221983592b893f838d816db5954088c9fc
           resources:
             requests:
               cpu: "8000m"
@@ -70,7 +70,7 @@ postsubmits:
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:f93b6d36ad414d30f584c6555d8c2116de58bd56601da36f4e13d4b5b624114a
+        - image: quay.io/powercloud/docker-ce-build@sha256:b89afc315f96f5cfd43de82b3b02f9221983592b893f838d816db5954088c9fc
           resources:
             requests:
               cpu: "8000m"
