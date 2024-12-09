@@ -10,9 +10,12 @@ periodics:
           org: ppc64le-cloud
           repo: docker-ce-build
       reporter_config:
-          slack:
-            channel: 'prow-job-notifications'
-            report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+        slack:
+          channel: 'prow-job-notifications'
+          job_states_to_report:
+           - failure
+           - error
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
         - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
@@ -30,6 +33,14 @@ periodics:
             set -o nounset
             set -o pipefail
             set -o xtrace
+
+            # Set the SSH key for git from the secret 'git-ssh-docker-ce-build'
+            echo "* Set up the ssh key for git *"
+            mkdir -p ~/.ssh
+            cp /etc/ssh-key/ssh-privatekey  ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
             echo "* Start prow-info-docker *"
             chmod ug+x $PWD/upstream-master-ci/prow-info-docker.sh
             $PWD/upstream-master-ci/prow-info-docker.sh
@@ -41,15 +52,23 @@ periodics:
           volumeMounts:
           - name: boot
             mountPath: /boot
+          - name: ssh-key
+            readOnly: true
+            mountPath: /etc/ssh-key
         volumes:
         - name: boot
           hostpath:
             path: /boot/
+            volumes:
+        - name: ssh-key
+          secret:
+           secretName: git-ssh-docker-ce-build
+
     - name: periodic-build-dev-image-docker
       cluster: k8s-ppc64le-cluster
       labels:
         preset-build-docker: "true"
-      cron: 0 3 * * *
+      cron: 10 0 * * *
       decorate: true
       extra_refs:
         - base_ref: main
@@ -58,6 +77,9 @@ periodics:
       reporter_config:
         slack:
           channel: 'prow-job-notifications'
+          job_states_to_report:
+           - failure
+           - error
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
@@ -81,127 +103,6 @@ periodics:
             $PWD/upstream-master-ci/prow-build-dev-image.sh
             rc=$?
             [ $rc != 0 ] && echo "ERROR: prow-build-dev-image exited with code:$rc"
-            exit $rc
-          securityContext:
-            privileged: true
-    - name: periodic-unit-test-docker
-      cluster: k8s-ppc64le-cluster
-      labels:
-        preset-build-docker: "true"
-      cron: 0 9 * * *
-      decorate: true
-      extra_refs:
-        - base_ref: main
-          org: ppc64le-cloud
-          repo: docker-ce-build
-      reporter_config:
-        slack:
-          channel: 'prow-job-notifications'
-          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
-      spec:
-        containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
-          resources:
-            requests:
-              cpu: "4000m"
-            limits:
-              cpu: "4000m"
-          command:
-          - /bin/bash
-          args:
-          - -c
-          - |
-            set -o errexit
-            set -o nounset
-            set -o pipefail
-            set -o xtrace
-            echo "* Start prow-unit-test-docker *"
-            chmod ug+x $PWD/upstream-master-ci/prow-unit-test-docker.sh
-            $PWD/upstream-master-ci/prow-unit-test-docker.sh
-            rc=$?
-            [ $rc != 0 ] && echo "ERROR: prow-unit-test-docker exited with code:$rc"
-            exit $rc
-          securityContext:
-            privileged: true
-    - name: periodic-integration-cli-docker
-      cluster: k8s-ppc64le-cluster
-      labels:
-        preset-build-docker: "true"
-      cron: 0 14 * * *
-      decorate: true
-      decoration_config:
-        timeout: 3h
-      extra_refs:
-        - base_ref: main
-          org: ppc64le-cloud
-          repo: docker-ce-build
-      reporter_config:
-        slack:
-          channel: 'prow-job-notifications'
-          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
-      spec:
-        containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
-          resources:
-            requests:
-              cpu: "4000m"
-            limits:
-              cpu: "4000m"
-          command:
-          - /bin/bash
-          args:
-          - -c
-          - |
-            set -o errexit
-            set -o nounset
-            set -o pipefail
-            set -o xtrace
-            echo "* Start prow-integration-cli-tests *"
-            chmod ug+x $PWD/upstream-master-ci/prow-integration-cli.sh
-            $PWD/upstream-master-ci/prow-integration-cli.sh
-            rc=$?
-            [ $rc != 0 ] && echo "ERROR: prow-integration-cli-tests exited with code:$rc"
-            exit $rc
-          securityContext:
-            privileged: true
-    - name: periodic-integration-test-docker
-      cluster: k8s-ppc64le-cluster
-      labels:
-        preset-build-docker: "true"
-      cron: 30 14 * * *
-      decorate: true
-      decoration_config:
-        timeout: 3h
-      extra_refs:
-        - base_ref: main
-          org: ppc64le-cloud
-          repo: docker-ce-build
-      reporter_config:
-        slack:
-          channel: 'prow-job-notifications'
-          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
-      spec:
-        containers:
-        - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
-          resources:
-            requests:
-              cpu: "4000m"
-            limits:
-              cpu: "4000m"
-          command:
-          - /bin/bash
-          args:
-          - -c
-          - |
-            set -o errexit
-            set -o nounset
-            set -o pipefail
-            set -o xtrace
-            echo "* Start prow-integration-tests *"
-            chmod ug+x $PWD/upstream-master-ci/prow-integration-tests.sh
-            $PWD/upstream-master-ci/prow-integration-tests.sh
-            rc=$?
-            [ $rc != 0 ] && echo "ERROR: prow-integration-tests exited with code:$rc"
             exit $rc
           securityContext:
             privileged: true
