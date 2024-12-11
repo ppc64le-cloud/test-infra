@@ -1,0 +1,43 @@
+presubmits:
+  ppc64le-cloud/test-infra:
+    - name: presubmit-allinone-job
+      labels:
+        preset-image-builder: "true"
+      decorate: true
+      run_if_changed: '*' 
+      branches:
+        - '*' 
+      extra_refs:
+        - base_ref: v0.1.2
+          org: vmware-tanzu
+          repo: buildkit-cli-for-kubectl
+      spec:
+        serviceAccountName: build-img
+        containers:
+          - image: quay.io/powercloud/all-in-one:0.7
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                set -o xtrace
+
+                # Navigate to the directory containing the all-in-one Dockerfile
+                pushd images/all-in-one
+
+                # Read version information
+                export version=`cat version.txt`
+
+                # Build and test the image locally (without pushing)
+                docker build -t quay.io/powercloud/all-in-one:$version-amd64 -f Dockerfile ./
+                docker build -t quay.io/powercloud/all-in-one:$version-ppc64le -f Dockerfile ./
+
+                # Test the builds (you can extend this section with any relevant tests)
+                docker run --rm quay.io/powercloud/all-in-one:$version-amd64 /bin/bash -c "echo 'Testing AMD64 image'"
+                docker run --rm quay.io/powercloud/all-in-one:$version-ppc64le /bin/bash -c "echo 'Testing PPC64LE image'"
+
+                # Clean up
+                popd
