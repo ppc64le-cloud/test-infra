@@ -4,7 +4,6 @@ presubmits:
       labels:
         preset-image-builder: "true"
       decorate: true
-      run_if_changed: 'images/all-in-one'
       branches:
         - '.*'
       always_run: true
