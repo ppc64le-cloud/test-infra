@@ -1,17 +1,17 @@
 periodics:
-  - name: knative-operator-release-1.15-periodic
+  - name: knative-client-release-1.16-periodic
     labels:
       preset-knative-powervs: "true"
     decorate: true
-    cron: "0 14 * * *"
+    cron: "0 6 * * *"
     extra_refs:
       - base_ref: main
         org: ppc64le-cloud
         repo: knative-upstream-ci
         workdir: true
-      - base_ref: release-1.15
+      - base_ref: release-1.16
         org: knative
-        repo: operator
+        repo: client
     spec:
       containers:
         - image: quay.io/powercloud/knative-prow-tests:latest
@@ -54,6 +54,7 @@ periodics:
                 --build-version $K8S_BUILD_VERSION \
                 --cluster-name knative-$TIMESTAMP \
                 --workers-count 2 \
+                --playbook install-k8s-kn-tkn.yml \
                 --up --auto-approve --retry-on-tf-failure 5 \
                 --break-kubetest-on-upfail true \
                 --powervs-memory 32
@@ -62,11 +63,13 @@ periodics:
               grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' $(pwd)/knative-$TIMESTAMP/hosts > HOSTS_IP
               source setup-environment.sh HOSTS_IP
 
-              pushd $GOPATH/src/github.com/knative/operator
+              pushd $GOPATH/src/github.com/knative/client
               . /tmp/adjust.sh
               ./test/e2e-tests.sh --run-tests
               popd
 
           env:
             - name: CI_JOB
-              value: operator-release-1.15
+              value: client-release-1.16
+            - name: SSL_CERT_FILE
+              value: /etc/ssl/certs/ca-certificates.crt

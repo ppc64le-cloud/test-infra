@@ -3,7 +3,7 @@ periodics:
     labels:
       preset-knative-powervs: "true"
     decorate: true
-    cron: "10 4 * * *"
+    cron: "0 4 * * *"
     extra_refs:
       - base_ref: main
         org: ppc64le-cloud
