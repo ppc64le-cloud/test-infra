@@ -4,13 +4,13 @@ presubmits:
       labels:
         preset-image-builder: "true"
       decorate: true
-      # branches:
-      #   - '.*'
+      branches:
+        - '.*'
       always_run: true
-      extra_refs:
-        - base_ref: v0.1.2
-          org: vmware-tanzu
-          repo: buildkit-cli-for-kubectl
+      # extra_refs:
+      #   - base_ref: v0.1.2
+      #     org: vmware-tanzu
+      #     repo: buildkit-cli-for-kubectl
       spec:
         serviceAccountName: build-img
         containers:
