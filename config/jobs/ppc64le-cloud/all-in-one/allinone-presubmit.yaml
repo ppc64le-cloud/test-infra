@@ -4,8 +4,8 @@ presubmits:
       labels:
         preset-image-builder: "true"
       decorate: true
-      branches:
-        - '.*'
+      # branches:
+      #   - '.*'
       always_run: true
       extra_refs:
         - base_ref: v0.1.2
