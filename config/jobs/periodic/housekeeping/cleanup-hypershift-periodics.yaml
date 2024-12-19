@@ -23,8 +23,10 @@ periodics:
               chmod +x /usr/local/bin/pvsadm
 
               # cleanup all the vms created in rh-upstream-hypershift-clusterbot-pvs workspace before 24hrs
-              pvsadm purge vms --instance-id 3fd2eae4-f67b-4a2d-a2fb-438bd6355eb4 --before 24h --ignore-errors --no-prompt
+              pvsadm purge vms --instance-id a5b825e9-49f8-4b3c-92e0-81d622b534c9 --before 24h --ignore-errors --no-prompt
               # cleanup all the vms created in rh-upstream-hypershift-powervs-e2e-ci-pvs workspace before 24hrs
-              pvsadm purge vms --instance-id bcfa4456-4be5-422a-b742-181f0cbe17d8 --before 24h --ignore-errors --no-prompt
+              pvsadm purge vms --instance-id 577df9a3-84b7-4de7-9ab7-c86a6180cabb --before 24h --ignore-errors --no-prompt
               # cleanup all the vms created in rh-upstream-hypershift-agent-ci workspace before 24hrs
               pvsadm purge vms --instance-id d04e2b0c-58aa-4e64-85c1-ecb5ab00d03d --before 24h --regexp '[^bastion]' --ignore-errors --no-prompt
+              # cleanup all the vms created in rh-upstream-hypershift-agent-heterogeneous-ci workspace before 24hrs
+              pvsadm purge vms --instance-id ab717f69-9061-4067-8933-5fdcbe444041 --before 24h --regexp '[^bastion]' --ignore-errors --no-prompt
