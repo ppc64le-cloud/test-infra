@@ -122,11 +122,11 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.ta
     gcloud components install alpha beta gsutil && \
     gcloud info | tee /workspace/gcloud-info.txt
 
-ARG TERRAFORM_PROVIDER_IBM_VERSION
+ARG TERRAFORM_PROVIDER_IBM_VERSION 
 ENV TERRAFORM_PROVIDER_IBM_VERSION=$TERRAFORM_PROVIDER_IBM_VERSION
 
 ARG TERRAFORM_PROVIDER_NULL_VERSION
-ENV TERRAFORM_PROVIDER_NULL_VERSION=$TERRAFORM_PROVIDER_NULL_VERSION
+ENV TERRAFORM_PROVIDER_NULL_VERSION=$TERRAFORM_PROVIDER_NULL_VERSION 
 
 COPY --from=builder /go/bin/* /usr/local/bin/
 COPY --from=builder /workspace/terraform-provider-ibm/terraform-provider-ibm /tmp/
