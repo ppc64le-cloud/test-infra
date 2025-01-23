@@ -1,0 +1,181 @@
+periodics:
+  - name: knative-sasl-plain-eventing-kafka-broker-main-periodic
+    labels:
+      preset-knative-powervs: "true"
+    decorate: true
+    cron: "0 8 * * *"
+    extra_refs:
+      - base_ref: main
+        org: ppc64le-cloud
+        repo: knative-tkn-upstream-ci
+        workdir: true
+      - base_ref: main
+        org: knative-extensions
+        repo: eventing-kafka-broker
+    spec:
+      containers:
+        - image: quay.io/powercloud/knative-prow-tests:latest
+          resources:
+            requests:
+              cpu: "1500m"
+            limits:
+              cpu: "1500m"
+          command:
+            - runner.sh
+          args:
+            - bash
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              TIMESTAMP=$(date +%Y%m%d%H%M%S%3N)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+
+              trap 'source cluster-setup.sh delete' EXIT
+
+              source cluster-setup.sh create
+              pushd $GOPATH/src/github.com/$ORG/$KNATIVE_REPO
+              . /tmp/adjust.sh
+              ./test/e2e-tests.sh --run-tests
+              popd
+
+          env:
+            - name: ORG
+              value: knative-extensions
+            - name: KNATIVE_REPO
+              value: eventing-kafka-broker
+            - name: KNATIVE_RELEASE
+              value: main
+            - name: BROKER_CLASS
+              value: Kafka
+            - name: EVENTING_KAFKA_BROKER_CHANNEL_AUTH_SCENARIO
+              value: SASL_PLAIN
+            - name: EVENTING_NAMESPACE
+              value: knative-eventing
+            - name: SYSTEM_NAMESPACE
+              value: knative-eventing
+            - name: SCALE_CHAOSDUCK_TO_ZERO
+              value: "1"
+  - name: knative-sasl-ssl-eventing-kafka-broker-main-periodic
+    labels:
+      preset-knative-powervs: "true"
+    decorate: true
+    cron: "0 10 * * *"
+    extra_refs:
+      - base_ref: main
+        org: ppc64le-cloud 
+        repo: knative-tkn-upstream-ci
+        workdir: true
+      - base_ref: main
+        org: knative-extensions
+        repo: eventing-kafka-broker
+    spec:
+      containers:
+        - image: quay.io/powercloud/knative-prow-tests:latest
+          resources:
+            requests:
+              cpu: "1500m"
+            limits:
+              cpu: "1500m"
+          command:
+            - runner.sh
+          args:
+            - bash
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              TIMESTAMP=$(date +%Y%m%d%H%M%S%3N)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+
+              trap 'source cluster-setup.sh delete' EXIT
+
+              source cluster-setup.sh create
+              pushd $GOPATH/src/github.com/$ORG/$KNATIVE_REPO
+              . /tmp/adjust.sh
+              ./test/e2e-tests.sh --run-tests
+              popd
+
+          env:
+            - name: ORG
+              value: knative-extensions
+            - name: KNATIVE_REPO
+              value: eventing-kafka-broker
+            - name: KNATIVE_RELEASE
+              value: main
+            - name: BROKER_CLASS
+              value: Kafka
+            - name: EVENTING_KAFKA_BROKER_CHANNEL_AUTH_SCENARIO
+              value: SASL_SSL
+            - name: EVENTING_NAMESPACE
+              value: knative-eventing
+            - name: SYSTEM_NAMESPACE
+              value: knative-eventing
+            - name: SCALE_CHAOSDUCK_TO_ZERO
+              value: "1"
+  - name: knative-ssl-eventing-kafka-broker-main-periodic
+    labels:
+      preset-knative-powervs: "true"
+    decorate: true
+    cron: "0 12 * * *"
+    extra_refs:
+      - base_ref: main
+        org: ppc64le-cloud 
+        repo: knative-tkn-upstream-ci
+        workdir: true
+      - base_ref: main
+        org: knative-extensions
+        repo: eventing-kafka-broker
+    spec:
+      containers:
+        - image: quay.io/powercloud/knative-prow-tests:latest
+          resources:
+            requests:
+              cpu: "1500m"
+            limits:
+              cpu: "1500m"
+          command:
+            - runner.sh
+          args:
+            - bash
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              TIMESTAMP=$(date +%Y%m%d%H%M%S%3N)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+
+              trap 'source cluster-setup.sh delete' EXIT
+
+              source cluster-setup.sh create
+              pushd $GOPATH/src/github.com/$ORG/$KNATIVE_REPO
+              . /tmp/adjust.sh
+              ./test/e2e-tests.sh --run-tests
+              popd
+
+          env:
+            - name: ORG
+              value: knative-extensions
+            - name: KNATIVE_REPO
+              value: eventing-kafka-broker
+            - name: KNATIVE_RELEASE
+              value: main
+            - name: BROKER_CLASS
+              value: Kafka
+            - name: EVENTING_KAFKA_BROKER_CHANNEL_AUTH_SCENARIO
+              value: SSL
+            - name: EVENTING_NAMESPACE
+              value: knative-eventing
+            - name: SYSTEM_NAMESPACE
+              value: knative-eventing
+            - name: SCALE_CHAOSDUCK_TO_ZERO
+              value: "1"
