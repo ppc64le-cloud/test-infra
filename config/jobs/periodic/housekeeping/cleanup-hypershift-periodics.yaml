@@ -29,4 +29,4 @@ periodics:
               # cleanup all the vms created in rh-upstream-hypershift-agent-ci workspace before 24hrs
               pvsadm purge vms --instance-id d04e2b0c-58aa-4e64-85c1-ecb5ab00d03d --before 24h --regexp '[^bastion]' --ignore-errors --no-prompt
               # cleanup all the vms created in rh-upstream-hypershift-agent-heterogeneous-ci workspace before 24hrs
-              pvsadm purge vms --instance-id ab717f69-9061-4067-8933-5fdcbe444041 --before 24h --regexp '[^bastion]' --ignore-errors --no-prompt
+              pvsadm purge vms --instance-id d4309c6b-e13f-45cd-b0d1-360d476cd9e6 --before 24h --regexp '[^bastion]' --ignore-errors --no-prompt
