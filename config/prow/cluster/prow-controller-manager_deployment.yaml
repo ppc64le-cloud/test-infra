@@ -34,7 +34,7 @@ spec:
             - --github-endpoint=https://api.github.com
             - --enable-controller=plank
             - --job-config-path=/etc/job-config
-          image: us-docker.pkg.dev/k8s-infra-prow/images/prow-controller-manager:v20240827-195f38540
+          image: us-docker.pkg.dev/k8s-infra-prow/images/prow-controller-manager:v20241224-8e8a5cfe7
           env:
             # Use KUBECONFIG envvar rather than --kubeconfig flag in order to provide multiple configs to merge.
             - name: KUBECONFIG
