@@ -31,10 +31,11 @@ periodics:
               set -o pipefail
               set -o xtrace
 
-              TIMESTAMP=$(date +%Y%m%d%H%M%S%3N)
+              TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+              ORIGINAL_DIR=$(pwd)
 
-              trap 'source cluster-setup.sh delete' EXIT
+              trap 'pushd $ORIGINAL_DIR; source cluster-setup.sh delete' EXIT
 
               source cluster-setup.sh create
               pushd $GOPATH/src/github.com/$ORG/$KNATIVE_REPO
@@ -91,10 +92,11 @@ periodics:
               set -o pipefail
               set -o xtrace
 
-              TIMESTAMP=$(date +%Y%m%d%H%M%S%3N)
+              TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+              ORIGINAL_DIR=$(pwd)
 
-              trap 'source cluster-setup.sh delete' EXIT
+              trap 'pushd $ORIGINAL_DIR; source cluster-setup.sh delete' EXIT
 
               source cluster-setup.sh create
               pushd $GOPATH/src/github.com/$ORG/$KNATIVE_REPO
@@ -151,10 +153,11 @@ periodics:
               set -o pipefail
               set -o xtrace
 
-              TIMESTAMP=$(date +%Y%m%d%H%M%S%3N)
+              TIMESTAMP=$(date +%s)
               K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+              ORIGINAL_DIR=$(pwd)
 
-              trap 'source cluster-setup.sh delete' EXIT
+              trap 'pushd $ORIGINAL_DIR; source cluster-setup.sh delete' EXIT
 
               source cluster-setup.sh create
               pushd $GOPATH/src/github.com/$ORG/$KNATIVE_REPO
