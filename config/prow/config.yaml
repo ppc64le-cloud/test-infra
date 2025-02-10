@@ -239,8 +239,6 @@ presets:
       value: --platform=linux/ppc64le
     - name: PLATFORM
       value: linux/ppc64le
-    - name: INGRESS_CLASS
-      value: contour.ingress.networking.knative.dev
     - name: KO_DOCKER_REPO
       value: icr.io/upstream-k8s-registry/knative
     - name: DOCKER_CONFIG
