@@ -50,3 +50,5 @@ periodics:
               value: operator
             - name: KNATIVE_RELEASE
               value: main
+            - name: INGRESS_CLASS
+              value: contour.ingress.networking.knative.dev

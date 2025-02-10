@@ -50,5 +50,7 @@ periodics:
               value: client
             - name: KNATIVE_RELEASE
               value: main
+            - name: INGRESS_CLASS
+              value: contour.ingress.networking.knative.dev
             - name: SSL_CERT_FILE
               value: /etc/ssl/certs/ca-certificates.crt
