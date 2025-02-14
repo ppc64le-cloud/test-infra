@@ -1,5 +1,5 @@
 periodics:
-  - name: knative-sasl-plain-eventing-kafka-broker-release-1.16-periodic
+  - name: knative-sasl-plain-eventing-kafka-broker-release-1.17-periodic
     labels:
       preset-knative-powervs: "true"
     decorate: true
@@ -9,7 +9,7 @@ periodics:
         org: ppc64le-cloud
         repo: knative-tkn-upstream-ci
         workdir: true
-      - base_ref: release-1.16
+      - base_ref: release-1.17
         org: knative-extensions
         repo: eventing-kafka-broker
     spec:
@@ -49,7 +49,7 @@ periodics:
             - name: KNATIVE_REPO
               value: eventing-kafka-broker
             - name: KNATIVE_RELEASE
-              value: release-1.16
+              value: release-1.17
             - name: BROKER_CLASS
               value: Kafka
             - name: EVENTING_KAFKA_BROKER_CHANNEL_AUTH_SCENARIO
@@ -60,7 +60,7 @@ periodics:
               value: knative-eventing
             - name: SCALE_CHAOSDUCK_TO_ZERO
               value: "1"
-  - name: knative-sasl-ssl-eventing-kafka-broker-release-1.16-periodic
+  - name: knative-sasl-ssl-eventing-kafka-broker-release-1.17-periodic
     labels:
       preset-knative-powervs: "true"
     decorate: true
@@ -70,7 +70,7 @@ periodics:
         org: ppc64le-cloud
         repo: knative-tkn-upstream-ci
         workdir: true
-      - base_ref: release-1.16
+      - base_ref: release-1.17
         org: knative-extensions
         repo: eventing-kafka-broker
     spec:
@@ -110,7 +110,7 @@ periodics:
             - name: KNATIVE_REPO
               value: eventing-kafka-broker
             - name: KNATIVE_RELEASE
-              value: release-1.16
+              value: release-1.17
             - name: BROKER_CLASS
               value: Kafka
             - name: EVENTING_KAFKA_BROKER_CHANNEL_AUTH_SCENARIO
@@ -121,7 +121,7 @@ periodics:
               value: knative-eventing
             - name: SCALE_CHAOSDUCK_TO_ZERO
               value: "1"
-  - name: knative-ssl-eventing-kafka-broker-release-1.16-periodic
+  - name: knative-ssl-eventing-kafka-broker-release-1.17-periodic
     labels:
       preset-knative-powervs: "true"
     decorate: true
@@ -131,7 +131,7 @@ periodics:
         org: ppc64le-cloud
         repo: knative-tkn-upstream-ci
         workdir: true
-      - base_ref: release-1.16
+      - base_ref: release-1.17
         org: knative-extensions
         repo: eventing-kafka-broker
     spec:
@@ -171,7 +171,7 @@ periodics:
             - name: KNATIVE_REPO
               value: eventing-kafka-broker
             - name: KNATIVE_RELEASE
-              value: release-1.16
+              value: release-1.17
             - name: BROKER_CLASS
               value: Kafka
             - name: EVENTING_KAFKA_BROKER_CHANNEL_AUTH_SCENARIO
