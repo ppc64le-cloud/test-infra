@@ -1,0 +1,55 @@
+periodics:
+  - name: knative-plugin-event-main-periodic
+    labels:
+      preset-knative-powervs: "true"
+    decorate: true
+    cron: "0 14 * * *"
+    extra_refs:
+      - base_ref: main
+        org: ppc64le-cloud
+        repo: knative-tkn-upstream-ci
+        workdir: true
+      - base_ref: main
+        org: knative-extensions
+        repo: kn-plugin-event
+    spec:
+      containers:
+        - image: quay.io/powercloud/knative-prow-tests:latest
+          resources:
+            requests:
+              cpu: "1500m"
+            limits:
+              cpu: "1500m"
+          command:
+            - runner.sh
+          args:
+            - bash
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              TIMESTAMP=$(date +%s)
+              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/k8s-release-dev/ci/latest.txt)
+              ORIGINAL_DIR=$(pwd)
+
+              trap 'pushd $ORIGINAL_DIR; source cluster-setup.sh delete' EXIT
+
+              source cluster-setup.sh create
+              export KO_DEFAULTBASEIMAGE="gcr.io/distroless/static:nonroot"
+              pushd $GOPATH/src/github.com/$ORG/$KNATIVE_REPO
+              . /tmp/adjust.sh
+              ./test/e2e-tests.sh --run-tests
+              popd
+
+          env:
+            - name: ORG
+              value: knative-extensions
+            - name: KNATIVE_REPO
+              value: kn-plugin-event
+            - name: KNATIVE_RELEASE
+              value: main
+            - name: SSL_CERT_FILE
+              value: /etc/ssl/certs/ca-certificates.crt
