@@ -59,8 +59,6 @@ periodics:
         curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
         chmod +x /usr/local/bin/kubectl
 
-        echo POD_STARTUP_LATENCY_THRESHOLD: 10s >> $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/testing/overrides/node_containerd.yaml
-
         kubetest2 tf --powervs-dns k8s-tests \
           --powervs-image-name CentOS-Stream-9 \
           --powervs-region syd --powervs-zone syd05 \
