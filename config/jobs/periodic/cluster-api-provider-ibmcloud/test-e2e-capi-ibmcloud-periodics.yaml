@@ -17,7 +17,7 @@ periodics:
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.30
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.31
           resources:
             limits:
               cpu: "1000m"
@@ -67,7 +67,7 @@ periodics:
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
-  - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.8
+  - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.10
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
@@ -79,13 +79,13 @@ periodics:
       gcs_credentials_secret: gcs-credentials
     cron: "0 8 * * 0"
     extra_refs:
-      - base_ref: release-0.8
+      - base_ref: release-0.10
         org: kubernetes-sigs
         repo: cluster-api-provider-ibmcloud
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.29
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.31
           resources:
           limits:
            cpu: "1000m"
@@ -119,7 +119,7 @@ periodics:
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.30
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.31
           limits:
            cpu: "1000m"
           requests:
@@ -167,7 +167,7 @@ periodics:
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
-  - name: periodic-capi-provider-ibmcloud-e2e-vpc-release-0.8
+  - name: periodic-capi-provider-ibmcloud-e2e-vpc-release-0.10
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
@@ -179,13 +179,13 @@ periodics:
       gcs_credentials_secret: gcs-credentials
     cron: "0 4 * * 0"
     extra_refs:
-      - base_ref: release-0.8
+      - base_ref: release-0.10
         org: kubernetes-sigs
         repo: cluster-api-provider-ibmcloud
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.29
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.31
           limits:
            cpu: "1000m"
           requests:
