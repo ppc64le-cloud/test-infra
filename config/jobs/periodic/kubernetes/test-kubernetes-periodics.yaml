@@ -1,7 +1,6 @@
 periodics:
   - name: periodic-kubernetes-unit-test-ppc64le
-    labels:
-      preset-ssh-bot: "true"
+    cluster: k8s-ppc64le-cluster
     decorate: true
     decoration_config:
       gcs_configuration:
@@ -10,67 +9,26 @@ periodics:
       gcs_credentials_secret: gcs-credentials
     cron: "0 1/3 * * *"
     extra_refs:
-      - base_ref: master
-        org: ppc64le-cloud
-        repo: kubetest2-plugins
-        workdir: true
+      - org: kubernetes
+        repo: kubernetes
+        base_ref: master
+        path_alias: k8s.io/kubernetes
     spec:
+      securityContext:
+        runAsGroup: 2010
+        runAsUser: 2001
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-master
+        - image: us-central1-docker.pkg.dev/k8s-staging-test-infra/images/kubekins-e2e:v20250212-16f67660c2-master
+          command:
+            - make
+            - test
+          securityContext:
+            allowPrivilegeEscalation: false
           resources:
             requests:
-              cpu: "1500m"
+              cpu: 4
             limits:
-              cpu: "1500m"
-          command:
-            - /bin/bash
-          args:
-            - -c
-            - |
-              set -o errexit
-              set -o nounset
-              set -o pipefail
-              set -o xtrace
-
-              export PATH=$GOPATH/bin:$PATH
-              export GO111MODULE=on
-
-
-              make install-deployer-tf
-
-              TF_LATEST="v1.9.8"
-
-              curl -fsSL https://releases.hashicorp.com/terraform/${TF_LATEST:1}/terraform_${TF_LATEST:1}_linux_amd64.zip -o ./terraform.zip
-              unzip -o ./terraform.zip  >/dev/null 2>&1
-              rm -f ./terraform.zip
-              TF="$PWD/terraform"
-              export PATH=$PWD:$PATH
-
-              apt-get update && apt-get install -y ansible
-
-              TIMESTAMP=$(date +%s)
-
-              set +o errexit
-              kubetest2 tf --powervs-image-name CentOS-Stream-9 \
-                --powervs-region syd --powervs-zone syd05 \
-                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
-                --powervs-ssh-key powercloud-bot-key \
-                --ssh-private-key /etc/secret-volume/ssh-privatekey \
-                --cluster-name config4-$TIMESTAMP \
-                --up --set-kubeconfig=false --auto-approve \
-                --retry-on-tf-failure 3 \
-                --break-kubetest-on-upfail true --powervs-memory 32 \
-                --playbook k8s-ut-remote.yml
-              EXTERNAL_IP=`grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' $(pwd)/config4-$TIMESTAMP/hosts`
-              kubetest2 tf --test=exec -- ssh -i /etc/secret-volume/ssh-privatekey root@$EXTERNAL_IP \
-                "/make-test.sh"; \
-                rc=$?; scp -r -i /etc/secret-volume/ssh-privatekey root@$EXTERNAL_IP:/home/nonroot/artifacts $ARTIFACTS
-              kubetest2 tf --powervs-region syd --powervs-zone syd05 \
-                --powervs-service-id c3f5354a-517e-4927-8523-890c4bf3d6c5 \
-                --ignore-cluster-dir true \
-                --cluster-name config4-$TIMESTAMP \
-                --down --auto-approve --ignore-destroy-errors
-              [ $rc != 0 ] && echo "ERROR: Unit Test suite exited with code:$rc"; exit $rc
+              cpu: 4
   - name: periodic-kubernetes-unit-test-root-ppc64le
     cluster: k8s-ppc64le-cluster
     labels:
