@@ -137,9 +137,9 @@ postsubmits:
         - master
       run_if_changed: '^kubernetes/master/golang/master/'
       extra_refs:
-        - base_ref: master
-          org: ppc64le-cloud
-          repo: kubetest2-plugins
+        - base_ref: main
+          org: kubernetes-sigs
+          repo: provider-ibmcloud-test-infra
         - base_ref: master
           org: kubernetes-sigs
           repo: kubetest2
@@ -169,7 +169,7 @@ postsubmits:
                 make install
                 make install-tester-exec
 
-                pushd ../../ppc64le-cloud/kubetest2-plugins
+                pushd ../provider-ibmcloud-test-infra
                 make install-deployer-tf
                 popd
 

@@ -10,9 +10,9 @@ periodics:
       gcs_credentials_secret: gcs-credentials
     cron: "0 1 * * *"
     extra_refs:
-      - base_ref: master
-        org: ppc64le-cloud
-        repo: kubetest2-plugins
+      - base_ref: main
+        org: kubernetes-sigs
+        repo: provider-ibmcloud-test-infra
         workdir: true
     spec:
       containers:
@@ -84,9 +84,9 @@ periodics:
       gcs_credentials_secret: gcs-credentials
     cron: "0 2 * * *"
     extra_refs:
-      - base_ref: master
-        org: ppc64le-cloud
-        repo: kubetest2-plugins
+      - base_ref: main
+        org: kubernetes-sigs
+        repo: provider-ibmcloud-test-infra
         workdir: true
       - base_ref: release-1.32
         org: kubernetes
