@@ -14,9 +14,9 @@ periodics:
     gcs_credentials_secret: gcs-credentials
   interval: 12h
   extra_refs:
-  - base_ref: master
-    org: ppc64le-cloud
-    repo: kubetest2-plugins
+  - base_ref: main
+    org: kubernetes-sigs
+    repo: provider-ibmcloud-test-infra
   - base_ref: master
     org: kubernetes-sigs
     repo: kubetest2
@@ -47,7 +47,7 @@ periodics:
 
         make install install-tester-clusterloader2
 
-        pushd ../../ppc64le-cloud/kubetest2-plugins
+        pushd ../provider-ibmcloud-test-infra
         make install-deployer-tf
         popd
 
@@ -93,9 +93,9 @@ periodics:
     gcs_credentials_secret: gcs-credentials
   interval: 24h
   extra_refs:
-  - base_ref: master
-    org: ppc64le-cloud
-    repo: kubetest2-plugins
+  - base_ref: main
+    org: kubernetes-sigs
+    repo: provider-ibmcloud-test-infra
   - base_ref: master
     org: kubernetes-sigs
     repo: kubetest2
@@ -126,7 +126,7 @@ periodics:
 
         make install install-tester-exec
 
-        pushd ../../ppc64le-cloud/kubetest2-plugins
+        pushd ../provider-ibmcloud-test-infra
         make install-deployer-tf
         popd
 
