@@ -1,6 +1,6 @@
 FILE=version.txt
 VERSION?=`cat $(FILE)`
-UPSTREAM_REPO=gcr.io/k8s-prow
+UPSTREAM_REPO=us-docker.pkg.dev/k8s-infra-prow/images
 PRIVATE_REPO=quay.io/powercloud
 ARCH?=amd64
 

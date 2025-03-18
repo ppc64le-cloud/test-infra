@@ -12,8 +12,8 @@ function main() {
   parseArgs "$@"
 
   # Generate PJ and Pod.
-  docker run -i --rm -v "${PWD}:${PWD}" -v "${config}:${config}" ${job_config_mnt} -w "${PWD}" gcr.io/k8s-prow/mkpj "--config-path=${config}" "--job=${job}" ${job_config_flag} > "${PWD}/pj.yaml"
-  docker run -i --rm -v "${PWD}:${PWD}" -w "${PWD}" gcr.io/k8s-prow/mkpod --build-id=snowflake "--prow-job=${PWD}/pj.yaml" --local "--out-dir=${out_dir}/${job}" > "${PWD}/pod.yaml"
+  docker run -i --rm -v "${PWD}:${PWD}" -v "${config}:${config}" ${job_config_mnt} -w "${PWD}" us-docker.pkg.dev/k8s-infra-prow/images/mkpj "--config-path=${config}" "--job=${job}" ${job_config_flag} > "${PWD}/pj.yaml"
+  docker run -i --rm -v "${PWD}:${PWD}" -w "${PWD}" us-docker.pkg.dev/k8s-infra-prow/images/mkpod --build-id=snowflake "--prow-job=${PWD}/pj.yaml" --local "--out-dir=${out_dir}/${job}" > "${PWD}/pod.yaml"
 
   echo "Applying pod to the mkpod cluster. Configure kubectl for the mkpod cluster with:"
   echo "Press Control+c for exiting the script"
