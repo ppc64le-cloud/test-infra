@@ -1,0 +1,161 @@
+postsubmits:
+ ppc64le-cloud/docker-ce-build:
+    - name: postsubmit-unit-test-docker
+      cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
+      decorate: true
+      decoration_config:
+        timeout: 2h
+      run_if_changed: 'job/periodic-config-docker'
+      reporter_config:
+        slack:
+          channel: 'prow-job-notifications'
+          job_states_to_report:
+           - failure
+           - error
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+      branches:
+        - prow-job-tracking
+      spec:
+        containers:
+        - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
+          resources:
+            requests:
+              cpu: "4000m"
+            limits:
+              cpu: "4000m"
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            ##
+            # This job is populated with the files from the 'prow-job-tracking' branch.
+            # We switch to the 'main' branch, as it contains the scripts used by this job.
+            ###
+
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+
+            #Set this to your dev branch for testing
+            WORK_BRANCH=main
+            git fetch https://github.com/${REPO_OWNER}/${REPO_NAME} ${WORK_BRANCH}
+            git checkout ${WORK_BRANCH}
+            echo "* Start prow-unit-test-docker *"
+            chmod ug+x $PWD/upstream-master-ci/prow-unit-test-docker.sh
+            $PWD/upstream-master-ci/prow-unit-test-docker.sh
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-unit-test-docker exited with code:$rc"
+            exit $rc
+
+          securityContext:
+            privileged: true
+    - name: postsubmit-integration-cli-docker
+      cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
+      decorate: true
+      decoration_config:
+        timeout: 2h
+      run_if_changed: 'job/periodic-config-docker'
+      reporter_config:
+        slack:
+          channel: 'prow-job-notifications'
+          job_states_to_report:
+           - failure
+           - error
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+      branches:
+        - prow-job-tracking
+      spec:
+        containers:
+        - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
+          resources:
+            requests:
+              cpu: "4000m"
+            limits:
+              cpu: "4000m"
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            ##
+            # This job is populated with the files from the 'prow-job-tracking' branch.
+            # We switch to the 'main' branch, as it contains the scripts used by this job.
+            ###
+
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+
+            #Set this to your dev branch for testing
+            WORK_BRANCH=main
+            git fetch https://github.com/${REPO_OWNER}/${REPO_NAME} ${WORK_BRANCH}
+            git checkout ${WORK_BRANCH}
+            echo "* Start prow-integration-cli-docker *"
+            chmod ug+x $PWD/upstream-master-ci/prow-integration-cli.sh
+            $PWD/upstream-master-ci/prow-integration-cli.sh
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-integration-cli-docker exited with code:$rc"
+            exit $rc
+
+          securityContext:
+            privileged: true
+    - name: postsubmit-integration-test-docker
+      cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
+      decorate: true
+      decoration_config:
+        timeout: 2h
+      run_if_changed: 'job/periodic-config-docker'
+      reporter_config:
+        slack:
+          channel: 'prow-job-notifications'
+          job_states_to_report:
+           - failure
+           - error
+          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
+      branches:
+        - prow-job-tracking
+      spec:
+        containers:
+        - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
+          resources:
+            requests:
+              cpu: "4000m"
+            limits:
+              cpu: "4000m"
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            ##
+            # This job is populated with the files from the 'prow-job-tracking' branch.
+            # We switch to the 'main' branch, as it contains the scripts used by this job.
+            ###
+
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+
+            #Set this to your dev branch for testing
+            WORK_BRANCH=main
+            git fetch https://github.com/${REPO_OWNER}/${REPO_NAME} ${WORK_BRANCH}
+            git checkout ${WORK_BRANCH}
+            echo "* Start prow-integration-test-docker *"
+            chmod ug+x $PWD/upstream-master-ci/prow-integration-tests.sh
+            $PWD/upstream-master-ci/prow-integration-tests.sh
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-integration-test-docker exited with code:$rc"
+            exit $rc
+
+          securityContext:
+            privileged: true
