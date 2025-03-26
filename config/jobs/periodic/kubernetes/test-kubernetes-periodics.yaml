@@ -49,6 +49,7 @@ periodics:
               source "./hack/boskos.sh"
 
               make install-deployer-tf
+              RESOURCE_TYPE="powervs-k8s-conformance"
 
               apt-get update && apt-get install -y ansible
 
@@ -65,6 +66,7 @@ periodics:
               TIMESTAMP=$(date +%s)
               jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
 
+              set -o xtrace
               kubetest2 tf --powervs-image-name CentOS-Stream-9 \
                 --powervs-region ${BOSKOS_REGION} --powervs-zone ${BOSKOS_ZONE} \
                 --powervs-service-id ${BOSKOS_RESOURCE_ID} \
