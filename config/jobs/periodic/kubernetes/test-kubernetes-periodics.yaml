@@ -46,10 +46,10 @@ periodics:
 
               export PATH=$GOPATH/bin:$PATH
               export GO111MODULE=on
+              RESOURCE_TYPE="powervs-k8s-conformance"
               source "./hack/boskos.sh"
 
               make install-deployer-tf
-              RESOURCE_TYPE="powervs-k8s-conformance"
 
               apt-get update && apt-get install -y ansible
 
