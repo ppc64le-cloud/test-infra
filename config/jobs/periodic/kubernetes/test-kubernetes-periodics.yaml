@@ -67,6 +67,7 @@ periodics:
               jq --arg key0 'k8s-build-version' --arg value0 $K8S_BUILD_VERSION '. | .[$key0]=$value0' <<<'{}' > $ARTIFACTS/metadata.json
 
               set -o xtrace
+              set +o errexit
               kubetest2 tf --powervs-image-name CentOS-Stream-9 \
                 --powervs-region ${BOSKOS_REGION} --powervs-zone ${BOSKOS_ZONE} \
                 --powervs-service-id ${BOSKOS_RESOURCE_ID} \
@@ -94,6 +95,7 @@ periodics:
                 --test=ginkgo -- \
                 --use-built-binaries true \
                 --focus-regex='\[Serial\].*\[Conformance\]'; rc2=$?
+              [ -z "${BOSKOS_HOST:-}" ] || release_account >> "$ARTIFACTS/boskos.log" 2>&1
               if [ $rc1 != 0 ]; then
                   echo "ERROR: Non Serial k8s Conformance tests exited with code: $rc1"
                   exit $rc1
@@ -101,8 +103,6 @@ periodics:
                   echo "ERROR: Serial k8s Conformance tests exited with code: $rc2"
                   exit $rc2
               fi
-
-              [ -z "${BOSKOS_HOST:-}" ] || release_account >> "$ARTIFACTS/boskos.log" 2>&1
 
   - name: periodic-kubernetes-containerd-e2e-node-tests-ppc64le
     labels:
