@@ -17,9 +17,9 @@ periodics:
         - image: quay.io/powercloud/knative-prow-tests:latest
           resources:
             requests:
-              cpu: "1500m"
+              cpu: "2500m"
             limits:
-              cpu: "1500m"
+              cpu: "2500m"
           command:
             - runner.sh
           args:
