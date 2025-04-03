@@ -9,13 +9,6 @@ periodics:
         - base_ref: main
           org: ppc64le-cloud
           repo: docker-ce-build
-      reporter_config:
-        slack:
-          channel: 'prow-job-notifications'
-          job_states_to_report:
-           - failure
-           - error
-          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
         - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
@@ -74,13 +67,6 @@ periodics:
         - base_ref: main
           org: ppc64le-cloud
           repo: docker-ce-build
-      reporter_config:
-        slack:
-          channel: 'prow-job-notifications'
-          job_states_to_report:
-           - failure
-           - error
-          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       spec:
         containers:
         - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87

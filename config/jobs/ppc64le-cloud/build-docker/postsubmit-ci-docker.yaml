@@ -8,13 +8,6 @@ postsubmits:
       decoration_config:
         timeout: 2h
       run_if_changed: 'job/periodic-config-docker'
-      reporter_config:
-        slack:
-          channel: 'prow-job-notifications'
-          job_states_to_report:
-           - failure
-           - error
-          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       branches:
         - prow-job-tracking
       spec:
@@ -61,13 +54,6 @@ postsubmits:
       decoration_config:
         timeout: 2h
       run_if_changed: 'job/periodic-config-docker'
-      reporter_config:
-        slack:
-          channel: 'prow-job-notifications'
-          job_states_to_report:
-           - failure
-           - error
-          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       branches:
         - prow-job-tracking
       spec:
@@ -114,13 +100,6 @@ postsubmits:
       decoration_config:
         timeout: 2h
       run_if_changed: 'job/periodic-config-docker'
-      reporter_config:
-        slack:
-          channel: 'prow-job-notifications'
-          job_states_to_report:
-           - failure
-           - error
-          report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
       branches:
         - prow-job-tracking
       spec:
