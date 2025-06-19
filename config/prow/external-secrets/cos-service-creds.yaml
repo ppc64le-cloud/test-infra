@@ -14,4 +14,4 @@ spec:
   data:
   - secretKey: hmac_credentials
     remoteRef:
-      key: service_credentials/c1286cb2-95f2-1814-e501-17fa8013548f
+      key: service_credentials/25618a7b-97cf-19cf-7b12-c6129414545e
