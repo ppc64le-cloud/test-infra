@@ -31,6 +31,14 @@ size:
   xl:  500
   xxl: 1000
 
+label:
+  additional_labels:
+    # These labels are used by PDeXchange/pac
+    - component/controller
+    - component/event-notifier
+    - component/pac-go-server
+    - component/ui
+
 config_updater:
   maps:
     config/prow/config.yaml:
