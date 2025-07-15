@@ -38,6 +38,11 @@ label:
     - component/event-notifier
     - component/pac-go-server
     - component/ui
+    - priority/backlog
+    - priority/important-soon
+    - priority/critical-urgent
+    - priority/important-longterm
+    - priority/awaiting-more-evidence
 
 config_updater:
   maps:
