@@ -32,7 +32,7 @@ periodics:
               set -o xtrace
 
               TIMESTAMP=$(date +%s)
-              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+              K8S_BUILD_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
               ORIGINAL_DIR=$(pwd)
 
               trap 'pushd $ORIGINAL_DIR; source cluster-setup.sh delete; popd' EXIT
@@ -93,7 +93,7 @@ periodics:
               set -o xtrace
 
               TIMESTAMP=$(date +%s)
-              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+              K8S_BUILD_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
               ORIGINAL_DIR=$(pwd)
 
               trap 'pushd $ORIGINAL_DIR; source cluster-setup.sh delete; popd' EXIT
@@ -154,7 +154,7 @@ periodics:
               set -o xtrace
 
               TIMESTAMP=$(date +%s)
-              K8S_BUILD_VERSION=$(curl https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+              K8S_BUILD_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
               ORIGINAL_DIR=$(pwd)
 
               trap 'pushd $ORIGINAL_DIR; source cluster-setup.sh delete; popd' EXIT
