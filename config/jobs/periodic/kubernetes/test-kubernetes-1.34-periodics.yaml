@@ -1,5 +1,5 @@
 periodics:
-  - name: periodic-kubernetes-unit-test-ppc64le-1-31
+  - name: periodic-kubernetes-unit-test-ppc64le-1-34
     labels:
       preset-ssh-bot: "true"
     decorate: true
@@ -16,7 +16,7 @@ periodics:
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-1.31
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-1.34
           resources:
             requests:
               cpu: "1500m"
@@ -60,7 +60,7 @@ periodics:
                 --up --set-kubeconfig=false --auto-approve \
                 --retry-on-tf-failure 3 \
                 --break-kubetest-on-upfail true --powervs-memory 32 \
-                --extra-vars=k8s_branch:release-1.31 \
+                --extra-vars=k8s_branch:release-1.34 \
                 --playbook k8s-ut-remote.yml
               EXTERNAL_IP=`grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' $(pwd)/config4-$TIMESTAMP/hosts`
               kubetest2 tf --test=exec -- ssh -i /etc/secret-volume/ssh-privatekey root@$EXTERNAL_IP \
@@ -72,7 +72,7 @@ periodics:
                 --cluster-name config4-$TIMESTAMP \
                 --down --auto-approve --ignore-destroy-errors
               [ $rc != 0 ] && echo "ERROR: Unit Test suite exited with code:$rc"; exit $rc
-  - name: periodic-kubernetes-containerd-conformance-test-ppc64le-1-31
+  - name: periodic-kubernetes-containerd-conformance-test-ppc64le-1-34
     labels:
       preset-dind-enabled: "true"
       preset-ibmcloud-cred: "true"
@@ -88,12 +88,12 @@ periodics:
         org: kubernetes-sigs
         repo: provider-ibmcloud-test-infra
         workdir: true
-      - base_ref: release-1.31
+      - base_ref: release-1.34
         org: kubernetes
         repo: kubernetes
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-1.31
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:v20241128-8df65c072f-1.34
           securityContext:
             privileged: true
           env:
@@ -143,7 +143,7 @@ periodics:
               # Details of IBM S3 storage
               S3_SERVER=s3.us.cloud-object-storage.appdomain.cloud
               BUCKET=k8s-infra-cos-bucket
-              DIRECTORY=1.31
+              DIRECTORY=1.34
 
               # Build and push artifacts to IBM COS
               REPOROOT=../../kubernetes/kubernetes
