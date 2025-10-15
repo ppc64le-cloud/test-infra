@@ -2,10 +2,19 @@
 
 ## How to build
 
-```shell script
+### Classic Docker build 
+```
 $ docker build -t quay.io/powercloud/grafana:v12.1.0 .
 
 $ docker push quay.io/powercloud/grafana:v12.1.0
+```
+### Docker Buildx
+```
+$ docker buildx build \
+  --platform linux/ppc64le \
+  -t quay.io/powercloud/grafana:v12.1.0 \
+  --push .
+
 ```
 
 ## Issues addressed for Grafana v12.1.0 
