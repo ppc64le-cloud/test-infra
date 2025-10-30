@@ -1,0 +1,48 @@
+From 579d3cc914db923b3e8a63071afe970223039dc0 Mon Sep 17 00:00:00 2001
+From: Sathvik <Sathvik.S@ibm.com>
+Date: Tue, 14 Oct 2025 17:02:39 +0530
+Subject: [PATCH] patch swc-loader to babel for ppc64le
+
+---
+ .../grafana-plugin-configs/webpack.config.ts  | 24 ++++++-------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
+
+diff --git a/packages/grafana-plugin-configs/webpack.config.ts b/packages/grafana-plugin-configs/webpack.config.ts
+index 86c1d1eafc9..2a5382d9e44 100644
+--- a/packages/grafana-plugin-configs/webpack.config.ts
++++ b/packages/grafana-plugin-configs/webpack.config.ts
+@@ -128,24 +128,14 @@ const config = async (env: Env): Promise<Configuration> => {
+           exclude: /(node_modules)/,
+           test: /\.[tj]sx?$/,
+           use: {
+-            loader: 'swc-loader',
++            loader: 'babel-loader',
+             options: {
+-              jsc: {
+-                baseUrl: path.resolve(import.meta.dirname),
+-                target: 'es2015',
+-                loose: false,
+-                parser: {
+-                  syntax: 'typescript',
+-                  tsx: true,
+-                  decorators: false,
+-                  dynamicImport: true,
+-                },
+-                transform: {
+-                  react: {
+-                    runtime: 'automatic',
+-                  },
+-                },
+-              },
++              cacheDirectory: true,
++              presets: [
++                ['@babel/preset-env', { targets: { esmodules: true } }],
++                ['@babel/preset-typescript', { allowDeclareFields: true }],
++                '@babel/preset-react',
++              ],
+             },
+           },
+         },
+-- 
+2.50.1
+
