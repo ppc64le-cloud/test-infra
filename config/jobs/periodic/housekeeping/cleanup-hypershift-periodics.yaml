@@ -19,9 +19,21 @@ periodics:
               set -o pipefail
               set -o xtrace
 
-              wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1.1-alpha.7/pvsadm-linux-ppc64le
-              chmod +x /usr/local/bin/pvsadm
+              # Function to install pvsadm tool
+              install_pvsadm() {
+                wget -q -O /usr/local/bin/pvsadm https://github.com/ppc64le-cloud/pvsadm/releases/download/v0.1.1-alpha.7/pvsadm-linux-ppc64le
+                chmod +x /usr/local/bin/pvsadm
+              }
 
+              # Function to install IBM Cloud CLI
+              install_ibmcloud_cli() {
+                apk update && apk add --no-cache bash curl libc6-compat
+                curl -fsSL https://clis.cloud.ibm.com/install/linux | bash
+                ibmcloud --version
+              }
+
+              # Function to clean up VMs
+              cleanup_vms() {
               # cleanup all the vms created in rh-upstream-hypershift-clusterbot-pvs workspace before 24hrs
               pvsadm purge vms --instance-id 14a2c6fb-a21d-4be6-a1b8-c5de7304ac35 --before 24h --ignore-errors --no-prompt
               # cleanup all the vms created in rh-upstream-hypershift-powervs-e2e-ci-pvs workspace before 24hrs
@@ -30,3 +42,23 @@ periodics:
               pvsadm purge vms --instance-id d04e2b0c-58aa-4e64-85c1-ecb5ab00d03d --before 24h --regexp '[^bastion\w]' --ignore-errors --no-prompt
               # cleanup all the vms created in rh-upstream-hypershift-agent-heterogeneous-ci workspace before 24hrs
               pvsadm purge vms --instance-id d4309c6b-e13f-45cd-b0d1-360d476cd9e6 --before 24h --regexp '[^bastion\w]' --ignore-errors --no-prompt
+              }
+
+              # Function to run IBM Cloud CLI commands
+              cleanup_cos() {
+                ibmcloud login --apikey "$IBMCLOUD_API_KEY" -r jp-tok || exit 1
+                for instance in $(ibmcloud resource service-instances --all-pages | grep -E 'example-.*-infra-image-registry' | awk '{print $1}'); do
+                  for key in $(ibmcloud resource service-keys --instance-name "$instance" | awk 'NR>3 {print $1}'); do
+                    ibmcloud resource service-key-delete "$key" -f || true
+                  done
+                  ibmcloud resource service-instance-delete "$instance" -f || true
+                done
+              }
+
+              # Install the pvsadm tool
+              install_pvsadm
+              # Install IBM Cloud CLI
+              install_ibmcloud_cli
+              # Perform cleanup
+              cleanup_vms
+              cleanup_cos
