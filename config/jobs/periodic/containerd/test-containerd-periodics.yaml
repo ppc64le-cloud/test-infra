@@ -10,7 +10,7 @@ periodics:
         workdir: true
     spec:
       containers:
-      - image: quay.io/powercloud/docker-ce-build@sha256:aee7cedb268386043d9d081e9c332ffa271b696b94db3651788cd971de775455
+      - image: quay.io/powercloud/docker-ce-build@sha256:06746a0fd11df7b559fcd780829323a1c05dff85fee7dc50c60df4e262e601ba
         command:
           - /bin/bash
         args:
