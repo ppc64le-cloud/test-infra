@@ -17,7 +17,7 @@ periodics:
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.33
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.34
           resources:
             limits:
               cpu: "1000m"
@@ -33,7 +33,7 @@ periodics:
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
-  - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.11
+  - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.13
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
@@ -45,13 +45,13 @@ periodics:
       gcs_credentials_secret: gcs-credentials
     cron: "0 6 * * 6"
     extra_refs:
-      - base_ref: release-0.11
+      - base_ref: release-0.13
         org: kubernetes-sigs
         repo: cluster-api-provider-ibmcloud
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.32
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.34
           resources:
             limits:
               cpu: "1000m"
@@ -119,7 +119,7 @@ periodics:
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.33
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.34
           limits:
            cpu: "1000m"
           requests:
@@ -134,7 +134,7 @@ periodics:
             - "./scripts/ci-e2e.sh"
           securityContext:
             privileged: true
-  - name: periodic-capi-provider-ibmcloud-e2e-vpc-release-0.11
+  - name: periodic-capi-provider-ibmcloud-e2e-vpc-release-0.13
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
@@ -146,13 +146,13 @@ periodics:
       gcs_credentials_secret: gcs-credentials
     cron: "0 2 * * 6"
     extra_refs:
-      - base_ref: release-0.11
+      - base_ref: release-0.13
         org: kubernetes-sigs
         repo: cluster-api-provider-ibmcloud
         workdir: true
     spec:
       containers:
-        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.32
+        - image: gcr.io/k8s-staging-test-infra/kubekins-e2e:latest-1.34
           limits:
            cpu: "1000m"
           requests:
