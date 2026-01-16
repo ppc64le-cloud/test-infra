@@ -23,7 +23,7 @@ periodics:
               set -o pipefail
               set -o xtrace
               cd $HOME
-              git clone https://github.com/golang/go.git
+              git clone --depth=1 https://github.com/golang/go.git
               cd go/src
               GITCOMMIT=$(git rev-parse --short HEAD)
 
