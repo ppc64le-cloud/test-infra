@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: prow
+  name: ci-search-k8s
+  annotations:
+    kubernetes.io/ingress.class: public-iks-k8s-nginx
+spec:
+  rules:
+    - host: k8ssearch.ppc64le-cloud.cis.ibm.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ci-search-k8s
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - k8ssearch.ppc64le-cloud.cis.ibm.net
+      secretName: ppc64le-cloud-cis
