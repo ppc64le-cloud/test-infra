@@ -27,7 +27,7 @@ periodics:
 
               # Run test server
               mkdir ${ARTIFACTS}/runc_v2/
-              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/runc_v2/ --name rdr-runtimes-containerd-runc-v2 --runc runc --runtime "io.containerd.runc.v2" --key atos-key 2>&1 | tee runc_v2.txt
+              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/runc_v2/ --name rdr-runtimes-containerd-runc-v2 --runc runc --runtime "io.containerd.runc.v2" --key containerd-key 2>&1 | tee runc_v2.txt
 
               # Check results
               if [ -n "$(grep -En 'FAIL.*:' *.txt)" ]; then
@@ -63,7 +63,7 @@ periodics:
 
               # Run test server
               mkdir ${ARTIFACTS}/crun_v2/
-              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/crun_v2/ --name rdr-runtimes-containerd-crun-v2 --runc crun --runtime "io.containerd.runc.v2" --key atos-key 2>&1 | tee crun_v2.txt
+              bash -x ./instantiate_vm_and_test.sh --output ${ARTIFACTS}/crun_v2/ --name rdr-runtimes-containerd-crun-v2 --runc crun --runtime "io.containerd.runc.v2" --key containerd-key 2>&1 | tee crun_v2.txt
 
               # Check results
               if [ -n "$(grep -En 'FAIL.*:' *.txt)" ]; then
