@@ -151,13 +151,13 @@ presets:
           name: containerd-apikey
           key: apikey
   volumeMounts:
-    - name: atos-ssh-volume
+    - name: containerd-key
       readOnly: true
       mountPath: "/etc/ssh-volume"
   volumes:
-    - name: atos-ssh-volume
+    - name: containerd-key
       secret:
-        secretName: atos-powervs-ssh-key
+        secretName: containerd-key
         defaultMode: 256
 # ocp github deploy key preset
 - labels:
