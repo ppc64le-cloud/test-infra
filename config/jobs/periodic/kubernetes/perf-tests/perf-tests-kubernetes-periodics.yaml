@@ -59,6 +59,8 @@ periodics:
         curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
         chmod +x /usr/local/bin/kubectl
 
+        echo CONTAINER_IMAGE: "registry.k8s.io/pause:3.10.1" >> $GOPATH/src/github.com/kubernetes/perf-tests/clusterloader2/testing/overrides/node_containerd.yaml
+
         kubetest2 tf --powervs-dns k8s-tests \
           --powervs-image-name CentOS-Stream-9 \
           --powervs-region lon --powervs-zone lon04 \
