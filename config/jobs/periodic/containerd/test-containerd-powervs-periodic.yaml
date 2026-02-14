@@ -20,7 +20,7 @@ periodics:
               # Connect to IBMCloud
               echo "" | ibmcloud login
               ibmcloud target -r eu-gb -g runtimes-dev-resource-group
-              ibmcloud pi workspace target crn:v1:bluemix:public:power-iaas:lon06:a/65b64c1f1c29460e8c2e4bbfbd893c2c:87a23da4-15d7-4d0b-9526-f35f45cdf201::
+              ibmcloud pi workspace target crn:v1:bluemix:public:power-iaas:dal10:a/65b64c1f1c29460e8c2e4bbfbd893c2c:ed5cf7c9-160b-4f48-aa28-eab463e00666::
 
               wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instantiate_vm_and_test.sh
               chmod +x instantiate_vm_and_test.sh
@@ -56,7 +56,7 @@ periodics:
               # Connect to IBMCloud
               echo "" | ibmcloud login
               ibmcloud target -r eu-gb -g runtimes-dev-resource-group
-              ibmcloud pi workspace target crn:v1:bluemix:public:power-iaas:lon06:a/65b64c1f1c29460e8c2e4bbfbd893c2c:87a23da4-15d7-4d0b-9526-f35f45cdf201::
+              ibmcloud pi workspace target crn:v1:bluemix:public:power-iaas:dal10:a/65b64c1f1c29460e8c2e4bbfbd893c2c:ed5cf7c9-160b-4f48-aa28-eab463e00666::
 
               wget https://raw.githubusercontent.com/ppc64le-cloud/docker-ce-build/main/test-containerd/instantiate_vm_and_test.sh
               chmod +x instantiate_vm_and_test.sh
