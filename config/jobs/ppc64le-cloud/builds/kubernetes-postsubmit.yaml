@@ -86,9 +86,11 @@ postsubmits:
           - image: quay.io/powercloud/all-in-one:0.7
             resources:
               requests:
-                cpu: "5000m"
+                cpu: 7
+                memory: "16Gi"
               limits:
-                cpu: "5000m"
+                cpu: 7
+                memory: "16Gi"
             command:
               - /bin/bash
             args:
