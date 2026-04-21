@@ -1,0 +1,63 @@
+---
+periodics:
+  - name: periodic-ppc64le-calico-master-manifest-deployment
+    cron: "30 03 * * 1"  # Run at 9:00 AM IST (3:30 AM UTC) every Monday
+    cluster: k8s-ppc64le-cluster
+    labels:
+      preset-ssh-bot: "true"
+    decorate: true
+    extra_refs:
+      - base_ref: main
+        org: kubernetes-sigs
+        repo: provider-ibmcloud-test-infra
+      - base_ref: master
+        org: kubernetes-sigs
+        repo: kubetest2
+        workdir: true
+    spec:
+      containers:
+        - image: quay.io/powercloud/all-in-one:0.7
+          resources:
+            requests:
+              cpu: "1000m"
+            limits:
+              cpu: "1000m"
+          command:
+            - /bin/bash
+          args:
+              - -c
+              - >
+                set -o errexit
+                set -o nounset
+                set -o pipefail
+                set -o xtrace
+                export PATH=$GOPATH/bin:$PATH
+
+                TIMESTAMP=$(date +%s)
+
+                K8S_BUILD_VERSION=$(curl https://dl.k8s.io/release/stable.txt)
+
+                make install install-tester-exec
+
+                pushd ../provider-ibmcloud-test-infra
+                make install-deployer-tf
+                popd
+
+                curl -sSL https://dl.k8s.io/ci/$K8S_BUILD_VERSION/bin/linux/`go env GOARCH`/kubectl > /usr/local/bin/kubectl
+
+                export TF_VAR_controlplane_powervs_processors=0.25
+
+                chmod +x /usr/local/bin/kubectl
+
+                kubetest2-tf  \
+                --powervs-region lon --powervs-zone lon04 \
+                --powervs-service-id b058c631-452a-433a-b7b0-b0f652cccd92 \
+                --powervs-ssh-key powercloud-bot-key \
+                --ssh-private-key /etc/secret-volume/ssh-privatekey \
+                --build-version $K8S_BUILD_VERSION --release-marker=$K8S_BUILD_VERSION \
+                --workers-count 0 --auto-approve --cluster-name calico-master-manifest-$TIMESTAMP --playbook install-k8s.yml --up --down --retry-on-tf-failure 3 \
+                --break-kubetest-on-upfail true --ignore-destroy-errors \
+                --extra-vars=cni_provider:"none" --extra-vars=directory:"release" --test=exec  --  \
+                sh -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/master/manifests/calico.yaml && \
+                kubectl wait --namespace kube-system --for=condition=ready pod --all --timeout=180s && \
+                kubectl exec -n kube-system daemonset/calico-node -- calico-node -v"
