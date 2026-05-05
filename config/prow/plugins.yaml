@@ -13,15 +13,8 @@ triggers:
     join_org_url: https://github.com/ocp-power-automation/ocp4-upi-powervs#contributing
     only_org_members: true
   - repos:
-      - PDeXchange
-    join_org_url: https://github.com/PDeXchange#power-access-cloud
-    only_org_members: true
-  - repos:
       - trigger-prow/test-trigger
     join_org_url: https://github.com/trigger-prow/test-trigger/blob/main/README.md
-  - repos:
-      - Rajalakshmi-Girish/etcd
-    join_org_url: https://github.com/Rajalakshmi-Girish/etcd/blob/main/README.md#contributing
 
 # Lower bounds in number of lines changed; XS is assumed to be zero.
 size:
@@ -30,14 +23,6 @@ size:
   l:   100
   xl:  500
   xxl: 1000
-
-label:
-  additional_labels:
-    # These labels are used by PDeXchange/pac
-    - component/controller
-    - component/event-notifier
-    - component/pac-go-server
-    - component/ui
 
 config_updater:
   maps:
@@ -162,65 +147,7 @@ plugins:
       - wip
       - yuks
 
-  PDeXchange:
-    plugins:
-      - approve
-      - assign
-      - blunderbuss
-      - cat
-      - config-updater
-      - dog
-      - golint
-      - goose
-      - heart
-      - help
-      - hold
-      - invalidcommitmsg
-      - label
-      - lgtm
-      - lifecycle
-      - mergecommitblocker
-      - owners-label
-      - pony
-      - retitle
-      - shrug
-      - size
-      - skip
-      - trigger
-      - verify-owners
-      - welcome
-      - wip
-      - yuks
-
   trigger-prow/test-trigger:
-    plugins:
-      - approve
-      - assign
-      - cat
-      - config-updater
-      - dog
-      - golint
-      - goose
-      - heart
-      - help
-      - hold
-      - label
-      - lgtm
-      - lifecycle
-      - mergecommitblocker
-      - owners-label
-      - pony
-      - retitle
-      - shrug
-      - size
-      - skip
-      - trigger
-      - verify-owners
-      - welcome
-      - wip
-      - yuks
-
-  Rajalakshmi-Girish/etcd:
     plugins:
       - approve
       - assign
@@ -271,11 +198,6 @@ external_plugins:
       - pull_request
   ocp-power-automation/openshift-install-power:
   - name: mergeable
-    events:
-      - issue_comment
-      - pull_request
-  PDeXchange:
-  - name: cherrypick
     events:
       - issue_comment
       - pull_request
