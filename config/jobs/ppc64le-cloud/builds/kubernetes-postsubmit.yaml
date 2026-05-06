@@ -15,7 +15,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: quay.io/powercloud/all-in-one
             resources:
               requests:
                 cpu: "3000m"
@@ -83,7 +83,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: quay.io/powercloud/all-in-one
             resources:
               requests:
                 cpu: 7
@@ -144,7 +144,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: quay.io/powercloud/all-in-one
             resources:
               requests:
                 cpu: "4000m"
