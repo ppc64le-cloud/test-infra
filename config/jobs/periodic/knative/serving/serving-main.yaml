@@ -1,0 +1,68 @@
+periodics:
+  - name: knative-serving-main-periodic
+    labels:
+      preset-knative-powervs: "true"
+    decorate: true
+    cron: "0 16 * * *"
+    extra_refs:
+      - base_ref: main
+        org: ppc64le-cloud
+        repo: knative-tkn-upstream-ci
+        workdir: true
+      - base_ref: main
+        org: knative
+        repo: serving
+    spec:
+      containers:
+        - image: quay.io/powercloud/knative-prow-tests:latest
+          resources:
+            requests:
+              cpu: "1500m"
+            limits:
+              cpu: "1500m"
+          command:
+            - runner.sh
+          args:
+            - bash
+            - -c
+            - |
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              set -o xtrace
+
+              TIMESTAMP=$(date +%s)
+              K8S_BUILD_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
+              ORIGINAL_DIR=$(pwd)
+    
+              trap 'pushd $ORIGINAL_DIR; source cluster-setup.sh delete; popd' EXIT
+
+              source cluster-setup.sh create
+              pushd $GOPATH/src/github.com/$ORG/$KNATIVE_REPO
+              . /tmp/adjust.sh
+
+              export TEST_OPTIONS=$TEST_OPTIONS' --ingressendpoint '127.0.0.1
+              ./test/e2e-tests.sh --run-tests --kourier-version latest
+              popd
+
+          env:
+            - name: ORG
+              value: knative
+            - name: KNATIVE_REPO
+              value: serving
+            - name: KNATIVE_RELEASE
+              value: main
+            - name: INGRESS_CLASS
+              value: kourier.ingress.networking.knative.dev
+            - name: SYSTEM_NAMESPACE
+              value: knative-serving
+            - name: GATEWAY_OVERRIDE
+              value: kourier
+            - name: GATEWAY_NAMESPACE_OVERRIDE
+              value: kourier-system
+            - name: TEST_OPTIONS
+              value: --enable-alpha --enable-beta --resolvabledomain=false
+
+              
+              
+
