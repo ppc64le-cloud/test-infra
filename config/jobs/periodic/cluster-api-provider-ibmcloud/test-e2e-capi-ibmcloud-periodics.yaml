@@ -64,7 +64,7 @@ periodics:
               value: "boskos.test-pods.svc.cluster.local"
           command:
             - "runner.sh"
-            - "./scripts/ci-e2e.sh"
+            - "./hack/scripts/ci/ci-e2e.sh"
           securityContext:
             privileged: true
   - name: periodic-capi-provider-ibmcloud-e2e-powervs-release-0.14
@@ -164,7 +164,7 @@ periodics:
               value: "boskos.test-pods.svc.cluster.local"
           command:
             - "runner.sh"
-            - "./scripts/ci-e2e.sh"
+            - "./hack/scripts/ci/ci-e2e.sh"
           securityContext:
             privileged: true
   - name: periodic-capi-provider-ibmcloud-e2e-vpc-release-0.14
