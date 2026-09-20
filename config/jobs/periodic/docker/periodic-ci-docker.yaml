@@ -1,0 +1,94 @@
+periodics:
+    - name: periodic-config-docker
+      cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
+      cron: 0 0 * * *
+      decorate: true
+      extra_refs:
+        - base_ref: main
+          org: ppc64le-cloud
+          repo: docker-ce-build
+      spec:
+        containers:
+        - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
+          resources:
+            requests:
+              cpu: "4000m"
+            limits:
+              cpu: "4000m"
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+
+            # Set the SSH key for git from the secret 'git-ssh-docker-ce-build'
+            echo "* Set up the ssh key for git *"
+            mkdir -p ~/.ssh
+            cp /etc/ssh-key/ssh-privatekey  ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
+            echo "* Start prow-info-docker *"
+            chmod ug+x $PWD/upstream-master-ci/prow-info-docker.sh
+            $PWD/upstream-master-ci/prow-info-docker.sh
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-info-docker exited with code:$rc"
+            exit $rc
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: boot
+            mountPath: /boot
+          - name: ssh-key
+            readOnly: true
+            mountPath: /etc/ssh-key
+        volumes:
+        - name: boot
+          hostpath:
+            path: /boot/
+            volumes:
+        - name: ssh-key
+          secret:
+           secretName: git-ssh-docker-ce-build
+
+    - name: periodic-build-dev-image-docker
+      cluster: k8s-ppc64le-cluster
+      labels:
+        preset-build-docker: "true"
+      cron: 10 0 * * *
+      decorate: true
+      extra_refs:
+        - base_ref: main
+          org: ppc64le-cloud
+          repo: docker-ce-build
+      spec:
+        containers:
+        - image: quay.io/powercloud/docker-ce-build@sha256:b1e2679b9a5aabe15a94ae3130f5b02ce67441cf361fda7dc7a41929bb50ba87
+          resources:
+            requests:
+              cpu: "4000m"
+            limits:
+              cpu: "4000m"
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            set -o errexit
+            set -o nounset
+            set -o pipefail
+            set -o xtrace
+            echo "* Start prow-build-dev-image *"
+            chmod ug+x $PWD/upstream-master-ci/prow-build-dev-image.sh
+            $PWD/upstream-master-ci/prow-build-dev-image.sh
+            rc=$?
+            [ $rc != 0 ] && echo "ERROR: prow-build-dev-image exited with code:$rc"
+            exit $rc
+          securityContext:
+            privileged: true
