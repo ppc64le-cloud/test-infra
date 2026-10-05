@@ -5,6 +5,10 @@ postsubmits:
       labels:
         preset-golang-build: "true"
       decorate: true
+      decoration_config:
+        oauth_token_secret:
+          name: github-token
+          key: token
       branches:
         - master
       run_if_changed: '^golang/master/'
@@ -73,6 +77,9 @@ postsubmits:
           bucket: ppc64le-kubernetes
           path_strategy: explicit
         gcs_credentials_secret: gcs-credentials
+        oauth_token_secret:
+          name: github-token
+          key: token
       branches:
         - master
       run_if_changed: '^golang/master/'
