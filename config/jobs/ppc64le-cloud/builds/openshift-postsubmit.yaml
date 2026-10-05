@@ -5,6 +5,10 @@ postsubmits:
       labels:
         preset-golang-build: "true"
       decorate: true
+      decoration_config:
+        oauth_token_secret:
+          name: github-token
+          key: token
       branches:
         - master
       run_if_changed: '^golang/master/'
@@ -60,6 +64,10 @@ postsubmits:
       labels:
         preset-golang-build: "true"
       decorate: true
+      decoration_config:
+        oauth_token_secret:
+          name: github-token
+          key: token
       branches:
         - master
       run_if_changed: '^golang/master/'
