@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ci-search
+  name: ci-search-k8s
   namespace: prow
   labels:
-    app: ci-search
+    app: ci-search-k8s
 spec:
   replicas: 1 # Do not scale up.
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: ci-search
+      app: ci-search-k8s
   template:
     metadata:
       labels:
-        app: ci-search
+        app: ci-search-k8s
     spec:
       serviceAccountName: ci-search
       terminationGracePeriodSeconds: 30
       containers:
-      - name: ci-search
-        image: quay.io/powercloud/ci-search:ppc64le-cloud
+      - name: ci-search-k8s
+        image: quay.io/powercloud/ci-search:k8s
         ports:
         - containerPort: 8080

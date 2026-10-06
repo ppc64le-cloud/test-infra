@@ -24,7 +24,8 @@ $ CONFIG_PATH=$(pwd)/config/prow/config.yaml JOB_CONFIG_PATH=$(pwd)/config/jobs/
 ## Tools exposed via this repository
 
 - https://prow.ppc64le-cloud.cis.ibm.net/ - Dashboard for internal prow jobs that run on ppc64le build cluster and a few on IKS(x86) cluster.
-- https://search.ppc64le-cloud.cis.ibm.net/ - ci-search tool by openshift, configured to our internal prow jobs that have logs uploaded to GCS storage.
+- https://search.ppc64le-cloud.cis.ibm.net/ - ci-search tool by openshift, configured to our internal prow jobs that have logs uploaded to GCS bucket ppc64le-kubernetes.
+- https://k8ssearch.ppc64le-cloud.cis.ibm.net/ - ci-search tool by openshift, configured to upstream k8s prow jobs that have logs uploaded to GCS bucket kubernetes-ci-logs.
 - https://jenkins.ppc64le-cloud.cis.ibm.net/ - Jenkins dashboard for OCP jobs run on Jenkins infra.
 - https://grafana.ppc64le-cloud.cis.ibm.net - Grafana dashboard for analysing OCP jobs from Jenkins.
 
