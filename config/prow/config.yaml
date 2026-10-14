@@ -13,6 +13,15 @@ slack_reporter_configs:
       - error
     channel: prow-job-notifications
     report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S01E9J0G3EU> <{{.Status.URL}}|View logs>'
+  ppc64le-cloud/docker-ce-build:
+    job_types_to_report:
+      - postsubmit
+      - periodic
+    job_states_to_report:
+      - failure
+      - error
+    channel: prow-job-notifications
+    report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state {{.Status.State}}. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
 
 in_repo_config:
   enabled:
