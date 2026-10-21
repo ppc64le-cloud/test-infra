@@ -19,7 +19,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: public.ecr.aws/docker/library/golang:latest
             resources:
               requests:
                 cpu: "3000m"
@@ -34,6 +34,8 @@ postsubmits:
                 set -o nounset
                 set -o pipefail
                 set -o xtrace
+
+                apt-get update && apt-get install -y jq
 
                 build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
                 build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
@@ -78,7 +80,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: public.ecr.aws/docker/library/golang:latest
             resources:
               requests:
                 cpu: "2500m"
@@ -93,6 +95,8 @@ postsubmits:
                 set -o nounset
                 set -o pipefail
                 set -o xtrace
+
+                apt-get update && apt-get install -y jq
 
                 build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
                 build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
