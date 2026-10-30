@@ -13,7 +13,7 @@ periodics:
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state success. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
     spec:
       containers:
-        - image: quay.io/powercloud/all-in-one:0.7
+        - image: quay.io/powercloud/containerd-ci-runner@sha256:85ac2c51eee8919908ff5ea9e1782ecc3283a25e02c8e111d79cc5bbe06e7477
           command:
             - /bin/bash
             - -c
@@ -59,7 +59,7 @@ periodics:
           report_template: 'Job {{.Spec.Job}} of type {{.Spec.Type}} ended with state success. <!subteam^S02N6DWBX0F> <{{.Status.URL}}|View logs>'
     spec:
       containers:
-        - image: quay.io/powercloud/all-in-one:0.7
+        - image: quay.io/powercloud/containerd-ci-runner@sha256:85ac2c51eee8919908ff5ea9e1782ecc3283a25e02c8e111d79cc5bbe06e7477
           command:
             - /bin/bash
             - -c

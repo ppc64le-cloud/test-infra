@@ -5,6 +5,10 @@ postsubmits:
       labels:
         preset-golang-build: "true"
       decorate: true
+      decoration_config:
+        oauth_token_secret:
+          name: github-token
+          key: token
       branches:
         - master
       run_if_changed: '^golang/master/'
@@ -15,7 +19,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: public.ecr.aws/docker/library/golang:latest
             resources:
               requests:
                 cpu: "3000m"
@@ -30,6 +34,8 @@ postsubmits:
                 set -o nounset
                 set -o pipefail
                 set -o xtrace
+
+                apt-get update && apt-get install -y jq
 
                 build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
                 build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
@@ -60,6 +66,10 @@ postsubmits:
       labels:
         preset-golang-build: "true"
       decorate: true
+      decoration_config:
+        oauth_token_secret:
+          name: github-token
+          key: token
       branches:
         - master
       run_if_changed: '^golang/master/'
@@ -70,7 +80,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: public.ecr.aws/docker/library/golang:latest
             resources:
               requests:
                 cpu: "2500m"
@@ -85,6 +95,8 @@ postsubmits:
                 set -o nounset
                 set -o pipefail
                 set -o xtrace
+
+                apt-get update && apt-get install -y jq
 
                 build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
                 build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)

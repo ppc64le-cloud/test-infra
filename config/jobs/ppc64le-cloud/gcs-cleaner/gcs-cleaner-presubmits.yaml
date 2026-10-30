@@ -5,7 +5,7 @@ presubmits:
     decorate: true
     spec:
       containers:
-        - image: golang:1.25
+        - image: golang:1.26
           command:
             - sh
           args:
@@ -19,7 +19,7 @@ presubmits:
     decorate: true
     spec:
       containers:
-        - image: golang:1.25
+        - image: golang:1.26
           command:
             - sh
           args:

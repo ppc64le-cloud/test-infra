@@ -5,6 +5,10 @@ postsubmits:
       labels:
         preset-golang-build: "true"
       decorate: true
+      decoration_config:
+        oauth_token_secret:
+          name: github-token
+          key: token
       branches:
         - master
       run_if_changed: '^golang/master/'
@@ -15,7 +19,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: public.ecr.aws/docker/library/golang:latest
             resources:
               requests:
                 cpu: "3000m"
@@ -30,6 +34,8 @@ postsubmits:
                 set -o nounset
                 set -o pipefail
                 set -o xtrace
+
+                apt-get update && apt-get install -y jq
 
                 build_commit=$(jq -r .commit $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
                 build_project=$(jq -r .project $GOPATH/src/github.com/ppc64le-cloud/builds/golang/master/build.yaml)
@@ -56,7 +62,7 @@ postsubmits:
 
                 cp _output/bin/kubectl _output/release-stage/kubernetes/client/bin/
                 mv _output/bin/{apiextensions-apiserver,kube-aggregator,kube-apiserver,kube-controller-manager,kube-proxy,kube-scheduler,kubeadm,kubectl,kubelet} _output/release-stage/kubernetes/server/bin
-                mv _output/bin/{go-runner,e2e_node.test,kubemark,ginkgo,e2e.test} _output/release-stage/kubernetes/test/bin/
+                mv _output/bin/{go-runner,e2e_node.test,ginkgo,e2e.test} _output/release-stage/kubernetes/test/bin/
 
                 tar -zcvf kubernetes-test-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/test/bin
                 tar -zcvf kubernetes-client-linux-`go env GOARCH`.tar.gz --directory=_output/release-stage/ kubernetes/client/bin
@@ -73,6 +79,9 @@ postsubmits:
           bucket: ppc64le-kubernetes
           path_strategy: explicit
         gcs_credentials_secret: gcs-credentials
+        oauth_token_secret:
+          name: github-token
+          key: token
       branches:
         - master
       run_if_changed: '^golang/master/'
@@ -83,7 +92,7 @@ postsubmits:
           workdir: true
       spec:
         containers:
-          - image: quay.io/powercloud/all-in-one:0.7
+          - image: public.ecr.aws/docker/library/golang:latest
             resources:
               requests:
                 cpu: 7
@@ -100,6 +109,8 @@ postsubmits:
                 set -o nounset
                 set -o pipefail
                 set -o xtrace
+
+                apt-get update && apt-get install -y jq
 
                 export KUBE_TIMEOUT='--timeout=600s'
                 export KUBE_COVER="n"

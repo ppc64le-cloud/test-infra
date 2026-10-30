@@ -1,0 +1,15 @@
+# Containerfile for test-containerd scripts
+FROM public.ecr.aws/docker/library/debian:bookworm
+
+# Install required packages that are not present in Linux by default
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    openssh-client \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://clis.cloud.ibm.com/install/linux | sh \
+ && ibmcloud plugin install power-iaas \
+ && ibmcloud plugin install cloud-object-storage
+
+WORKDIR /workspace
