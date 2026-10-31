@@ -63,7 +63,7 @@ plank:
   job_url_prefix_config:
     "*": https://prow.ppc64le-cloud.cis.ibm.net/view/
   pod_pending_timeout: 15m
-  pod_unscheduled_timeout: 30m
+  pod_unscheduled_timeout: 45m
   report_templates:
     '*': >-
       [Full PR test history](https://prow.ppc64le-cloud.cis.ibm.net/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
