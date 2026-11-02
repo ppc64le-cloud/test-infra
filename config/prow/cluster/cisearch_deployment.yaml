@@ -21,6 +21,6 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: ci-search
-        image: quay.io/powercloud/ci-search:latest
+        image: quay.io/powercloud/ci-search:ppc64le-cloud
         ports:
         - containerPort: 8080

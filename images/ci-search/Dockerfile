@@ -2,12 +2,12 @@ FROM golang
 WORKDIR /go/src/github.com/openshift
 RUN git clone https://github.com/openshift/ci-search \
     && cd ci-search \
-    && grep -rl origin-ci-test . | xargs sed -i 's/origin-ci-test/ppc64le-kubernetes/g' \
-    && grep -rl "OpenShift" . | xargs sed -i 's/OpenShift/Kubernetes-ppc64le/g' \
-    && grep -rl "prow\.ci\.openshift" . | xargs sed -i 's/prow\.ci\.openshift/prow\.ppc64le-cloud/g' \
-    && make build
+    && grep -rl test-platform-results . | xargs sed -i 's/test-platform-results/ppc64le-kubernetes/g' \
+    && grep -rl "OpenShift" . | xargs sed -i 's/OpenShift/ppc64le-cloud/g' \
+    && grep -rl "ci\.openshift\.org" . | xargs sed -i 's/ci\.openshift\.org/ppc64le-cloud\.cis\.ibm\.net/g' \
+    && GO_BUILD_PACKAGES=./cmd/search make GO_REQUIRED_MIN_VERSION:= build
 
-FROM quay.io/centos/centos:stream8
+FROM quay.io/centos/centos:stream9
 COPY --from=0 /go/src/github.com/openshift/ci-search/search /usr/bin/
 RUN curl -L https://github.com/BurntSushi/ripgrep/releases/download/12.0.1/ripgrep-12.0.1-x86_64-unknown-linux-musl.tar.gz | \
     tar xvzf - --wildcards --no-same-owner --strip-components=1  -C /usr/bin '*/rg'
