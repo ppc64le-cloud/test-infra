@@ -23,13 +23,15 @@ periodics:
               set -o pipefail
               set -o xtrace
               cd $HOME
-              git clone --depth=1 https://github.com/golang/go.git
-              cd go/src
-              GITCOMMIT=$(git rev-parse --short HEAD)
+              # 8 chars of the sha: git rev-parse --short varies with the local object count.
+              GITCOMMIT=$(git ls-remote https://github.com/golang/go.git refs/heads/master | cut -c1-8)
 
               status_code=$(curl -sL -w "%{http_code}" http://build-bot.prow:8090/build?project=golang/master\&commit=$GITCOMMIT -o /dev/null)
               if [[ "$status_code" -ne 200 ]] ; then
                 echo "time to build"
+                git clone --depth=1 https://github.com/golang/go.git
+                cd go/src
+                GITCOMMIT=$(git rev-parse HEAD | cut -c1-8)
                 ./make.bash
                 cd ../..;rm -rf go/.git
                 tar -czf go.tar.gz go
