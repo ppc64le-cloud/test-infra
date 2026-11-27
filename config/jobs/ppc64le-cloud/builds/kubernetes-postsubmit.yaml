@@ -198,7 +198,6 @@ postsubmits:
                     --workers-count 2 \
                     --up --auto-approve --retry-on-tf-failure 3 \
                     --break-kubetest-on-upfail true \
-                    --powervs-memory 32 \
                     --test=exec -- /usr/local/bin/ginkgo --nodes=10 /usr/local/bin/e2e.test \
                     -- --ginkgo.focus='\[Conformance\]' \
                     --ginkgo.skip='\[Serial\]' \
